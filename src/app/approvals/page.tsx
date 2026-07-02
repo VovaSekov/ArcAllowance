@@ -27,17 +27,19 @@ export default function ApprovalsPage() {
             const agent = agents.find((item) => item.id === request.agentId);
             const merchant = merchants.find((item) => item.id === request.merchantId);
             return (
-              <section key={request.id} className="rounded-lg border border-white/10 bg-white/[0.035] p-5">
+              <section key={request.id} className="min-w-0 rounded-lg border border-white/10 bg-white/[0.035] p-5">
                 <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
-                  <div>
-                    <div className="flex items-center gap-3">
-                      <h2 className="text-lg font-semibold text-white">{agent?.name} → {merchant?.name}</h2>
-                      <StatusBadge status={request.status} />
+                  <div className="min-w-0">
+                    <div className="flex flex-wrap items-center gap-3">
+                      <h2 className="break-words text-lg font-semibold text-white">{agent?.name} → {merchant?.name}</h2>
+                      <div className="shrink-0">
+                        <StatusBadge status={request.status} />
+                      </div>
                     </div>
-                    <p className="mt-2 text-sm text-slate-400">{formatUSDC(request.amountUSDC)} for <span className="font-mono text-xs">{request.purpose}</span> · {formatDate(request.createdAt)}</p>
+                    <p className="mt-2 break-words text-sm leading-6 text-slate-400">{formatUSDC(request.amountUSDC)} for <span className="break-all font-mono text-xs">{request.purpose}</span> · {formatDate(request.createdAt)}</p>
                     <p className="mt-2 text-sm text-slate-500">Payment type: {request.paymentType}</p>
                   </div>
-                  <div className="flex gap-2">
+                  <div className="flex shrink-0 flex-wrap gap-2">
                     <button type="button" onClick={() => approveRequest(request.id)} className="inline-flex items-center gap-2 rounded-md bg-emerald-300 px-4 py-2 text-sm font-semibold text-ink-950 hover:bg-emerald-200">
                       <Check className="h-4 w-4" aria-hidden="true" />
                       Approve

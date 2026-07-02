@@ -37,30 +37,30 @@ export default function ContractPage() {
 
       <ContractStatusCard />
 
-      <div className="mt-6 grid gap-6 xl:grid-cols-[0.9fr_1.1fr]">
-        <section className="rounded-lg border border-white/10 bg-white/[0.035] p-5">
+      <div className="mt-6 grid gap-6 xl:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)]">
+        <section className="min-w-0 rounded-lg border border-white/10 bg-white/[0.035] p-5">
           <div className="flex items-center gap-3">
             <Landmark className="h-5 w-5 text-sky-300" aria-hidden="true" />
             <h2 className="text-lg font-semibold text-white">Deployment proof</h2>
           </div>
           <dl className="mt-5 grid gap-4 text-sm">
-            <div className="rounded-md border border-white/10 bg-ink-950/50 p-4">
+            <div className="min-w-0 rounded-md border border-white/10 bg-ink-950/50 p-4">
               <dt className="text-slate-500">Network</dt>
               <dd className="mt-1 text-white">{arcTestnet.network}</dd>
             </div>
-            <div className="rounded-md border border-white/10 bg-ink-950/50 p-4">
+            <div className="min-w-0 rounded-md border border-white/10 bg-ink-950/50 p-4">
               <dt className="text-slate-500">Chain ID</dt>
               <dd className="mt-1 text-white">{arcTestnet.chainId}</dd>
             </div>
-            <div className="rounded-md border border-white/10 bg-ink-950/50 p-4">
+            <div className="min-w-0 rounded-md border border-white/10 bg-ink-950/50 p-4">
               <dt className="text-slate-500">Contract name</dt>
               <dd className="mt-1 text-white">{arcAllowanceRegistry.contractName}</dd>
             </div>
-            <div className="rounded-md border border-white/10 bg-ink-950/50 p-4">
+            <div className="min-w-0 rounded-md border border-white/10 bg-ink-950/50 p-4">
               <dt className="text-slate-500">Contract address</dt>
               <dd className="mt-1 break-all font-mono text-xs text-sky-100">{configured ? arcAllowanceRegistry.address : "Deploy script has not written an address yet."}</dd>
             </div>
-            <div className="rounded-md border border-white/10 bg-ink-950/50 p-4">
+            <div className="min-w-0 rounded-md border border-white/10 bg-ink-950/50 p-4">
               <dt className="text-slate-500">Explorer link</dt>
               <dd className="mt-1">
                 {configured ? (
@@ -76,27 +76,27 @@ export default function ContractPage() {
           </dl>
         </section>
 
-        <section className="space-y-6">
-          <div className="rounded-lg border border-white/10 bg-white/[0.035] p-5">
+        <section className="min-w-0 space-y-6">
+          <div className="min-w-0 rounded-lg border border-white/10 bg-white/[0.035] p-5">
             <div className="flex items-center gap-3">
               <ShieldCheck className="h-5 w-5 text-emerald-300" aria-hidden="true" />
               <h2 className="text-lg font-semibold text-white">What is real onchain</h2>
             </div>
             <div className="mt-4 space-y-3">
               {realOnchain.map((item) => (
-                <div key={item} className="rounded-md border border-emerald-400/20 bg-emerald-400/10 p-4 text-sm leading-6 text-emerald-50/85">{item}</div>
+                <div key={item} className="min-w-0 break-words rounded-md border border-emerald-400/20 bg-emerald-400/10 p-4 text-sm leading-6 text-emerald-50/85">{item}</div>
               ))}
             </div>
           </div>
 
-          <div className="rounded-lg border border-white/10 bg-white/[0.035] p-5">
+          <div className="min-w-0 rounded-lg border border-white/10 bg-white/[0.035] p-5">
             <div className="flex items-center gap-3">
               <WalletCards className="h-5 w-5 text-amber-300" aria-hidden="true" />
               <h2 className="text-lg font-semibold text-white">What remains mocked</h2>
             </div>
             <div className="mt-4 space-y-3">
               {mocked.map((item) => (
-                <div key={item} className="rounded-md border border-amber-400/20 bg-amber-400/10 p-4 text-sm leading-6 text-amber-50/85">{item}</div>
+                <div key={item} className="min-w-0 break-words rounded-md border border-amber-400/20 bg-amber-400/10 p-4 text-sm leading-6 text-amber-50/85">{item}</div>
               ))}
             </div>
           </div>
@@ -104,7 +104,7 @@ export default function ContractPage() {
       </div>
 
       <div className="mt-6 grid gap-6 xl:grid-cols-2">
-        <section className="rounded-lg border border-white/10 bg-white/[0.035] p-5">
+        <section className="min-w-0 rounded-lg border border-white/10 bg-white/[0.035] p-5">
           <div className="flex items-center gap-3">
             <FileKey2 className="h-5 w-5 text-sky-300" aria-hidden="true" />
             <h2 className="text-lg font-semibold text-white">USDC unit handling</h2>
@@ -112,31 +112,33 @@ export default function ContractPage() {
           <p className="mt-3 text-sm leading-6 text-slate-400">The registry stores USDC amounts in 6-decimal units. Frontend helpers expose parseUSDC and formatUSDC for contract-facing values.</p>
           <div className="mt-4 grid gap-3 text-sm sm:grid-cols-3">
             {["0.03", "2", "25"].map((amount) => (
-              <div key={amount} className="rounded-md border border-white/10 bg-ink-950/50 p-4">
+              <div key={amount} className="min-w-0 rounded-md border border-white/10 bg-ink-950/50 p-4">
                 <p className="text-slate-500">{amount} USDC</p>
-                <p className="mt-1 font-mono text-xs text-white">{parseUSDC(amount).toString()}</p>
+                <p className="mt-1 break-all font-mono text-xs text-white">{parseUSDC(amount).toString()}</p>
                 <p className="mt-1 text-xs text-slate-500">{formatContractUSDC(parseUSDC(amount))}</p>
               </div>
             ))}
           </div>
         </section>
 
-        <section className="rounded-lg border border-white/10 bg-white/[0.035] p-5">
-          <div className="flex items-center justify-between gap-4">
-            <h2 className="text-lg font-semibold text-white">Latest demo tx hashes</h2>
-            <StatusBadge status="mock" />
+        <section className="min-w-0 rounded-lg border border-white/10 bg-white/[0.035] p-5">
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+            <h2 className="break-words text-lg font-semibold text-white">Latest demo tx hashes</h2>
+            <div className="shrink-0">
+              <StatusBadge status="mock" />
+            </div>
           </div>
           <p className="mt-3 text-sm leading-6 text-slate-400">
             These are mock Arc tx hashes from the existing demo ledger. After deployment, real registry transactions should be linked from Arcscan separately.
           </p>
           <div className="mt-4 space-y-3">
             {latestTxHashes.map((receipt) => (
-              <div key={receipt.id} className="rounded-md border border-white/10 bg-ink-950/50 p-4">
-                <div className="flex items-center justify-between gap-3">
-                  <p className="text-sm font-medium text-white">{receipt.agentName} → {receipt.merchantName}</p>
-                  <p className="text-xs text-slate-500">{formatDate(receipt.createdAt)}</p>
+              <div key={receipt.id} className="min-w-0 rounded-md border border-white/10 bg-ink-950/50 p-4">
+                <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+                  <p className="break-words text-sm font-medium text-white">{receipt.agentName} → {receipt.merchantName}</p>
+                  <p className="shrink-0 text-xs text-slate-500">{formatDate(receipt.createdAt)}</p>
                 </div>
-                <p className="mt-2 text-sm text-slate-400">{formatUSDC(receipt.amountUSDC)} · {receipt.memoId}</p>
+                <p className="mt-2 break-all text-sm leading-6 text-slate-400">{formatUSDC(receipt.amountUSDC)} · {receipt.memoId}</p>
                 <p className="mt-2 break-all font-mono text-xs text-sky-100">{receipt.txHash}</p>
                 {configured ? (
                   <a href={buildExplorerTxUrl(arcTestnet.explorerUrl, receipt.txHash)} target="_blank" rel="noreferrer" className="mt-3 inline-flex text-xs text-sky-200 hover:text-sky-100">

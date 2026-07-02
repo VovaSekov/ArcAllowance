@@ -29,8 +29,8 @@ export function AgentDetailClient({ id }: { id: string }) {
         action={<Link href={`/simulate?agent=${agent.id}`} className="inline-flex items-center gap-2 rounded-md bg-sky-300 px-4 py-2 text-sm font-semibold text-ink-950 hover:bg-sky-200">Simulate as agent <ArrowRight className="h-4 w-4" /></Link>}
       />
 
-      <div className="grid gap-6 xl:grid-cols-[0.8fr_1.2fr]">
-        <section className="rounded-lg border border-white/10 bg-white/[0.035] p-5">
+      <div className="grid gap-6 xl:grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)]">
+        <section className="min-w-0 rounded-lg border border-white/10 bg-white/[0.035] p-5">
           <div className="flex items-center gap-3">
             <Bot className="h-5 w-5 text-sky-300" aria-hidden="true" />
             <h2 className="text-lg font-semibold text-white">Agent profile</h2>
@@ -58,7 +58,7 @@ export function AgentDetailClient({ id }: { id: string }) {
           </div>
         </section>
 
-        <section className="rounded-lg border border-white/10 bg-white/[0.035] p-5">
+        <section className="min-w-0 rounded-lg border border-white/10 bg-white/[0.035] p-5">
           <div className="flex items-center gap-3">
             <ShieldCheck className="h-5 w-5 text-sky-300" aria-hidden="true" />
             <h2 className="text-lg font-semibold text-white">Active policy</h2>
@@ -66,22 +66,22 @@ export function AgentDetailClient({ id }: { id: string }) {
           {policy ? (
             <div className="mt-5">
               <h3 className="font-semibold text-white">{policy.name}</h3>
-              <div className="mt-4 grid gap-3 sm:grid-cols-4">
-                <div className="rounded-md border border-white/10 bg-ink-950/50 p-3">
+              <div className="mt-4 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+                <div className="min-w-0 rounded-md border border-white/10 bg-ink-950/50 p-3">
                   <p className="text-xs text-slate-500">Max tx</p>
-                  <p className="mt-1 font-medium text-white">{formatUSDC(policy.maxPerTransactionUSDC)}</p>
+                  <p className="mt-1 break-words font-medium text-white">{formatUSDC(policy.maxPerTransactionUSDC)}</p>
                 </div>
-                <div className="rounded-md border border-white/10 bg-ink-950/50 p-3">
+                <div className="min-w-0 rounded-md border border-white/10 bg-ink-950/50 p-3">
                   <p className="text-xs text-slate-500">Daily</p>
-                  <p className="mt-1 font-medium text-white">{formatUSDC(policy.dailyLimitUSDC)}</p>
+                  <p className="mt-1 break-words font-medium text-white">{formatUSDC(policy.dailyLimitUSDC)}</p>
                 </div>
-                <div className="rounded-md border border-white/10 bg-ink-950/50 p-3">
+                <div className="min-w-0 rounded-md border border-white/10 bg-ink-950/50 p-3">
                   <p className="text-xs text-slate-500">Monthly</p>
-                  <p className="mt-1 font-medium text-white">{formatUSDC(policy.monthlyLimitUSDC)}</p>
+                  <p className="mt-1 break-words font-medium text-white">{formatUSDC(policy.monthlyLimitUSDC)}</p>
                 </div>
-                <div className="rounded-md border border-white/10 bg-ink-950/50 p-3">
+                <div className="min-w-0 rounded-md border border-white/10 bg-ink-950/50 p-3">
                   <p className="text-xs text-slate-500">Approval</p>
-                  <p className="mt-1 font-medium text-white">{formatUSDC(policy.approvalRequiredAboveUSDC)}</p>
+                  <p className="mt-1 break-words font-medium text-white">{formatUSDC(policy.approvalRequiredAboveUSDC)}</p>
                 </div>
               </div>
               <div className="mt-5">
@@ -105,7 +105,7 @@ export function AgentDetailClient({ id }: { id: string }) {
       </div>
 
       <div className="mt-6 grid gap-6 xl:grid-cols-2">
-        <section className="rounded-lg border border-white/10 bg-white/[0.035] p-5">
+        <section className="min-w-0 rounded-lg border border-white/10 bg-white/[0.035] p-5">
           <div className="flex items-center gap-3">
             <WalletCards className="h-5 w-5 text-sky-300" aria-hidden="true" />
             <h2 className="text-lg font-semibold text-white">Recent spend requests</h2>
@@ -114,20 +114,22 @@ export function AgentDetailClient({ id }: { id: string }) {
             {recentRequests.map((request) => {
               const merchant = merchants.find((item) => item.id === request.merchantId);
               return (
-                <div key={request.id} className="rounded-lg border border-white/10 bg-ink-950/50 p-4">
-                  <div className="flex items-center justify-between gap-3">
-                    <p className="font-medium text-white">{merchant?.name}</p>
-                    <StatusBadge status={request.status} />
+                <div key={request.id} className="min-w-0 rounded-lg border border-white/10 bg-ink-950/50 p-4">
+                  <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                    <p className="break-words font-medium text-white">{merchant?.name}</p>
+                    <div className="shrink-0">
+                      <StatusBadge status={request.status} />
+                    </div>
                   </div>
-                  <p className="mt-2 text-sm text-slate-400">{formatUSDC(request.amountUSDC)} for <span className="font-mono text-xs">{request.purpose}</span></p>
-                  <p className="mt-2 text-xs text-slate-500">Memo: {request.memoId ?? "none"} · Tx: {shortAddress(request.txHash)}</p>
+                  <p className="mt-2 break-words text-sm leading-6 text-slate-400">{formatUSDC(request.amountUSDC)} for <span className="break-all font-mono text-xs">{request.purpose}</span></p>
+                  <p className="mt-2 break-all text-xs leading-5 text-slate-500">Memo: {request.memoId ?? "none"} · Tx: {shortAddress(request.txHash)}</p>
                 </div>
               );
             })}
           </div>
         </section>
 
-        <section className="rounded-lg border border-white/10 bg-white/[0.035] p-5">
+        <section className="min-w-0 rounded-lg border border-white/10 bg-white/[0.035] p-5">
           <div className="flex items-center gap-3">
             <FileText className="h-5 w-5 text-sky-300" aria-hidden="true" />
             <h2 className="text-lg font-semibold text-white">Recent receipts</h2>

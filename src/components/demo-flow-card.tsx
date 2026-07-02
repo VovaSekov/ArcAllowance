@@ -50,14 +50,14 @@ export function DemoFlowCard() {
           <ArrowRight className="h-4 w-4" aria-hidden="true" />
         </Link>
       </div>
-      <div className="mt-5 grid gap-3 md:grid-cols-5">
+      <div className="mt-5 grid gap-3 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-5">
         {demoSteps.map((step, index) => (
-          <Link key={step.title} href={step.href} className="rounded-lg border border-white/10 bg-ink-950/50 p-4 transition hover:border-sky-400/30 hover:bg-white/[0.06]">
+          <Link key={step.title} href={step.href} className="min-w-0 rounded-lg border border-white/10 bg-ink-950/50 p-4 transition hover:border-sky-400/30 hover:bg-white/[0.06]">
             <div className="flex items-center justify-between gap-3">
               <step.icon className="h-5 w-5 text-sky-300" aria-hidden="true" />
               <span className="text-xs text-slate-500">{String(index + 1).padStart(2, "0")}</span>
             </div>
-            <h3 className="mt-4 text-sm font-semibold text-white">{step.title}</h3>
+            <h3 className="mt-4 break-words text-sm font-semibold leading-5 text-white">{step.title}</h3>
             <p className="mt-2 text-xs leading-5 text-slate-400">{step.detail}</p>
           </Link>
         ))}

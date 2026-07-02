@@ -27,8 +27,8 @@ export function LedgerTable({
   const selectedReceipt = receipts.find((receipt) => receipt.id === selectedReceiptId);
 
   return (
-    <div className="grid gap-6 xl:grid-cols-[1fr_380px]">
-      <div className="rounded-lg border border-white/10 bg-white/[0.035]">
+    <div className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_380px]">
+      <div className="min-w-0 rounded-lg border border-white/10 bg-white/[0.035]">
         <div className="flex flex-wrap gap-2 border-b border-white/10 p-4">
           {filters.map((item) => (
             <button
@@ -70,9 +70,9 @@ export function LedgerTable({
                       <td className="px-4 py-4 text-white">{agent?.name ?? "Unknown"}</td>
                       <td className="px-4 py-4">{merchant?.name ?? "Unknown"}</td>
                       <td className="px-4 py-4">{formatUSDC(request.amountUSDC)}</td>
-                      <td className="px-4 py-4 font-mono text-xs">{request.purpose}</td>
+                      <td className="max-w-[190px] break-all px-4 py-4 font-mono text-xs">{request.purpose}</td>
                       <td className="px-4 py-4"><StatusBadge status={request.status} /></td>
-                      <td className="px-4 py-4 font-mono text-xs">{request.memoId ?? "none"}</td>
+                      <td className="max-w-[170px] break-all px-4 py-4 font-mono text-xs">{request.memoId ?? "none"}</td>
                       <td className="px-4 py-4 font-mono text-xs">{shortAddress(request.txHash)}</td>
                       <td className="px-4 py-4">
                         <button
@@ -92,7 +92,7 @@ export function LedgerTable({
           </div>
         )}
       </div>
-      <aside>
+      <aside className="min-w-0">
         {selectedReceipt ? (
           <ReceiptCard receipt={selectedReceipt} />
         ) : (

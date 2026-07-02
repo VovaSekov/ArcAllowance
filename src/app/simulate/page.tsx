@@ -119,8 +119,8 @@ export default function SimulatePage() {
         <ContractStatusCard compact />
       </div>
 
-      <div className="mt-6 grid gap-6 xl:grid-cols-[0.9fr_1.1fr]">
-        <section className="rounded-lg border border-white/10 bg-white/[0.035] p-5">
+      <div className="mt-6 grid gap-6 xl:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)]">
+        <section className="min-w-0 rounded-lg border border-white/10 bg-white/[0.035] p-5">
           <h2 className="text-lg font-semibold text-white">Payment request</h2>
           <div className="mt-5 grid gap-4">
             <label className="grid gap-2 text-sm">
@@ -141,7 +141,7 @@ export default function SimulatePage() {
             </label>
             <label className="grid gap-2 text-sm">
               <span className="text-slate-400">Purpose</span>
-              <input value={form.purpose} onChange={(event) => setForm({ ...form, purpose: event.target.value })} className="rounded-md border border-white/10 bg-ink-950 px-3 py-2 font-mono text-xs text-white" />
+              <input value={form.purpose} onChange={(event) => setForm({ ...form, purpose: event.target.value })} className="min-w-0 rounded-md border border-white/10 bg-ink-950 px-3 py-2 font-mono text-xs text-white" />
             </label>
             <label className="grid gap-2 text-sm">
               <span className="text-slate-400">Payment type</span>
@@ -161,7 +161,7 @@ export default function SimulatePage() {
             <p className="text-sm font-medium text-white">Demo presets</p>
             <div className="mt-3 grid gap-2">
               {demoScenarios.map((scenario, index) => (
-                <button key={scenario.title} type="button" onClick={() => applyScenario(index)} className="rounded-md border border-white/10 px-3 py-2 text-left text-sm text-slate-300 hover:bg-white/[0.06]">
+                <button key={scenario.title} type="button" onClick={() => applyScenario(index)} className="min-w-0 rounded-md border border-white/10 px-3 py-2 text-left text-sm leading-6 text-slate-300 hover:bg-white/[0.06]">
                   {scenario.title}: expected {scenario.expected.replace("_", " ")}
                 </button>
               ))}
@@ -169,14 +169,14 @@ export default function SimulatePage() {
           </div>
         </section>
 
-        <section className="space-y-6">
+        <section className="min-w-0 space-y-6">
           <div className="rounded-lg border border-white/10 bg-white/[0.035] p-5">
-            <div className="flex items-start justify-between gap-4">
-              <div className="flex gap-3">
+            <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+              <div className="flex min-w-0 gap-3">
                 <ResultIcon className="mt-1 h-5 w-5 text-sky-300" aria-hidden="true" />
-                <div>
+                <div className="min-w-0">
                   <h2 className="text-lg font-semibold text-white">Policy result</h2>
-                  <p className="mt-1 text-sm text-slate-400">
+                  <p className="mt-1 break-words text-sm leading-6 text-slate-400">
                     {latestRequest ? `${formatUSDC(latestRequest.amountUSDC)} request evaluated with risk score ${latestRequest.riskScore}.` : "Run a policy check to create a request."}
                   </p>
                 </div>

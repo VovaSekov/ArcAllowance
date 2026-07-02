@@ -19,7 +19,7 @@ export function StatusBadge({ status, className }: { status: SpendStatus | "mock
     status === "mock" ? "border-violet-400/30 bg-violet-400/10 text-violet-100" : statusClasses[status];
 
   return (
-    <span className={cn("inline-flex items-center rounded-full border px-2.5 py-1 text-xs font-medium", classes, className)}>
+    <span className={cn("inline-flex items-center whitespace-nowrap rounded-full border px-2.5 py-1 text-xs font-medium", classes, className)}>
       {status.replace("_", " ")}
     </span>
   );
@@ -27,7 +27,7 @@ export function StatusBadge({ status, className }: { status: SpendStatus | "mock
 
 export function RiskBadge({ risk }: { risk: RiskTier }) {
   return (
-    <span className={cn("inline-flex items-center rounded-full border px-2.5 py-1 text-xs font-medium", riskClasses[risk])}>
+    <span className={cn("inline-flex items-center whitespace-nowrap rounded-full border px-2.5 py-1 text-xs font-medium", riskClasses[risk])}>
       {risk} risk
     </span>
   );

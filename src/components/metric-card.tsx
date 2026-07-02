@@ -22,17 +22,17 @@ export function MetricCard({
   }[tone];
 
   return (
-    <div className="rounded-lg border border-white/10 bg-white/[0.045] p-5">
+    <div className="min-w-0 rounded-lg border border-white/10 bg-white/[0.045] p-5">
       <div className="flex items-start justify-between gap-4">
-        <div>
+        <div className="min-w-0">
           <p className="text-sm text-slate-400">{label}</p>
-          <p className="mt-2 text-2xl font-semibold text-white">{value}</p>
+          <p className="mt-2 break-words text-2xl font-semibold leading-8 text-white">{value}</p>
         </div>
         <div className={cn("rounded-md border p-2", toneClass)}>
           <Icon className="h-5 w-5" aria-hidden="true" />
         </div>
       </div>
-      <p className="mt-4 text-sm text-slate-400">{detail}</p>
+      <p className="mt-4 text-sm leading-6 text-slate-400">{detail}</p>
     </div>
   );
 }

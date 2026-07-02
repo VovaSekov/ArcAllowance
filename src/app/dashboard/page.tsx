@@ -33,7 +33,7 @@ export default function DashboardPage() {
       <div className="mt-6">
         <ContractStatusCard compact />
       </div>
-      <div className="mt-6 grid gap-4 sm:grid-cols-2 xl:grid-cols-5">
+      <div className="mt-6 grid gap-4 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-5">
         <MetricCard label="Total agent budget" value={formatUSDC(totalBudget)} detail="Daily policy capacity across all seeded agents." icon={WalletCards} />
         <MetricCard label="Spent today" value={formatUSDC(spentToday)} detail="Mock-settled receipts currently in the ledger." icon={DollarSign} tone="good" />
         <MetricCard label="Pending approvals" value={String(pending)} detail="Human review queue for threshold-triggered requests." icon={Clock3} tone="warn" />
@@ -41,20 +41,20 @@ export default function DashboardPage() {
         <MetricCard label="Active agents" value={String(activeAgents)} detail="Agents currently allowed to request payments." icon={Bot} />
       </div>
 
-      <div className="mt-8 grid gap-6 xl:grid-cols-[1.2fr_0.8fr]">
-        <section className="rounded-lg border border-white/10 bg-white/[0.035] p-5">
+      <div className="mt-8 grid gap-6 xl:grid-cols-[minmax(0,1.2fr)_minmax(0,0.8fr)]">
+        <section className="min-w-0 rounded-lg border border-white/10 bg-white/[0.035] p-5">
           <h2 className="text-lg font-semibold text-white">Recent spend activity</h2>
           <div className="mt-5 space-y-3">
             {latest.map((request) => {
               const agent = agents.find((item) => item.id === request.agentId);
               const merchant = merchants.find((item) => item.id === request.merchantId);
               return (
-                <div key={request.id} className="flex flex-col gap-3 rounded-lg border border-white/10 bg-ink-950/50 p-4 md:flex-row md:items-center md:justify-between">
-                  <div>
-                    <p className="font-medium text-white">{agent?.name} → {merchant?.name}</p>
-                    <p className="mt-1 text-sm text-slate-400">{formatUSDC(request.amountUSDC)} for <span className="font-mono text-xs">{request.purpose}</span></p>
+                <div key={request.id} className="flex min-w-0 flex-col gap-3 rounded-lg border border-white/10 bg-ink-950/50 p-4 md:flex-row md:items-center md:justify-between">
+                  <div className="min-w-0">
+                    <p className="break-words font-medium text-white">{agent?.name} → {merchant?.name}</p>
+                    <p className="mt-1 break-words text-sm leading-6 text-slate-400">{formatUSDC(request.amountUSDC)} for <span className="break-all font-mono text-xs">{request.purpose}</span></p>
                   </div>
-                  <div className="flex items-center gap-3">
+                  <div className="flex shrink-0 flex-wrap items-center gap-3">
                     <StatusBadge status={request.status} />
                     <span className="text-xs text-slate-500">{formatDate(request.createdAt)}</span>
                   </div>
@@ -64,7 +64,7 @@ export default function DashboardPage() {
           </div>
         </section>
 
-        <section className="rounded-lg border border-white/10 bg-white/[0.035] p-5">
+        <section className="min-w-0 rounded-lg border border-white/10 bg-white/[0.035] p-5">
           <div className="flex items-center gap-3">
             <ShieldCheck className="h-5 w-5 text-sky-300" aria-hidden="true" />
             <h2 className="text-lg font-semibold text-white">Policy health</h2>

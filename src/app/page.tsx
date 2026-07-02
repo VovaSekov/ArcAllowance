@@ -51,7 +51,7 @@ export default function LandingPage() {
 
       <main className="relative">
         <section className="mx-auto max-w-7xl px-4 pb-14 pt-16 sm:px-6 lg:px-8 lg:pb-20 lg:pt-24">
-          <div className="max-w-4xl">
+          <div className="max-w-5xl">
             <p className="text-sm font-medium uppercase tracking-[0.22em] text-sky-300">Arc-native agent spend control</p>
             <h1 className="mt-5 max-w-3xl text-5xl font-semibold tracking-tight text-white md:text-7xl">Budgets before autonomy</h1>
             <p className="mt-6 max-w-2xl text-lg leading-8 text-slate-300">
@@ -68,34 +68,34 @@ export default function LandingPage() {
               </Link>
             </div>
 
-            <div className="mt-10 grid max-w-4xl gap-3 rounded-lg border border-violet-400/20 bg-violet-400/10 p-4 shadow-glow md:grid-cols-[1.1fr_0.9fr]">
-              <div className="flex gap-3">
-                <div className="rounded-md border border-violet-300/30 bg-violet-300/10 p-2 text-violet-100">
+            <div className="mt-10 grid max-w-5xl gap-4 rounded-lg border border-violet-400/20 bg-violet-400/10 p-4 shadow-glow lg:grid-cols-[minmax(0,1fr)_minmax(260px,360px)]">
+              <div className="flex min-w-0 gap-3">
+                <div className="shrink-0 rounded-md border border-violet-300/30 bg-violet-300/10 p-2 text-violet-100">
                   <ScrollText className="h-5 w-5" aria-hidden="true" />
                 </div>
-                <div>
+                <div className="min-w-0">
                   <p className="text-sm font-semibold text-white">Live on Arc Testnet</p>
                   <p className="mt-1 text-sm leading-6 text-violet-100/80">
                     ArcAllowanceRegistry anchors agent registrations, policy hashes, spend requests, and spend decisions as audit proof. No custody.
                   </p>
                 </div>
               </div>
-              <div className="grid gap-3 text-sm sm:grid-cols-3 md:grid-cols-1">
+              <div className="grid min-w-0 gap-3 text-sm sm:grid-cols-3 lg:grid-cols-1">
                 <div>
                   <p className="text-violet-100/60">Network</p>
                   <p className="mt-1 text-white">{arcTestnet.network}</p>
                 </div>
                 <div>
                   <p className="text-violet-100/60">Registry</p>
-                  <p className="mt-1 font-mono text-xs text-white">{registryConfigured ? shortAddress(arcAllowanceRegistry.address) : "Pending deploy"}</p>
+                  <p className="mt-1 break-all font-mono text-xs text-white">{registryConfigured ? shortAddress(arcAllowanceRegistry.address) : "Pending deploy"}</p>
                 </div>
                 {registryConfigured ? (
-                  <a href={explorerUrl} target="_blank" rel="noreferrer" className="inline-flex w-fit items-center gap-2 rounded-md border border-violet-300/30 px-3 py-2 text-xs font-semibold text-violet-50 hover:bg-violet-300/10">
+                  <a href={explorerUrl} target="_blank" rel="noreferrer" className="inline-flex w-fit items-center justify-center gap-2 rounded-md border border-violet-300/30 px-3 py-2 text-xs font-semibold text-violet-50 hover:bg-violet-300/10">
                     View Arcscan
                     <ExternalLink className="h-3.5 w-3.5" aria-hidden="true" />
                   </a>
                 ) : (
-                  <Link href="/contract" className="inline-flex w-fit items-center gap-2 rounded-md border border-violet-300/30 px-3 py-2 text-xs font-semibold text-violet-50 hover:bg-violet-300/10">
+                  <Link href="/contract" className="inline-flex w-fit items-center justify-center gap-2 rounded-md border border-violet-300/30 px-3 py-2 text-xs font-semibold text-violet-50 hover:bg-violet-300/10">
                     Contract status
                     <ArrowRight className="h-3.5 w-3.5" aria-hidden="true" />
                   </Link>
@@ -108,9 +108,9 @@ export default function LandingPage() {
         <section className="mx-auto max-w-7xl px-4 pb-16 sm:px-6 lg:px-8">
           <div className="grid gap-4 md:grid-cols-3">
             {sections.map((section) => (
-              <div key={section.title} className="rounded-lg border border-white/10 bg-white/[0.045] p-6">
+              <div key={section.title} className="min-w-0 rounded-lg border border-white/10 bg-white/[0.045] p-6">
                 <section.icon className="h-6 w-6 text-sky-300" aria-hidden="true" />
-                <h2 className="mt-5 text-xl font-semibold text-white">{section.title}</h2>
+                <h2 className="mt-5 break-words text-xl font-semibold text-white">{section.title}</h2>
                 <p className="mt-3 text-sm leading-6 text-slate-400">{section.body}</p>
               </div>
             ))}
@@ -118,8 +118,8 @@ export default function LandingPage() {
         </section>
 
         <section className="mx-auto max-w-7xl px-4 pb-16 sm:px-6 lg:px-8">
-          <div className="grid gap-8 lg:grid-cols-[0.8fr_1.2fr] lg:items-center">
-            <div>
+          <div className="grid gap-8 lg:grid-cols-[minmax(0,0.78fr)_minmax(0,1.22fr)] lg:items-center">
+            <div className="min-w-0">
               <p className="text-sm font-medium uppercase tracking-[0.18em] text-violet-300">Mock mode today, Arc-native tomorrow</p>
               <h2 className="mt-3 text-3xl font-semibold tracking-tight text-white">Built for Gateway/x402-style nanopayments, Arc transaction memos, and Circle Wallets.</h2>
               <p className="mt-4 text-base leading-7 text-slate-400">
@@ -138,9 +138,9 @@ export default function LandingPage() {
             </div>
             <div className="mt-5 grid gap-3 md:grid-cols-2">
               {scenarios.map((scenario) => (
-                <div key={scenario} className="flex gap-3 rounded-md border border-white/10 bg-ink-950/50 p-4">
+                <div key={scenario} className="flex min-w-0 gap-3 rounded-md border border-white/10 bg-ink-950/50 p-4">
                   <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0 text-emerald-300" aria-hidden="true" />
-                  <p className="text-sm leading-6 text-slate-300">{scenario}</p>
+                  <p className="min-w-0 text-sm leading-6 text-slate-300">{scenario}</p>
                 </div>
               ))}
             </div>
