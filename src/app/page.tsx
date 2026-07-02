@@ -1,6 +1,8 @@
 import Link from "next/link";
-import { ArrowRight, Bot, CheckCircle2, CircleDollarSign, FileText, Landmark, ShieldCheck, WalletCards } from "lucide-react";
+import { ArrowRight, Bot, CheckCircle2, CircleDollarSign, ExternalLink, FileText, Landmark, ScrollText, ShieldCheck, WalletCards } from "lucide-react";
 import { ArchitectureDiagram } from "@/components/architecture-diagram";
+import { arcAllowanceRegistry, arcTestnet, getRegistryExplorerUrl, isRegistryConfigured } from "@/lib/contract/config";
+import { shortAddress } from "@/lib/utils";
 
 const sections = [
   {
@@ -28,6 +30,9 @@ const scenarios = [
 ];
 
 export default function LandingPage() {
+  const registryConfigured = isRegistryConfigured();
+  const explorerUrl = getRegistryExplorerUrl();
+
   return (
     <div className="relative overflow-hidden">
       <div className="absolute inset-0 surface-grid opacity-40" aria-hidden="true" />
@@ -61,6 +66,41 @@ export default function LandingPage() {
                 Simulate Agent Spend
                 <CircleDollarSign className="h-4 w-4" aria-hidden="true" />
               </Link>
+            </div>
+
+            <div className="mt-10 grid max-w-4xl gap-3 rounded-lg border border-violet-400/20 bg-violet-400/10 p-4 shadow-glow md:grid-cols-[1.1fr_0.9fr]">
+              <div className="flex gap-3">
+                <div className="rounded-md border border-violet-300/30 bg-violet-300/10 p-2 text-violet-100">
+                  <ScrollText className="h-5 w-5" aria-hidden="true" />
+                </div>
+                <div>
+                  <p className="text-sm font-semibold text-white">Live on Arc Testnet</p>
+                  <p className="mt-1 text-sm leading-6 text-violet-100/80">
+                    ArcAllowanceRegistry anchors agent registrations, policy hashes, spend requests, and spend decisions as audit proof. No custody.
+                  </p>
+                </div>
+              </div>
+              <div className="grid gap-3 text-sm sm:grid-cols-3 md:grid-cols-1">
+                <div>
+                  <p className="text-violet-100/60">Network</p>
+                  <p className="mt-1 text-white">{arcTestnet.network}</p>
+                </div>
+                <div>
+                  <p className="text-violet-100/60">Registry</p>
+                  <p className="mt-1 font-mono text-xs text-white">{registryConfigured ? shortAddress(arcAllowanceRegistry.address) : "Pending deploy"}</p>
+                </div>
+                {registryConfigured ? (
+                  <a href={explorerUrl} target="_blank" rel="noreferrer" className="inline-flex w-fit items-center gap-2 rounded-md border border-violet-300/30 px-3 py-2 text-xs font-semibold text-violet-50 hover:bg-violet-300/10">
+                    View Arcscan
+                    <ExternalLink className="h-3.5 w-3.5" aria-hidden="true" />
+                  </a>
+                ) : (
+                  <Link href="/contract" className="inline-flex w-fit items-center gap-2 rounded-md border border-violet-300/30 px-3 py-2 text-xs font-semibold text-violet-50 hover:bg-violet-300/10">
+                    Contract status
+                    <ArrowRight className="h-3.5 w-3.5" aria-hidden="true" />
+                  </Link>
+                )}
+              </div>
             </div>
           </div>
         </section>

@@ -4,6 +4,7 @@ import Link from "next/link";
 import { AlertTriangle, Bot, Clock3, DollarSign, ShieldCheck, WalletCards } from "lucide-react";
 import { ContractStatusCard } from "@/components/contract-status-card";
 import { DemoModeBanner } from "@/components/demo-mode-banner";
+import { DemoFlowCard } from "@/components/demo-flow-card";
 import { MetricCard } from "@/components/metric-card";
 import { PageHeader } from "@/components/page-header";
 import { PolicyCheckList } from "@/components/policy-check-list";
@@ -98,6 +99,10 @@ export default function DashboardPage() {
           <PolicyCheckList checks={latest[0]?.policyChecks ?? []} />
         </div>
       </section>
+
+      <div className="mt-6">
+        <DemoFlowCard />
+      </div>
     </>
   );
 }

@@ -2,7 +2,6 @@ import Link from "next/link";
 import { ExternalLink, ScrollText } from "lucide-react";
 import { arcAllowanceRegistry, arcTestnet, getRegistryExplorerUrl, isRegistryConfigured } from "@/lib/contract/config";
 import { shortAddress } from "@/lib/utils";
-import { StatusBadge } from "@/components/status-badge";
 
 export function ContractStatusCard({ compact = false }: { compact?: boolean }) {
   const configured = isRegistryConfigured();
@@ -18,7 +17,9 @@ export function ContractStatusCard({ compact = false }: { compact?: boolean }) {
           <div>
             <div className="flex flex-wrap items-center gap-2">
               <h2 className="text-lg font-semibold text-white">Real Arc Testnet contract</h2>
-              <StatusBadge status="mock" className="capitalize" />
+              <span className="inline-flex items-center rounded-full border border-violet-300/30 bg-violet-300/10 px-2.5 py-1 text-xs font-medium text-violet-50">
+                Onchain audit registry
+              </span>
             </div>
             <p className="mt-2 text-sm leading-6 text-violet-100/80">
               Onchain audit registry for agent registrations, policy hashes, spend requests, and spend decisions. No custody.
