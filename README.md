@@ -34,7 +34,7 @@ ArcAllowance is designed around stablecoin-native agent spending. Arc transactio
 6. Show the architecture page to explain how mock mode maps to a future Arc-native implementation.
 7. Show `/contract` and the Arcscan link for real Arc Testnet registry proof.
 
-For a ready recording outline, see `DEMO_SCRIPT.md`.
+For a live walkthrough flow, see `DEMO_SCRIPT.md`.
 
 ## Mock Mode
 
@@ -51,16 +51,16 @@ Contract purpose:
 - Record spend requests.
 - Mark spend decisions as approved, rejected, or needs approval.
 
-Contract address placeholder:
+Deployed Arc Testnet contract:
 
 ```text
-NEXT_PUBLIC_ARC_ALLOWANCE_REGISTRY_ADDRESS=
+NEXT_PUBLIC_ARC_ALLOWANCE_REGISTRY_ADDRESS=0x3c82F7aD5b78e09c6Aa7020402f85662e7248A8f
 ```
 
-Explorer link placeholder:
+Explorer link:
 
 ```text
-https://testnet.arcscan.app/address/YOUR_CONTRACT_ADDRESS
+https://testnet.arcscan.app/address/0x3c82F7aD5b78e09c6Aa7020402f85662e7248A8f
 ```
 
 Deploy to Arc Testnet:
@@ -143,7 +143,7 @@ NEXT_PUBLIC_CHAIN_MODE=mock
 NEXT_PUBLIC_ARC_CHAIN_ID=5042002
 NEXT_PUBLIC_ARC_RPC_URL=https://rpc.testnet.arc.network
 NEXT_PUBLIC_ARC_EXPLORER_URL=https://testnet.arcscan.app
-NEXT_PUBLIC_ARC_ALLOWANCE_REGISTRY_ADDRESS=
+NEXT_PUBLIC_ARC_ALLOWANCE_REGISTRY_ADDRESS=0x3c82F7aD5b78e09c6Aa7020402f85662e7248A8f
 NEXT_PUBLIC_SETTLEMENT_MODE=mock
 NEXT_PUBLIC_DOMAIN=arcallowance.xyz
 

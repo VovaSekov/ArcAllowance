@@ -1,4 +1,4 @@
-# ArcAllowance Demo Script
+# ArcAllowance Live Walkthrough
 
 ## 1. Open With The Problem
 

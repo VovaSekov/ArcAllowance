@@ -26,4 +26,4 @@ Prepare the app for Ubuntu VPS deployment with Node.js 20+, npm, PM2, Nginx reve
 
 ## Demo/README Writing Skill
 
-Write clear product copy, demo steps, limitations, and future Arc-native integration notes so the project can be shown in a video or posted to the Arc community.
+Write clear product copy, live walkthrough steps, limitations, and future Arc-native integration notes so the project can be demoed directly or posted to the Arc community.

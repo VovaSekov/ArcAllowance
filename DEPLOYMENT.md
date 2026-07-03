@@ -7,13 +7,20 @@
 - Nginx.
 - PM2.
 - A domain pointed to the VPS: `arcallowance.xyz`.
+- Current temporary HTTPS URL before domain purchase: `https://arcallowance.109.206.243.135.sslip.io`.
 
 ## SSH Access Assumptions
 
-Replace `YOUR_VPS_IP` and `YOUR_REPO_URL` with real values.
+Current VPS:
+
+```text
+109.206.243.135
+```
+
+Replace `YOUR_REPO_URL` with the GitHub SSH or HTTPS URL if setting up a fresh server.
 
 ```bash
-ssh root@YOUR_VPS_IP
+ssh root@109.206.243.135
 ```
 
 ## Install System Dependencies
@@ -121,9 +128,11 @@ Security rules:
 
 ## PM2 Setup
 
+ArcAllowance currently runs on port `3030` behind Nginx.
+
 ```bash
 npm install -g pm2
-pm2 start npm --name arcallowance -- start
+PORT=3030 pm2 start npm --name arcallowance -- start
 pm2 save
 pm2 startup
 ```
@@ -140,7 +149,7 @@ server {
     server_name arcallowance.xyz www.arcallowance.xyz;
 
     location / {
-        proxy_pass http://127.0.0.1:3000;
+        proxy_pass http://127.0.0.1:3030;
         proxy_http_version 1.1;
         proxy_set_header Upgrade $http_upgrade;
         proxy_set_header Connection 'upgrade';
@@ -163,8 +172,8 @@ systemctl reload nginx
 Point both records to the VPS public IP:
 
 ```text
-arcallowance.xyz      A      YOUR_VPS_IP
-www.arcallowance.xyz  A      YOUR_VPS_IP
+arcallowance.xyz      A      109.206.243.135
+www.arcallowance.xyz  A      109.206.243.135
 ```
 
 Wait for DNS propagation before issuing certificates.
@@ -179,8 +188,7 @@ certbot --nginx -d arcallowance.xyz -d www.arcallowance.xyz
 
 ```bash
 cd /root/arcallowance
-git pull
-npm install
+git pull --ff-only
 npm run build
 pm2 restart arcallowance
 ```
@@ -188,7 +196,7 @@ pm2 restart arcallowance
 ## Troubleshooting
 
 - `nginx -t` fails: check the server block syntax and confirm the symlink points to the correct file.
-- Site returns 502: confirm PM2 is running with `pm2 status` and the app is listening on port `3000`.
+- Site returns 502: confirm PM2 is running with `pm2 status` and the app is listening on port `3030`.
 - Certbot fails: confirm DNS A records point to the VPS and port 80 is reachable.
 - Build fails: run `npm run typecheck` and `npm run lint` locally, fix errors, then redeploy.
 - Environment mismatch: ensure `.env.local` mirrors `.env.example` and keeps settlement mode set to `mock`.

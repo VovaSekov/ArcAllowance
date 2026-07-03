@@ -42,7 +42,7 @@ export function DemoFlowCard() {
           <p className="text-sm font-medium uppercase tracking-[0.16em] text-sky-300">Demo path</p>
           <h2 className="mt-2 text-lg font-semibold text-white">Five screens to explain the product</h2>
           <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-400">
-            Use this path for a short recording: policy result, approval queue, ledger receipt, and real Arc Testnet proof.
+            Use this path for a live product walkthrough: policy result, approval queue, ledger receipt, and real Arc Testnet proof.
           </p>
         </div>
         <Link href="/simulate" className="inline-flex items-center gap-2 rounded-md bg-sky-300 px-4 py-2 text-sm font-semibold text-ink-950 hover:bg-sky-200">
