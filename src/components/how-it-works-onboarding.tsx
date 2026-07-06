@@ -39,8 +39,8 @@ const realPaymentSteps = [
 
 export function HowItWorksOnboarding() {
   return (
-    <section className="rounded-lg border border-white/10 bg-white/[0.035] p-5">
-      <div className="flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
+    <section className="rounded-lg border border-cyan-300/15 bg-[linear-gradient(135deg,rgba(103,232,249,0.08),rgba(255,255,255,0.035)_42%,rgba(14,165,233,0.04))] p-5 shadow-glow">
+      <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
         <div className="min-w-0">
           <div className="flex items-center gap-3">
             <WalletCards className="h-5 w-5 text-cyan-100/80" aria-hidden="true" />
@@ -50,17 +50,19 @@ export function HowItWorksOnboarding() {
             ArcAllowance lets agents spend automatically inside policy, then stops only the exceptions that cross a budget owner&apos;s trust boundary.
           </p>
         </div>
-        <Link href="/simulate" className="inline-flex w-fit items-center justify-center gap-2 rounded-md border border-cyan-300/20 px-4 py-2 text-sm font-semibold text-cyan-50/90 hover:bg-cyan-300/10">
+        <Link href="/simulate" className="inline-flex w-fit items-center justify-center gap-2 rounded-md bg-sky-300 px-4 py-2 text-sm font-semibold text-ink-950 hover:bg-sky-200">
           Run the flow
           <ArrowRight className="h-4 w-4" aria-hidden="true" />
         </Link>
       </div>
       <div className="mt-5 grid gap-3 md:grid-cols-2 xl:grid-cols-5">
         {flowSteps.map((step, index) => (
-          <div key={step.title} className="min-w-0 rounded-lg border border-white/10 bg-ink-950/50 p-4">
-            <div className="flex items-center justify-between gap-3">
-              <step.icon className="h-5 w-5 text-cyan-100/80" aria-hidden="true" />
-              <span className="text-xs font-semibold text-slate-600">{String(index + 1).padStart(2, "0")}</span>
+          <div key={step.title} className="min-w-0 rounded-lg border border-white/10 bg-ink-950/60 p-4">
+            <div className="flex items-center gap-3">
+              <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md border border-cyan-300/20 bg-cyan-300/10 text-xs font-semibold text-cyan-50">
+                {String(index + 1).padStart(2, "0")}
+              </span>
+              <step.icon className="h-4 w-4 shrink-0 text-cyan-100/75" aria-hidden="true" />
             </div>
             <h3 className="mt-4 text-sm font-semibold leading-5 text-slate-100">{step.title}</h3>
             <p className="mt-2 text-xs leading-5 text-slate-400">{step.body}</p>

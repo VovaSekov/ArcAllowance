@@ -31,13 +31,15 @@ export default function DashboardPage() {
         description={isArcTestnetMode ? "Most in-policy agent spend clears automatically. This dashboard summarizes Arc Testnet anchored decisions, exception reviews, and policy health." : "Most in-policy agent spend clears automatically. This dashboard summarizes seeded budgets, spend requests, and policy health in mock mode."}
         action={<Link href="/simulate" className="rounded-md bg-sky-300 px-4 py-2 text-sm font-semibold text-ink-950 hover:bg-sky-200">Simulate spend</Link>}
       />
-      <DemoModeBanner />
+
+      <HowItWorksOnboarding />
+
       <div className="mt-6">
-        <ContractStatusCard compact />
+        <DemoModeBanner />
       </div>
 
       <div className="mt-6">
-        <HowItWorksOnboarding />
+        <ContractStatusCard compact />
       </div>
 
       <div className="mt-6 grid gap-4 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-5">
