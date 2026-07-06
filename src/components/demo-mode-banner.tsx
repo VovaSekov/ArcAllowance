@@ -17,8 +17,8 @@ export function DemoModeBanner() {
           </p>
         </div>
       </div>
-      <span className="w-fit rounded-full border border-slate-500/30 bg-white/[0.035] px-3 py-1 text-xs font-medium text-slate-300">
-        NEXT_PUBLIC_SETTLEMENT_MODE={settlementModeLabel()}
+      <span className="w-fit rounded-md border border-slate-500/30 bg-white/[0.035] px-3 py-1 text-xs font-medium text-slate-300">
+        Mode: {settlementModeLabel()} audit
       </span>
     </div>
   );

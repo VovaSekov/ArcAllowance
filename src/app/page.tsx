@@ -72,6 +72,8 @@ const policyRows = [
   { label: "Approval threshold", value: "Route", tone: "text-sky-200" }
 ];
 
+export const dynamic = "force-dynamic";
+
 export default function LandingPage() {
   const registryConfigured = isRegistryConfigured();
   const explorerUrl = getRegistryExplorerUrl();
