@@ -10,7 +10,7 @@
     "typecheck": "tsc --noEmit",
     "contracts:compile": "HOME=$PWD/.hardhat-home hardhat compile",
     "contracts:deploy:arc": "HOME=$PWD/.hardhat-home hardhat run scripts/deploy-arcallowance.ts --network arcTestnet",
-    "contracts:bootstrap:arc": "HOME=$PWD/.hardhat-home hardhat run scripts/bootstrap-arc-testnet.ts --network arcTestnet"
+    "contracts:bootstrap:arc": "HOME=$PWD/.hardhat-home hardhat run scripts/bootstrap-arc-testnet.cjs --network arcTestnet"
   },
   "dependencies": {
     "clsx": "^2.1.1",
