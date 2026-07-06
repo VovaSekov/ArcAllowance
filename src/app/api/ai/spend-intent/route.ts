@@ -65,7 +65,7 @@ function fallbackIntent(prompt: string, preferredAgentId?: string): SpendIntent 
       amountUSDC: 45,
       purpose: "weekly_compute_budget",
       paymentType: "batch",
-      rationale: "The intent maps to model inference or compute spend and should cross the human approval threshold."
+      rationale: "The intent maps to model inference or compute spend and should cross the autonomy threshold."
     };
   }
 
@@ -189,7 +189,7 @@ async function generateWithOpenAI(prompt: string, fallback: SpendIntent): Promis
           content: [
             "You convert autonomous AI agent payment intent into a safe ArcAllowance spend request.",
             "Only choose ids from the provided agents and merchants.",
-            "The output is a proposed request only; policy evaluation will approve, reject, or require human approval later."
+            "The output is a proposed request only; policy evaluation will auto-clear it, reject it, or route it to exception review later."
           ].join(" ")
         },
         {

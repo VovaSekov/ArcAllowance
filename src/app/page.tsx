@@ -27,13 +27,13 @@ const controls = [
   {
     eyebrow: "Policy gate",
     title: "Budgets are enforced before settlement",
-    body: "Allowlists, amount caps, daily limits, blocked purposes, merchant risk, and approval thresholds run before a receipt can be created.",
+    body: "Allowlists, amount caps, daily limits, blocked purposes, merchant risk, and autonomy thresholds run before a receipt can be created.",
     icon: Shield
   },
   {
     eyebrow: "Audit proof",
     title: "Every outcome leaves a trail",
-    body: isArcTestnetMode ? "Approvals, rejections, memos, Arc Testnet transaction hashes, and registry events make the flow reviewable." : "Approvals, rejections, memos, Gateway-style authorization hashes, mock Arc tx hashes, and registry events make the flow reviewable.",
+    body: isArcTestnetMode ? "Automatic approvals, exception reviews, rejections, memos, Arc Testnet transaction hashes, and registry events make the flow reviewable." : "Automatic approvals, exception reviews, rejections, memos, Gateway-style authorization hashes, mock Arc tx hashes, and registry events make the flow reviewable.",
     icon: Landmark
   }
 ];
@@ -54,7 +54,7 @@ const demoScenarios = [
   {
     agent: "OpsAgent",
     request: "LLM Inference Hub, 45 USDC",
-    result: "Needs human approval",
+    result: "Routed to exception review",
     tone: "text-amber-200"
   },
   {
@@ -69,7 +69,7 @@ const policyRows = [
   { label: "Merchant allowlist", value: "Clear", tone: "text-cyan-100" },
   { label: "Purpose check", value: "Clear", tone: "text-cyan-100" },
   { label: "Daily budget", value: "Warning", tone: "text-amber-200" },
-  { label: "Approval threshold", value: "Route", tone: "text-sky-200" }
+  { label: "Autonomy threshold", value: "Route", tone: "text-sky-200" }
 ];
 
 export const dynamic = "force-dynamic";
@@ -122,7 +122,7 @@ export default function LandingPage() {
               AI agents can request spend. Policies decide what clears.
             </h1>
             <p className="mt-6 max-w-2xl text-lg leading-8 text-slate-300">
-              ArcAllowance turns every autonomous USDC request into a controlled decision: approve, reject, or route to a human before settlement artifacts are created.
+              ArcAllowance lets agents spend automatically inside policy and routes only risky or above-threshold requests to a budget owner before settlement artifacts are created.
             </p>
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
               <Link href="/dashboard" className="inline-flex items-center justify-center gap-2 rounded-md bg-sky-300 px-5 py-3 text-sm font-semibold text-ink-950 transition hover:bg-sky-200">
@@ -169,7 +169,7 @@ export default function LandingPage() {
                     </div>
                   </div>
                   <div className="rounded-md border border-amber-300/20 bg-amber-300/10 px-3 py-1.5 text-xs font-semibold text-amber-100">
-                    Needs approval
+                    Exception review
                   </div>
                 </div>
 
@@ -192,7 +192,7 @@ export default function LandingPage() {
                 <div className="mt-5 rounded-lg border border-white/10 bg-ink-950/55 p-4">
                   <div className="flex items-center justify-between gap-3">
                     <p className="text-sm font-semibold text-white">Policy result</p>
-                    <p className="text-sm font-semibold text-amber-200">Human review required</p>
+                    <p className="text-sm font-semibold text-amber-200">Budget owner review</p>
                   </div>
                   <div className="mt-4 space-y-3">
                     {policyRows.map((row) => (
@@ -262,7 +262,7 @@ export default function LandingPage() {
                 Designed for Gateway-style nanopayments, Arc memos, and controlled agent wallets.
               </h2>
               <p className="mt-4 text-base leading-7 text-slate-400">
-                {isArcTestnetMode ? "The product anchors spend requests and decisions on Arc Testnet while keeping custody and payment execution separate." : "The MVP stays local and safe while making the path to Circle Wallets, Gateway/x402, Arc batching, and ERC-8004 agent identity explicit."}
+                {isArcTestnetMode ? "The product anchors spend requests and decisions on Arc Testnet while keeping custody and real payment execution separate." : "The MVP stays local and safe while making the path to Circle Wallets, Gateway/x402, Arc batching, and ERC-8004 agent identity explicit."}
               </p>
             </div>
             <ArchitectureDiagram />
@@ -278,7 +278,7 @@ export default function LandingPage() {
                   <h2 className="text-xl font-semibold text-white">Demo scenarios</h2>
                 </div>
                 <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-400">
-                  The main product flows are ready to test: approved, rejected, approval-required, and batched settlement.
+                  The main product flows are ready to test: automatic approval, rejection, exception review, and batched settlement.
                 </p>
               </div>
               <Link href="/simulate" className="inline-flex w-fit items-center justify-center gap-2 rounded-md border border-white/10 px-4 py-2 text-sm font-semibold text-white transition hover:bg-white/[0.06]">

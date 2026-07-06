@@ -181,8 +181,8 @@ export default function SimulatePage() {
         title="Simulate agent spend"
         description={
           isArcTestnetMode
-            ? "Select an agent, merchant, amount, purpose, and payment type. ArcAllowance evaluates policy on the server, then anchors decisions on Arc Testnet."
-            : "Select an agent, merchant, amount, purpose, and payment type. ArcAllowance evaluates the policy and generates mock settlement artifacts only when allowed."
+            ? "Select an agent, merchant, amount, purpose, and payment type. In-policy requests clear automatically; exceptions are routed to review and decisions are anchored on Arc Testnet."
+            : "Select an agent, merchant, amount, purpose, and payment type. In-policy requests clear automatically; exceptions are routed to review and mock receipts are generated only when allowed."
         }
       />
       <DemoModeBanner />
@@ -327,10 +327,10 @@ export default function SimulatePage() {
             </div>
           ) : latestRequest?.status === "needs_approval" ? (
             <div className="rounded-lg border border-amber-400/20 bg-amber-400/10 p-5">
-              <h3 className="font-semibold text-amber-100">Human approval required</h3>
-              <p className="mt-2 text-sm leading-6 text-amber-100/80">This request passed hard controls but exceeded the approval threshold. It is waiting in the approval queue.</p>
+              <h3 className="font-semibold text-amber-100">Exception review required</h3>
+              <p className="mt-2 text-sm leading-6 text-amber-100/80">This request passed hard controls but exceeded the autonomy threshold. The budget owner can authorize or reject it in the review queue.</p>
               <Link href="/approvals" className="mt-4 inline-flex items-center gap-2 text-sm font-semibold text-amber-100 hover:text-white">
-                Open approvals
+                Open review queue
                 <ArrowRight className="h-4 w-4" />
               </Link>
             </div>

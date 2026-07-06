@@ -13,7 +13,7 @@ const navItems = [
   { href: "/dashboard", label: "Dashboard", icon: BarChart3 },
   { href: "/agents", label: "Agents", icon: Bot },
   { href: "/simulate", label: "Simulate", icon: PlayCircle },
-  { href: "/approvals", label: "Approvals", icon: ClipboardList },
+  { href: "/approvals", label: "Review Queue", icon: ClipboardList },
   { href: "/ledger", label: "Ledger", icon: FileText },
   { href: "/policies/new", label: "Policy Builder", icon: Shield },
   { href: "/contract", label: "Contract", icon: FileKey2 },

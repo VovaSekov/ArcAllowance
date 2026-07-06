@@ -9,9 +9,9 @@ export function SpendTimeline({ request }: { request?: SpendRequest }) {
     { label: "Agent request", detail: "Agent proposes a USDC payment.", active: Boolean(request), icon: CircleDashed },
     { label: "Policy engine", detail: "Merchant, amount, purpose, and threshold rules are evaluated.", active: Boolean(request), icon: Shield },
     {
-      label: needsApproval ? "Human approval" : isRejected ? "Settlement stopped" : isArcTestnetMode ? "Arc Testnet registry" : "Mock Gateway authorization",
+      label: needsApproval ? "Exception review" : isRejected ? "Settlement stopped" : isArcTestnetMode ? "Arc Testnet registry" : "Mock Gateway authorization",
       detail: needsApproval
-        ? "Request waits in the approval queue."
+        ? "Request waits for the budget owner because it crossed the autonomy threshold."
         : isRejected
           ? "No settlement artifact is generated."
           : isArcTestnetMode

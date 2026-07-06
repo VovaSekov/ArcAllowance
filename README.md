@@ -4,11 +4,11 @@ USDC spend controls for autonomous AI agents on Arc.
 
 ## Problem
 
-Agents should not get unlimited wallets. Before autonomous systems can safely pay for APIs, data, compute, research, and tools, teams need budgets, merchant allowlists, approval thresholds, policy checks, and auditable receipts.
+Agents should not get unlimited wallets. Before autonomous systems can safely pay for APIs, data, compute, research, and tools, teams need budgets, merchant allowlists, autonomy thresholds, policy checks, and auditable receipts.
 
 ## Solution
 
-ArcAllowance is a testnet spend-control layer for AI agents. It lets a user create and inspect agents, assign policy-driven USDC budgets, evaluate spend requests, route approvals, and anchor spend decisions to `ArcAllowanceRegistry` on Arc Testnet.
+ArcAllowance is a testnet spend-control layer for AI agents. It lets a user create and inspect agents, assign policy-driven USDC budgets, evaluate spend requests, route exceptions, and anchor spend decisions to `ArcAllowanceRegistry` on Arc Testnet.
 
 ## Why Arc / USDC / Circle
 
@@ -18,10 +18,10 @@ ArcAllowance is designed around stablecoin-native agent spending. Arc transactio
 
 - Agent profiles with wallet addresses, risk tiers, and capabilities.
 - Optional AI intent builder that converts a natural-language agent goal into a spend request.
-- Seeded policies with merchant allowlists, daily limits, purpose controls, and approval thresholds.
+- Seeded policies with merchant allowlists, daily limits, purpose controls, and autonomy thresholds.
 - Spend simulator for x402, USDC transfer, and batch-style payments.
 - Policy-check trace with pass, warning, and fail results.
-- Human approval queue for threshold-triggered payments.
+- Exception review queue for threshold-triggered payments.
 - Arc Testnet registry transaction hash, memoId, and receipt ledger in `arc_testnet` mode.
 - Architecture page showing the testnet audit layer and Arc-native payment roadmap.
 
@@ -32,7 +32,7 @@ ArcAllowance is designed around stablecoin-native agent spending. Arc transactio
 3. Use the AI intent builder on `/simulate` to turn an agent goal into a structured spend request.
 4. Run the approved ResearchAgent nanopayment scenario.
 5. Run the blocked TradingAgent unsafe spend scenario.
-6. Run the OpsAgent threshold scenario, approve it in the approvals page, and inspect the receipt in the ledger.
+6. Run the OpsAgent threshold scenario, authorize it in the review queue, and inspect the receipt in the ledger.
 7. Show the architecture page to explain how mock mode maps to a future Arc-native implementation.
 8. Show `/contract` and the Arcscan link for real Arc Testnet registry proof.
 
@@ -40,13 +40,13 @@ For a live walkthrough flow, see `DEMO_SCRIPT.md`.
 
 ## Arc Testnet Mode
 
-Production is intended to run with `NEXT_PUBLIC_SETTLEMENT_MODE=arc_testnet`. In that mode, the simulator and approval flow write real Arc Testnet transactions to `ArcAllowanceRegistry` for spend requests and spend decisions. The registry is an audit layer only: no mainnet funds move, the contract does not custody balances, the contract does not transfer USDC, and the frontend never receives private keys. Mock mode remains available for local development with `NEXT_PUBLIC_SETTLEMENT_MODE=mock`.
+Production is intended to run with `NEXT_PUBLIC_SETTLEMENT_MODE=arc_testnet`. In that mode, the simulator and review flow write real Arc Testnet transactions to `ArcAllowanceRegistry` for spend requests and spend decisions. The registry is an audit layer only: no mainnet funds move, the contract does not custody balances, the contract does not transfer USDC, and the frontend never receives private keys. Mock mode remains available for local development with `NEXT_PUBLIC_SETTLEMENT_MODE=mock`.
 
 ## Optional AI Layer
 
 The spend simulator includes an AI intent builder. With `OPENAI_API_KEY` configured, it uses OpenAI to convert a plain-English autonomous agent goal into a structured spend request. Without a key, it falls back to a deterministic local parser so the demo still works.
 
-The AI layer proposes request fields only. The local policy engine still decides whether the request is approved, rejected, or routed to human approval. In `arc_testnet` mode, those decisions are anchored through the server-side Arc Testnet registry adapter.
+The AI layer proposes request fields only. The policy engine still decides whether the request clears automatically, is rejected, or is routed to exception review. In `arc_testnet` mode, those decisions are anchored through the server-side Arc Testnet registry adapter.
 
 ## Arc Testnet Contract
 
@@ -57,7 +57,7 @@ Contract purpose:
 - Register agent identities for audit proof.
 - Store policy hashes and policy budget limits in 6-decimal USDC units.
 - Record spend requests.
-- Mark spend decisions as approved, rejected, or needs approval.
+- Mark spend decisions as approved, rejected, or needs review.
 
 Deployed Arc Testnet contract:
 

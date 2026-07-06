@@ -80,7 +80,7 @@ export function AgentDetailClient({ id }: { id: string }) {
                   <p className="mt-1 break-words font-medium text-white">{formatUSDC(policy.monthlyLimitUSDC)}</p>
                 </div>
                 <div className="min-w-0 rounded-md border border-white/10 bg-ink-950/50 p-3">
-                  <p className="text-xs text-slate-500">Approval</p>
+                  <p className="text-xs text-slate-500">Review above</p>
                   <p className="mt-1 break-words font-medium text-white">{formatUSDC(policy.approvalRequiredAboveUSDC)}</p>
                 </div>
               </div>

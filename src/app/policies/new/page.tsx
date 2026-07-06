@@ -64,7 +64,7 @@ export default function NewPolicyPage() {
       <PageHeader
         eyebrow="Policy builder"
         title="Preview a spend policy"
-        description="Create a policy shape without backend persistence. This page shows how ArcAllowance will translate agent intent into budget, merchant, purpose, and approval controls."
+        description="Create a policy shape without backend persistence. This page shows how ArcAllowance translates agent intent into budget, merchant, purpose, and autonomy controls."
       />
       <div className="grid gap-6 xl:grid-cols-[0.95fr_1.05fr]">
         <section className="rounded-lg border border-white/10 bg-white/[0.035] p-5">
@@ -85,7 +85,7 @@ export default function NewPolicyPage() {
                 ["maxPerTransactionUSDC", "Max per transaction USDC"],
                 ["dailyLimitUSDC", "Daily limit USDC"],
                 ["monthlyLimitUSDC", "Monthly limit USDC"],
-                ["approvalRequiredAboveUSDC", "Approval required above USDC"],
+                ["approvalRequiredAboveUSDC", "Autonomy threshold USDC"],
                 ["cooldownMinutes", "Cooldown minutes"]
               ].map(([key, label]) => (
                 <label key={key} className="grid gap-2 text-sm">
@@ -149,7 +149,7 @@ export default function NewPolicyPage() {
                 <div><p className="text-slate-500">Max tx</p><p className="text-white">{formatUSDC(Number(state.maxPerTransactionUSDC) || 0)}</p></div>
                 <div><p className="text-slate-500">Daily</p><p className="text-white">{formatUSDC(Number(state.dailyLimitUSDC) || 0)}</p></div>
                 <div><p className="text-slate-500">Monthly</p><p className="text-white">{formatUSDC(Number(state.monthlyLimitUSDC) || 0)}</p></div>
-                <div><p className="text-slate-500">Approval</p><p className="text-white">{formatUSDC(Number(state.approvalRequiredAboveUSDC) || 0)}</p></div>
+                <div><p className="text-slate-500">Review above</p><p className="text-white">{formatUSDC(Number(state.approvalRequiredAboveUSDC) || 0)}</p></div>
               </div>
             </div>
             <div className="mt-5">

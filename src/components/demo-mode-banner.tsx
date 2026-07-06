@@ -12,7 +12,7 @@ export function DemoModeBanner() {
           </p>
           <p className="mt-1 text-slate-400">
             {isArcTestnetMode
-              ? "Approved, rejected, and approval-required spend decisions create Arc Testnet registry transactions. No mainnet funds move."
+              ? "Automatic approvals, rejections, and review-required spend decisions create Arc Testnet registry transactions. No mainnet funds move."
               : "This demo generates mock Gateway authorization, mock Arc tx hash, and audit receipts. No real funds move."}
           </p>
         </div>

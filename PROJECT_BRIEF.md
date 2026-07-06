@@ -14,15 +14,15 @@ ArcAllowance is a USDC spend-control layer for autonomous AI agents on Arc. It p
 
 - As a builder, I can inspect seeded agents and understand what each agent is allowed to buy.
 - As a builder, I can enter a natural-language agent intent and let AI draft the structured spend request.
-- As an operator, I can simulate a spend request and see exactly why it passed, failed, or needs approval.
-- As an approver, I can approve a threshold-triggered payment and receive a mock settlement receipt.
+- As an operator, I can simulate a spend request and see exactly why it auto-cleared, failed, or needs exception review.
+- As a budget owner, I can authorize a threshold-triggered exception and receive an audit receipt.
 - As a demo viewer, I can understand why Arc memos, USDC, Circle Wallets, Gateway/x402, and agent identity matter.
 
 ## Main Demo Scenarios
 
 - Approved nanopayment: ResearchAgent pays `0.03 USDC` to MarketData API for `cpi_dataset_query`.
 - Blocked unsafe spend: TradingAgent tries to pay `250 USDC` to Unknown Alpha Group for `private_alpha_signal`.
-- Needs approval: OpsAgent tries to pay `45 USDC` to LLM Inference Hub for `weekly_compute_budget`.
+- Exception review: OpsAgent tries to pay `45 USDC` to LLM Inference Hub for `weekly_compute_budget`.
 - Batch-style usage: multiple API calls total `0.42 USDC` and are represented as one mock Gateway settlement.
 - AI-assisted intent: a plain-English agent goal is converted into agent, merchant, amount, purpose, and payment type before policy evaluation.
 

@@ -156,7 +156,7 @@ export const initialSpendRequests: SpendRequest[] = [
     status: "needs_approval",
     policyChecks: [
       { rule: "Merchant allowlist", result: "pass", message: "LLM Inference Hub is approved for this agent policy." },
-      { rule: "Human approval threshold", result: "warning", message: "45.00 USDC is above the 25.00 USDC approval threshold." }
+      { rule: "Autonomy threshold", result: "warning", message: "45.00 USDC is above the 25.00 USDC autonomy threshold." }
     ],
     riskScore: 85,
     createdAt: "2026-07-02T10:35:00.000Z"
@@ -204,7 +204,7 @@ export const policyTemplates: PolicyTemplate[] = [
   {
     id: "template_conservative_research",
     name: "Conservative Research Agent",
-    description: "Small API purchases, tight daily budget, low approval threshold.",
+    description: "Small API purchases, tight daily budget, low review threshold.",
     policy: {
       name: "Conservative Research Policy",
       maxPerTransactionUSDC: 2,
@@ -220,7 +220,7 @@ export const policyTemplates: PolicyTemplate[] = [
   {
     id: "template_ops_compute",
     name: "Ops Compute Agent",
-    description: "Model inference and deployment spend with human review on larger requests.",
+    description: "Model inference and deployment spend with budget-owner review on larger requests.",
     policy: {
       name: "Ops Compute Policy",
       maxPerTransactionUSDC: 50,

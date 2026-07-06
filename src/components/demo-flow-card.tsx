@@ -4,7 +4,7 @@ import { isArcTestnetMode } from "@/lib/settlement-mode";
 
 const demoSteps = [
   {
-    title: "Approve a safe nanopayment",
+    title: "Auto-clear a safe nanopayment",
     detail: "ResearchAgent buys a CPI dataset query for 0.03 USDC.",
     href: "/simulate",
     icon: PlayCircle
@@ -16,8 +16,8 @@ const demoSteps = [
     icon: Ban
   },
   {
-    title: "Route human approval",
-    detail: "OpsAgent compute spend crosses the approval threshold.",
+    title: "Route exception review",
+    detail: "OpsAgent compute spend crosses the autonomy threshold.",
     href: "/approvals",
     icon: ClipboardList
   },
@@ -43,7 +43,7 @@ export function DemoFlowCard() {
           <p className="text-sm font-medium uppercase tracking-[0.16em] text-cyan-200/80">Demo path</p>
           <h2 className="mt-2 text-lg font-semibold text-slate-100">Five screens to explain the product</h2>
           <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-400">
-            Use this path for a live product walkthrough: policy result, approval queue, ledger receipt, and real Arc Testnet proof.
+            Use this path for a live product walkthrough: policy result, exception review, ledger receipt, and real Arc Testnet proof.
           </p>
         </div>
         <Link href="/simulate" className="inline-flex items-center gap-2 rounded-md bg-sky-300 px-4 py-2 text-sm font-semibold text-ink-950 hover:bg-sky-200">

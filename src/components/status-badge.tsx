@@ -21,10 +21,16 @@ export function StatusBadge({ status, className }: { status: SpendStatus | "mock
       : status === "arc_testnet"
         ? "border-cyan-300/25 bg-cyan-300/10 text-cyan-100"
         : statusClasses[status];
+  const label =
+    status === "needs_approval"
+      ? "needs review"
+      : status === "arc_testnet"
+        ? "arc testnet"
+        : status.replace("_", " ");
 
   return (
     <span className={cn("inline-flex items-center whitespace-nowrap rounded-full border px-2.5 py-1 text-xs font-medium", classes, className)}>
-      {status.replace("_", " ")}
+      {label}
     </span>
   );
 }

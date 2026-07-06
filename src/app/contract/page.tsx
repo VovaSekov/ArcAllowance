@@ -130,7 +130,7 @@ export default function ContractPage() {
             </div>
           </div>
           <p className="mt-3 text-sm leading-6 text-slate-400">
-            {isArcTestnetMode ? "Receipts created in the simulator and approval flow link to Arcscan transaction pages." : "These are mock Arc tx hashes from the existing demo ledger. After deployment, real registry transactions should be linked from Arcscan separately."}
+            {isArcTestnetMode ? "Receipts created in the simulator and review flow link to Arcscan transaction pages." : "These are mock Arc tx hashes from the existing demo ledger. After deployment, real registry transactions should be linked from Arcscan separately."}
           </p>
           <div className="mt-4 space-y-3">
             {latestTxHashes.map((receipt) => (

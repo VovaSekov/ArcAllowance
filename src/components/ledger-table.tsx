@@ -9,6 +9,13 @@ import { ReceiptCard } from "@/components/receipt-card";
 import { StatusBadge } from "@/components/status-badge";
 
 const filters: Array<SpendStatus | "all"> = ["all", "approved", "rejected", "needs_approval", "settled"];
+const filterLabels: Record<SpendStatus | "all", string> = {
+  all: "all",
+  approved: "approved",
+  rejected: "rejected",
+  needs_approval: "needs review",
+  settled: "settled"
+};
 
 export function LedgerTable({
   requests,
@@ -48,7 +55,7 @@ export function LedgerTable({
               onClick={() => setFilter(item)}
               className={item === filter ? "rounded-full bg-sky-300 px-3 py-1.5 text-xs font-medium text-ink-950" : "rounded-full border border-white/10 px-3 py-1.5 text-xs text-slate-300"}
             >
-              {item.replace("_", " ")}
+              {filterLabels[item]}
             </button>
           ))}
         </div>

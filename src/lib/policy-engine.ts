@@ -111,17 +111,17 @@ export function evaluateSpendRequest({
 
   if (thresholdTriggered && !hasHardFail) {
     checks.push({
-      rule: "Human approval threshold",
+      rule: "Autonomy threshold",
       result: "warning",
-      message: `${input.amountUSDC.toFixed(2)} USDC is above the ${policy.approvalRequiredAboveUSDC.toFixed(2)} USDC approval threshold.`
+      message: `${input.amountUSDC.toFixed(2)} USDC is above the ${policy.approvalRequiredAboveUSDC.toFixed(2)} USDC autonomy threshold.`
     });
   } else {
     checks.push({
-      rule: "Human approval threshold",
+      rule: "Autonomy threshold",
       result: amountValid ? "pass" : "fail",
       message: amountValid
-        ? `${input.amountUSDC.toFixed(2)} USDC does not require human approval.`
-        : "Invalid amounts cannot be routed for approval."
+        ? `${input.amountUSDC.toFixed(2)} USDC can clear automatically under this policy.`
+        : "Invalid amounts cannot be routed for review."
     });
   }
 
