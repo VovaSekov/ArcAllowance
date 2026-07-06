@@ -17,6 +17,7 @@ ArcAllowance is designed around stablecoin-native agent spending. Arc transactio
 ## Features
 
 - Agent profiles with wallet addresses, risk tiers, and capabilities.
+- Optional AI intent builder that converts a natural-language agent goal into a spend request.
 - Seeded policies with merchant allowlists, daily limits, purpose controls, and approval thresholds.
 - Spend simulator for x402, USDC transfer, and batch-style payments.
 - Policy-check trace with pass, warning, and fail results.
@@ -28,17 +29,24 @@ ArcAllowance is designed around stablecoin-native agent spending. Arc transactio
 
 1. Open the landing page and use the dashboard CTA.
 2. Review agents and seeded policies.
-3. Run the approved ResearchAgent nanopayment scenario.
-4. Run the blocked TradingAgent unsafe spend scenario.
-5. Run the OpsAgent threshold scenario, approve it in the approvals page, and inspect the receipt in the ledger.
-6. Show the architecture page to explain how mock mode maps to a future Arc-native implementation.
-7. Show `/contract` and the Arcscan link for real Arc Testnet registry proof.
+3. Use the AI intent builder on `/simulate` to turn an agent goal into a structured spend request.
+4. Run the approved ResearchAgent nanopayment scenario.
+5. Run the blocked TradingAgent unsafe spend scenario.
+6. Run the OpsAgent threshold scenario, approve it in the approvals page, and inspect the receipt in the ledger.
+7. Show the architecture page to explain how mock mode maps to a future Arc-native implementation.
+8. Show `/contract` and the Arcscan link for real Arc Testnet registry proof.
 
 For a live walkthrough flow, see `DEMO_SCRIPT.md`.
 
 ## Mock Mode
 
 ArcAllowance does not move real funds. Mock mode generates deterministic-looking receipts, Gateway authorization hashes, Arc transaction hashes, and batch identifiers for product demonstration only. No private keys, custody, compliance claim, mainnet transaction, or real settlement is included.
+
+## Optional AI Layer
+
+The spend simulator includes an AI intent builder. With `OPENAI_API_KEY` configured, it uses OpenAI to convert a plain-English autonomous agent goal into a structured spend request. Without a key, it falls back to a deterministic local parser so the demo still works.
+
+The AI layer proposes request fields only. The local policy engine still decides whether the request is approved, rejected, or routed to human approval, and settlement remains mocked.
 
 ## Arc Testnet Contract
 
@@ -117,6 +125,7 @@ Gateway/x402 integration later would connect approved policy decisions to real a
 - Next.js App Router
 - TypeScript
 - Tailwind CSS
+- Optional OpenAI intent generation
 - Hardhat
 - Solidity
 - Local seeded data
@@ -146,6 +155,9 @@ NEXT_PUBLIC_ARC_EXPLORER_URL=https://testnet.arcscan.app
 NEXT_PUBLIC_ARC_ALLOWANCE_REGISTRY_ADDRESS=0x3c82F7aD5b78e09c6Aa7020402f85662e7248A8f
 NEXT_PUBLIC_SETTLEMENT_MODE=mock
 NEXT_PUBLIC_DOMAIN=arcallowance.xyz
+
+OPENAI_API_KEY=
+OPENAI_MODEL=gpt-4.1-mini
 
 ARC_TESTNET_RPC_URL=https://rpc.testnet.arc.network
 DEPLOYER_PRIVATE_KEY=

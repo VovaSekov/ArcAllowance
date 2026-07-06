@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
-import { ArrowRight, CheckCircle2, Clock3, PlayCircle, XCircle } from "lucide-react";
+import { ArrowRight, CheckCircle2, Clock3, Loader2, PlayCircle, Sparkles, XCircle } from "lucide-react";
 import { createSpendRequestFromInput, useAppStore } from "@/components/app-store";
 import { ContractStatusCard } from "@/components/contract-status-card";
 import { DemoModeBanner } from "@/components/demo-mode-banner";
@@ -24,6 +24,23 @@ type SimForm = {
   paymentType: PaymentType;
 };
 
+type AiIntentResponse = {
+  agentId: string;
+  merchantId: string;
+  amountUSDC: number;
+  purpose: string;
+  paymentType: PaymentType;
+  rationale: string;
+  source: "openai" | "fallback";
+  error?: string;
+};
+
+const aiPromptExamples = [
+  "ResearchAgent needs the latest CPI dataset and expects a tiny API charge.",
+  "OpsAgent needs a weekly batch of model inference for deployment checks.",
+  "TradingAgent wants to buy a private alpha signal from an unknown group."
+];
+
 export default function SimulatePage() {
   const { agents, merchants, policies, spendRequests, addSpendRequest, settleApprovedRequest } = useAppStore();
   const [form, setForm] = useState<SimForm>({
@@ -36,6 +53,10 @@ export default function SimulatePage() {
   const [latestRequest, setLatestRequest] = useState<SpendRequest | undefined>();
   const [latestReceipt, setLatestReceipt] = useState<Receipt | undefined>();
   const [evaluation, setEvaluation] = useState<PolicyEvaluation | undefined>();
+  const [aiPrompt, setAiPrompt] = useState(aiPromptExamples[0]);
+  const [aiResult, setAiResult] = useState<AiIntentResponse | undefined>();
+  const [aiError, setAiError] = useState<string | undefined>();
+  const [aiLoading, setAiLoading] = useState(false);
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
@@ -66,6 +87,47 @@ export default function SimulatePage() {
     setLatestRequest(undefined);
     setLatestReceipt(undefined);
     setEvaluation(undefined);
+  }
+
+  async function generateAiIntent(prompt = aiPrompt) {
+    const cleanPrompt = prompt.trim();
+    if (!cleanPrompt) {
+      setAiError("Describe what the agent wants to buy.");
+      return;
+    }
+
+    setAiLoading(true);
+    setAiError(undefined);
+
+    try {
+      const response = await fetch("/api/ai/spend-intent", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ prompt: cleanPrompt, agentId: form.agentId })
+      });
+      const data = await response.json() as AiIntentResponse;
+
+      if (!response.ok || data.error) {
+        throw new Error(data.error ?? "AI intent generation failed.");
+      }
+
+      setForm({
+        agentId: data.agentId,
+        merchantId: data.merchantId,
+        amountUSDC: String(data.amountUSDC),
+        purpose: data.purpose,
+        paymentType: data.paymentType
+      });
+      setAiPrompt(cleanPrompt);
+      setAiResult(data);
+      setLatestRequest(undefined);
+      setLatestReceipt(undefined);
+      setEvaluation(undefined);
+    } catch (error) {
+      setAiError(error instanceof Error ? error.message : "AI intent generation failed.");
+    } finally {
+      setAiLoading(false);
+    }
   }
 
   function runPolicyCheck() {
@@ -122,6 +184,58 @@ export default function SimulatePage() {
       <div className="mt-6 grid gap-6 xl:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)]">
         <section className="min-w-0 rounded-lg border border-white/10 bg-white/[0.035] p-5">
           <h2 className="text-lg font-semibold text-white">Payment request</h2>
+          <div className="mt-5 rounded-lg border border-sky-300/20 bg-sky-300/[0.06] p-4">
+            <div className="flex items-start gap-3">
+              <Sparkles className="mt-1 h-5 w-5 shrink-0 text-sky-300" aria-hidden="true" />
+              <div className="min-w-0 flex-1">
+                <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
+                  <h3 className="font-semibold text-white">AI intent builder</h3>
+                  <span className="w-fit rounded-full border border-sky-300/20 px-2.5 py-1 text-[11px] font-medium uppercase tracking-[0.16em] text-sky-100">
+                    {aiResult?.source === "openai" ? "OpenAI" : "Optional AI"}
+                  </span>
+                </div>
+                <label className="mt-3 grid gap-2 text-sm">
+                  <span className="text-slate-300">Agent intent</span>
+                  <textarea
+                    value={aiPrompt}
+                    onChange={(event) => setAiPrompt(event.target.value)}
+                    rows={3}
+                    className="min-h-24 resize-y rounded-md border border-white/10 bg-ink-950 px-3 py-2 text-sm leading-6 text-white placeholder:text-slate-500"
+                  />
+                </label>
+                <div className="mt-3 grid gap-2">
+                  {aiPromptExamples.map((example) => (
+                    <button
+                      key={example}
+                      type="button"
+                      onClick={() => {
+                        setAiPrompt(example);
+                        void generateAiIntent(example);
+                      }}
+                      className="min-w-0 rounded-md border border-white/10 px-3 py-2 text-left text-xs leading-5 text-slate-300 hover:bg-white/[0.06]"
+                    >
+                      {example}
+                    </button>
+                  ))}
+                </div>
+                <button
+                  type="button"
+                  onClick={() => void generateAiIntent()}
+                  disabled={aiLoading}
+                  className="mt-3 inline-flex w-full items-center justify-center gap-2 rounded-md bg-white px-4 py-2.5 text-sm font-semibold text-ink-950 hover:bg-slate-200 disabled:cursor-not-allowed disabled:opacity-60 sm:w-auto"
+                >
+                  {aiLoading ? <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" /> : <Sparkles className="h-4 w-4" aria-hidden="true" />}
+                  Generate request
+                </button>
+                {aiResult ? (
+                  <p className="mt-3 break-words text-sm leading-6 text-sky-100/80">{aiResult.rationale}</p>
+                ) : null}
+                {aiError ? (
+                  <p className="mt-3 break-words text-sm leading-6 text-rose-100">{aiError}</p>
+                ) : null}
+              </div>
+            </div>
+          </div>
           <div className="mt-5 grid gap-4">
             <label className="grid gap-2 text-sm">
               <span className="text-slate-400">Agent</span>

@@ -125,6 +125,7 @@ Security rules:
 - Never claim real funds moved.
 - Use only a fresh testnet wallet.
 - Keep Gateway/x402 settlement mocked unless a real integration is intentionally added later.
+- `OPENAI_API_KEY` is optional. If set, it powers AI intent generation only; it must not approve or settle payments.
 
 ## PM2 Setup
 
@@ -192,6 +193,17 @@ git pull --ff-only
 npm run build
 pm2 restart arcallowance
 ```
+
+## Optional OpenAI Setup
+
+The simulator works without OpenAI. To enable real AI intent generation, add the key to `/root/arcallowance/.env.local` and restart the app:
+
+```bash
+OPENAI_API_KEY=sk-...
+OPENAI_MODEL=gpt-4.1-mini
+```
+
+Do not expose the key as a `NEXT_PUBLIC_` variable.
 
 ## Troubleshooting
 
