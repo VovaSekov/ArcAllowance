@@ -16,9 +16,7 @@ export function ArchitectureDiagram() {
         {nodes.map((node, index) => (
           <div key={node.label} className="min-w-0 rounded-lg border border-white/10 bg-ink-900/80 p-4">
             <div className="flex items-start gap-3">
-              <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md border border-sky-300/20 bg-sky-300/10">
-                <node.icon className="h-4 w-4 text-cyan-100/85" aria-hidden="true" />
-              </div>
+              <node.icon className="mt-0.5 h-5 w-5 shrink-0 text-cyan-100/80" aria-hidden="true" />
               <div className="min-w-0">
                 <p className="text-sm font-semibold leading-5 text-slate-100">{node.label}</p>
                 <p className="mt-1 text-xs leading-5 text-slate-400">{node.detail}</p>

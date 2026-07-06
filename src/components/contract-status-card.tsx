@@ -11,9 +11,7 @@ export function ContractStatusCard({ compact = false }: { compact?: boolean }) {
     <section className="min-w-0 rounded-lg border border-cyan-300/15 bg-cyan-300/[0.045] p-5">
       <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
         <div className="flex min-w-0 gap-3">
-          <div className="shrink-0 rounded-md border border-cyan-300/20 bg-cyan-300/10 p-2 text-cyan-100">
-            <Landmark className="h-5 w-5" aria-hidden="true" />
-          </div>
+          <Landmark className="mt-1 h-5 w-5 shrink-0 text-cyan-100/80" aria-hidden="true" />
           <div className="min-w-0">
             <div className="flex flex-wrap items-center gap-2">
               <h2 className="break-words text-lg font-semibold text-slate-100">Real Arc Testnet contract</h2>

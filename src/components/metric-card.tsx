@@ -15,10 +15,10 @@ export function MetricCard({
   tone?: "default" | "good" | "warn" | "danger";
 }) {
   const toneClass = {
-    default: "text-cyan-100 bg-cyan-300/10 border-cyan-300/20",
-    good: "text-cyan-100 bg-cyan-300/10 border-cyan-300/20",
-    warn: "text-amber-100 bg-amber-400/10 border-amber-400/20",
-    danger: "text-rose-200 bg-rose-400/10 border-rose-400/20"
+    default: "text-cyan-100/80",
+    good: "text-cyan-100/80",
+    warn: "text-amber-100/85",
+    danger: "text-rose-200/85"
   }[tone];
 
   return (
@@ -28,9 +28,7 @@ export function MetricCard({
           <p className="text-sm text-slate-400">{label}</p>
           <p className="mt-2 break-words text-2xl font-semibold leading-8 text-white">{value}</p>
         </div>
-        <div className={cn("rounded-md border p-2", toneClass)}>
-          <Icon className="h-5 w-5" aria-hidden="true" />
-        </div>
+        <Icon className={cn("mt-0.5 h-5 w-5 shrink-0", toneClass)} aria-hidden="true" />
       </div>
       <p className="mt-4 text-sm leading-6 text-slate-400">{detail}</p>
     </div>

@@ -8,9 +8,7 @@ export function ReceiptCard({ receipt }: { receipt: Receipt }) {
     <div className="rounded-lg border border-white/10 bg-white/[0.045] p-5">
       <div className="flex items-start justify-between gap-4">
         <div className="flex gap-3">
-          <div className="rounded-md border border-sky-400/20 bg-sky-400/10 p-2 text-sky-200">
-            <ReceiptText className="h-5 w-5" aria-hidden="true" />
-          </div>
+          <ReceiptText className="mt-1 h-5 w-5 shrink-0 text-cyan-100/80" aria-hidden="true" />
           <div>
             <p className="text-sm text-slate-400">Audit receipt</p>
             <h3 className="mt-1 text-lg font-semibold text-white">{receipt.agentName} paid {receipt.merchantName}</h3>
