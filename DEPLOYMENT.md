@@ -200,7 +200,7 @@ The simulator works without OpenAI. To enable real AI intent generation, add the
 
 ```bash
 OPENAI_API_KEY=sk-...
-OPENAI_MODEL=gpt-4.1-mini
+OPENAI_MODEL=gpt-5.5
 ```
 
 Do not expose the key as a `NEXT_PUBLIC_` variable.
