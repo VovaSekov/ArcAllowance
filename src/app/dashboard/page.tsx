@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { AlertTriangle, Bot, Clock3, DollarSign, ShieldCheck, WalletCards } from "lucide-react";
+import { AlertTriangle, Bot, Clock3, DollarSign, Shield, WalletCards } from "lucide-react";
 import { ContractStatusCard } from "@/components/contract-status-card";
 import { DemoModeBanner } from "@/components/demo-mode-banner";
 import { DemoFlowCard } from "@/components/demo-flow-card";
@@ -66,7 +66,7 @@ export default function DashboardPage() {
 
         <section className="min-w-0 rounded-lg border border-white/10 bg-white/[0.035] p-5">
           <div className="flex items-center gap-3">
-            <ShieldCheck className="h-5 w-5 text-sky-300" aria-hidden="true" />
+            <Shield className="h-5 w-5 text-cyan-100/85" aria-hidden="true" />
             <h2 className="text-lg font-semibold text-white">Policy health</h2>
           </div>
           <div className="mt-5 space-y-4">

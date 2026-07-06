@@ -1,6 +1,6 @@
 "use client";
 
-import { ExternalLink, FileKey2, Landmark, ShieldCheck, WalletCards } from "lucide-react";
+import { ExternalLink, FileKey2, Landmark, Shield, WalletCards } from "lucide-react";
 import { ContractStatusCard } from "@/components/contract-status-card";
 import { PageHeader } from "@/components/page-header";
 import { StatusBadge } from "@/components/status-badge";
@@ -79,12 +79,12 @@ export default function ContractPage() {
         <section className="min-w-0 space-y-6">
           <div className="min-w-0 rounded-lg border border-white/10 bg-white/[0.035] p-5">
             <div className="flex items-center gap-3">
-              <ShieldCheck className="h-5 w-5 text-emerald-300" aria-hidden="true" />
-              <h2 className="text-lg font-semibold text-white">What is real onchain</h2>
+              <Shield className="h-5 w-5 text-cyan-100/85" aria-hidden="true" />
+              <h2 className="text-lg font-semibold text-slate-100">What is real onchain</h2>
             </div>
             <div className="mt-4 space-y-3">
               {realOnchain.map((item) => (
-                <div key={item} className="min-w-0 break-words rounded-md border border-emerald-400/20 bg-emerald-400/10 p-4 text-sm leading-6 text-emerald-50/85">{item}</div>
+                <div key={item} className="min-w-0 break-words rounded-md border border-cyan-300/15 bg-cyan-300/[0.045] p-4 text-sm leading-6 text-slate-300">{item}</div>
               ))}
             </div>
           </div>

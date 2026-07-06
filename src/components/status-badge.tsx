@@ -2,14 +2,14 @@ import type { RiskTier, SpendStatus } from "@/lib/types";
 import { cn } from "@/lib/utils";
 
 const statusClasses: Record<SpendStatus, string> = {
-  approved: "border-emerald-400/30 bg-emerald-400/10 text-emerald-200",
+  approved: "border-cyan-300/25 bg-cyan-300/10 text-cyan-100",
   rejected: "border-rose-400/30 bg-rose-400/10 text-rose-200",
   needs_approval: "border-amber-400/30 bg-amber-400/10 text-amber-100",
-  settled: "border-sky-400/30 bg-sky-400/10 text-sky-200"
+  settled: "border-blue-300/25 bg-blue-300/10 text-blue-100"
 };
 
 const riskClasses: Record<RiskTier, string> = {
-  low: "border-emerald-400/30 bg-emerald-400/10 text-emerald-200",
+  low: "border-cyan-300/25 bg-cyan-300/10 text-cyan-100",
   medium: "border-amber-400/30 bg-amber-400/10 text-amber-100",
   high: "border-rose-400/30 bg-rose-400/10 text-rose-200"
 };

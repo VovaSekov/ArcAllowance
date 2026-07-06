@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { BarChart3, Bot, ClipboardCheck, FileText, Landmark, PlayCircle, ScrollText, Shield } from "lucide-react";
+import { BarChart3, Bot, ClipboardList, FileKey2, FileText, Landmark, PlayCircle, Shield } from "lucide-react";
 import { AppStoreProvider } from "@/components/app-store";
 import { cn } from "@/lib/utils";
 
@@ -11,10 +11,10 @@ const navItems = [
   { href: "/dashboard", label: "Dashboard", icon: BarChart3 },
   { href: "/agents", label: "Agents", icon: Bot },
   { href: "/simulate", label: "Simulate", icon: PlayCircle },
-  { href: "/approvals", label: "Approvals", icon: ClipboardCheck },
+  { href: "/approvals", label: "Approvals", icon: ClipboardList },
   { href: "/ledger", label: "Ledger", icon: FileText },
   { href: "/policies/new", label: "Policy Builder", icon: Shield },
-  { href: "/contract", label: "Contract", icon: ScrollText },
+  { href: "/contract", label: "Contract", icon: FileKey2 },
   { href: "/architecture", label: "Architecture", icon: Landmark }
 ];
 
@@ -54,8 +54,8 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                 );
               })}
             </nav>
-            <div className="absolute bottom-5 left-5 right-5 rounded-lg border border-violet-400/20 bg-violet-400/10 p-4">
-              <p className="text-sm font-medium text-violet-100">Mock settlement</p>
+            <div className="absolute bottom-5 left-5 right-5 rounded-lg border border-cyan-300/15 bg-cyan-300/[0.045] p-4">
+              <p className="text-sm font-medium text-slate-100">Mock settlement</p>
               <p className="mt-1 text-xs leading-5 text-slate-400">Built for Gateway/x402-style nanopayments, Arc transaction memos, and Circle Wallets.</p>
             </div>
           </div>

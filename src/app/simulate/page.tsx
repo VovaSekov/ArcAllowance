@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
-import { ArrowRight, CheckCircle2, Clock3, Loader2, PlayCircle, Sparkles, XCircle } from "lucide-react";
+import { ArrowRight, CircleDot, Clock3, Loader2, PlayCircle, Sparkles, XCircle } from "lucide-react";
 import { createSpendRequestFromInput, useAppStore } from "@/components/app-store";
 import { ContractStatusCard } from "@/components/contract-status-card";
 import { DemoModeBanner } from "@/components/demo-mode-banner";
@@ -179,7 +179,7 @@ export default function SimulatePage() {
   }
 
   const ResultIcon =
-    latestRequest?.status === "rejected" ? XCircle : latestRequest?.status === "needs_approval" ? Clock3 : latestRequest ? CheckCircle2 : PlayCircle;
+    latestRequest?.status === "rejected" ? XCircle : latestRequest?.status === "needs_approval" ? Clock3 : latestRequest ? CircleDot : PlayCircle;
 
   return (
     <>

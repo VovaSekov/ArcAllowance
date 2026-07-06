@@ -15,8 +15,8 @@ export function MetricCard({
   tone?: "default" | "good" | "warn" | "danger";
 }) {
   const toneClass = {
-    default: "text-sky-200 bg-sky-400/10 border-sky-400/20",
-    good: "text-emerald-200 bg-emerald-400/10 border-emerald-400/20",
+    default: "text-cyan-100 bg-cyan-300/10 border-cyan-300/20",
+    good: "text-cyan-100 bg-cyan-300/10 border-cyan-300/20",
     warn: "text-amber-100 bg-amber-400/10 border-amber-400/20",
     danger: "text-rose-200 bg-rose-400/10 border-rose-400/20"
   }[tone];

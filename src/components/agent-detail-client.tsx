@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { ArrowRight, Bot, FileText, ShieldCheck, WalletCards } from "lucide-react";
+import { ArrowRight, Bot, FileText, Shield, WalletCards } from "lucide-react";
 import { MerchantBadge, PolicyPill, RiskSummary } from "@/components/entity-badges";
 import { PageHeader } from "@/components/page-header";
 import { ReceiptCard } from "@/components/receipt-card";
@@ -60,7 +60,7 @@ export function AgentDetailClient({ id }: { id: string }) {
 
         <section className="min-w-0 rounded-lg border border-white/10 bg-white/[0.035] p-5">
           <div className="flex items-center gap-3">
-            <ShieldCheck className="h-5 w-5 text-sky-300" aria-hidden="true" />
+            <Shield className="h-5 w-5 text-cyan-100/85" aria-hidden="true" />
             <h2 className="text-lg font-semibold text-white">Active policy</h2>
           </div>
           {policy ? (

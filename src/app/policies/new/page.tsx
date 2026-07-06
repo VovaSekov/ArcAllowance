@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { Copy, ShieldCheck } from "lucide-react";
+import { Copy, Shield } from "lucide-react";
 import { PageHeader } from "@/components/page-header";
 import { PolicyPill } from "@/components/entity-badges";
 import { StatusBadge } from "@/components/status-badge";
@@ -135,7 +135,7 @@ export default function NewPolicyPage() {
           <div className="rounded-lg border border-white/10 bg-white/[0.035] p-5">
             <div className="flex items-center justify-between gap-4">
               <div className="flex items-center gap-3">
-                <ShieldCheck className="h-5 w-5 text-sky-300" aria-hidden="true" />
+                <Shield className="h-5 w-5 text-cyan-100/85" aria-hidden="true" />
                 <h2 className="text-lg font-semibold text-white">Live preview</h2>
               </div>
               <StatusBadge status="mock" />

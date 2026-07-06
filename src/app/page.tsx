@@ -3,12 +3,11 @@ import Link from "next/link";
 import {
   ArrowRight,
   Bot,
-  CheckCircle2,
   CircleDollarSign,
   ExternalLink,
   FileText,
   Landmark,
-  ShieldCheck,
+  Shield,
   Sparkles,
   WalletCards
 } from "lucide-react";
@@ -27,7 +26,7 @@ const controls = [
     eyebrow: "Policy gate",
     title: "Budgets are enforced before settlement",
     body: "Allowlists, amount caps, daily limits, blocked purposes, merchant risk, and approval thresholds run before a receipt can be created.",
-    icon: ShieldCheck
+    icon: Shield
   },
   {
     eyebrow: "Audit proof",
@@ -42,7 +41,7 @@ const demoScenarios = [
     agent: "ResearchAgent",
     request: "MarketData API, 0.03 USDC",
     result: "Approved with mock receipt",
-    tone: "text-emerald-200"
+    tone: "text-cyan-100"
   },
   {
     agent: "TradingAgent",
@@ -65,8 +64,8 @@ const demoScenarios = [
 ];
 
 const policyRows = [
-  { label: "Merchant allowlist", value: "Pass", tone: "text-emerald-200" },
-  { label: "Purpose check", value: "Pass", tone: "text-emerald-200" },
+  { label: "Merchant allowlist", value: "Clear", tone: "text-cyan-100" },
+  { label: "Purpose check", value: "Clear", tone: "text-cyan-100" },
   { label: "Daily budget", value: "Warning", tone: "text-amber-200" },
   { label: "Approval threshold", value: "Route", tone: "text-sky-200" }
 ];
@@ -104,7 +103,7 @@ export default function LandingPage() {
         <section className="mx-auto grid max-w-7xl gap-10 px-4 pb-14 pt-12 sm:px-6 lg:grid-cols-[minmax(0,0.92fr)_minmax(420px,1.08fr)] lg:px-8 lg:pb-20 lg:pt-20">
           <div className="flex min-w-0 flex-col justify-center">
             <div className="inline-flex w-fit items-center gap-2 rounded-md border border-sky-300/20 bg-sky-300/10 px-3 py-1.5 text-xs font-semibold uppercase text-sky-200">
-              <span className="h-1.5 w-1.5 rounded-full bg-emerald-300" aria-hidden="true" />
+              <span className="h-1.5 w-1.5 rounded-full bg-cyan-200/80" aria-hidden="true" />
               Arc-native agent spend control
             </div>
             <h1 className="mt-6 max-w-4xl text-5xl font-semibold leading-[1.02] text-white sm:text-6xl lg:text-7xl">
@@ -194,32 +193,32 @@ export default function LandingPage() {
                 </div>
               </div>
 
-              <div className="mt-4 grid gap-4 rounded-lg border border-violet-300/20 bg-violet-300/10 p-4 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-center">
+              <div className="mt-4 grid gap-4 rounded-lg border border-cyan-300/15 bg-cyan-300/[0.045] p-4 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-center">
                 <div className="min-w-0">
                   <div className="flex items-center gap-2">
-                    <ShieldCheck className="h-4 w-4 text-violet-100" aria-hidden="true" />
-                    <p className="text-sm font-semibold text-white">Live Arc Testnet audit proof</p>
+                    <Shield className="h-4 w-4 text-cyan-100/85" aria-hidden="true" />
+                    <p className="text-sm font-semibold text-slate-100">Live Arc Testnet audit proof</p>
                   </div>
-                  <p className="mt-2 text-sm leading-6 text-violet-100/75">
+                  <p className="mt-2 text-sm leading-6 text-slate-400">
                     Registry events anchor agent registration, policy hashes, spend requests, and decisions. No custody and no real payments in demo mode.
                   </p>
                 </div>
                 <div className="grid gap-2 text-sm sm:w-44">
                   <div>
-                    <p className="text-violet-100/60">Network</p>
-                    <p className="text-white">{arcTestnet.network}</p>
+                    <p className="text-slate-500">Network</p>
+                    <p className="text-slate-100">{arcTestnet.network}</p>
                   </div>
                   <div>
-                    <p className="text-violet-100/60">Registry</p>
-                    <p className="font-mono text-xs text-white">{registryConfigured ? shortAddress(arcAllowanceRegistry.address) : "Pending deploy"}</p>
+                    <p className="text-slate-500">Registry</p>
+                    <p className="font-mono text-xs text-slate-100">{registryConfigured ? shortAddress(arcAllowanceRegistry.address) : "Pending deploy"}</p>
                   </div>
                   {registryConfigured ? (
-                    <a href={explorerUrl} target="_blank" rel="noreferrer" className="inline-flex w-fit items-center justify-center gap-2 rounded-md border border-violet-300/30 px-3 py-2 text-xs font-semibold text-violet-50 transition hover:bg-violet-300/10">
+                    <a href={explorerUrl} target="_blank" rel="noreferrer" className="inline-flex w-fit items-center justify-center gap-2 rounded-md border border-cyan-300/20 px-3 py-2 text-xs font-semibold text-cyan-50/90 transition hover:bg-cyan-300/10">
                       View Arcscan
                       <ExternalLink className="h-3.5 w-3.5" aria-hidden="true" />
                     </a>
                   ) : (
-                    <Link href="/contract" className="inline-flex w-fit items-center justify-center gap-2 rounded-md border border-violet-300/30 px-3 py-2 text-xs font-semibold text-violet-50 transition hover:bg-violet-300/10">
+                    <Link href="/contract" className="inline-flex w-fit items-center justify-center gap-2 rounded-md border border-cyan-300/20 px-3 py-2 text-xs font-semibold text-cyan-50/90 transition hover:bg-cyan-300/10">
                       Contract status
                       <ArrowRight className="h-3.5 w-3.5" aria-hidden="true" />
                     </Link>
@@ -276,10 +275,12 @@ export default function LandingPage() {
               </Link>
             </div>
             <div className="mt-6 grid items-stretch gap-3 md:grid-cols-2 xl:grid-cols-4">
-              {demoScenarios.map((scenario) => (
+              {demoScenarios.map((scenario, index) => (
                 <div key={scenario.agent} className="flex min-w-0 flex-col rounded-lg border border-white/10 bg-ink-950/50 p-4">
                   <div className="flex items-center gap-2">
-                    <CheckCircle2 className="h-5 w-5 shrink-0 text-emerald-300" aria-hidden="true" />
+                    <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full border border-cyan-300/20 bg-cyan-300/10 text-[10px] font-semibold text-cyan-100" aria-hidden="true">
+                      {index + 1}
+                    </span>
                     <p className="min-w-0 text-sm font-semibold text-white">{scenario.agent}</p>
                   </div>
                   <p className="mt-4 text-sm leading-6 text-slate-400">{scenario.request}</p>

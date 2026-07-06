@@ -1,6 +1,6 @@
 "use client";
 
-import { Check, X } from "lucide-react";
+import { Inbox, Shield, X } from "lucide-react";
 import { EmptyState } from "@/components/empty-state";
 import { PageHeader } from "@/components/page-header";
 import { PolicyCheckList } from "@/components/policy-check-list";
@@ -20,7 +20,7 @@ export default function ApprovalsPage() {
         description="Requests here passed hard policy controls but crossed an approval threshold. Approving creates a mock receipt; rejecting creates an audit event."
       />
       {pending.length === 0 ? (
-        <EmptyState icon={Check} title="No pending approvals" body="Run the OpsAgent weekly compute scenario from the simulator to create a threshold-triggered request." />
+        <EmptyState icon={Inbox} title="No pending approvals" body="Run the OpsAgent weekly compute scenario from the simulator to create a threshold-triggered request." />
       ) : (
         <div className="space-y-5">
           {pending.map((request) => {
@@ -40,8 +40,8 @@ export default function ApprovalsPage() {
                     <p className="mt-2 text-sm text-slate-500">Payment type: {request.paymentType}</p>
                   </div>
                   <div className="flex shrink-0 flex-wrap gap-2">
-                    <button type="button" onClick={() => approveRequest(request.id)} className="inline-flex items-center gap-2 rounded-md bg-emerald-300 px-4 py-2 text-sm font-semibold text-ink-950 hover:bg-emerald-200">
-                      <Check className="h-4 w-4" aria-hidden="true" />
+                    <button type="button" onClick={() => approveRequest(request.id)} className="inline-flex items-center gap-2 rounded-md bg-cyan-100 px-4 py-2 text-sm font-semibold text-ink-950 hover:bg-cyan-50">
+                      <Shield className="h-4 w-4" aria-hidden="true" />
                       Approve
                     </button>
                     <button type="button" onClick={() => rejectRequest(request.id)} className="inline-flex items-center gap-2 rounded-md border border-rose-400/30 px-4 py-2 text-sm font-semibold text-rose-100 hover:bg-rose-400/10">
