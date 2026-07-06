@@ -111,12 +111,13 @@ export function AppStoreProvider({ children }: { children: React.ReactNode }) {
       return undefined;
     }
 
+    const fields = settlementFields(request.paymentType);
     const withSettlement: SpendRequest = {
       ...request,
       status: "settled",
-      memoId: request.memoId ?? settlementFields(request.paymentType).memoId,
-      gatewayAuthorizationHash: request.gatewayAuthorizationHash ?? settlementFields(request.paymentType).gatewayAuthorizationHash,
-      txHash: request.txHash ?? settlementFields(request.paymentType).txHash
+      memoId: request.memoId ?? fields.memoId,
+      gatewayAuthorizationHash: request.gatewayAuthorizationHash ?? fields.gatewayAuthorizationHash,
+      txHash: request.txHash ?? fields.txHash
     };
     const receipt = createMockReceipt(withSettlement, agent, merchant, request.paymentType);
 

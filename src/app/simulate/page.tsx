@@ -57,6 +57,7 @@ export default function SimulatePage() {
   const [aiResult, setAiResult] = useState<AiIntentResponse | undefined>();
   const [aiError, setAiError] = useState<string | undefined>();
   const [aiLoading, setAiLoading] = useState(false);
+  const [formError, setFormError] = useState<string | undefined>();
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
@@ -87,6 +88,7 @@ export default function SimulatePage() {
     setLatestRequest(undefined);
     setLatestReceipt(undefined);
     setEvaluation(undefined);
+    setFormError(undefined);
   }
 
   async function generateAiIntent(prompt = aiPrompt) {
@@ -123,6 +125,7 @@ export default function SimulatePage() {
       setLatestRequest(undefined);
       setLatestReceipt(undefined);
       setEvaluation(undefined);
+      setFormError(undefined);
     } catch (error) {
       setAiError(error instanceof Error ? error.message : "AI intent generation failed.");
     } finally {
@@ -136,6 +139,15 @@ export default function SimulatePage() {
     }
 
     const amountUSDC = Number(form.amountUSDC);
+    if (!Number.isFinite(amountUSDC) || amountUSDC <= 0) {
+      setFormError("Enter a positive USDC amount before running policy checks.");
+      setLatestRequest(undefined);
+      setLatestReceipt(undefined);
+      setEvaluation(undefined);
+      return;
+    }
+
+    setFormError(undefined);
     const result = evaluateSpendRequest({
       input: {
         agentId: form.agentId,
@@ -269,6 +281,9 @@ export default function SimulatePage() {
               Run policy check
               <PlayCircle className="h-4 w-4" aria-hidden="true" />
             </button>
+            {formError ? (
+              <p className="rounded-md border border-rose-400/20 bg-rose-400/10 px-3 py-2 text-sm leading-6 text-rose-100">{formError}</p>
+            ) : null}
           </div>
 
           <div className="mt-6 rounded-lg border border-white/10 bg-ink-950/50 p-4">

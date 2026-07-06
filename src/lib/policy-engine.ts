@@ -18,7 +18,7 @@ function requestsToday(requests: SpendRequest[]): SpendRequest[] {
 
 function riskScoreFor(merchant: Merchant, amount: number, checks: PolicyCheck[]): number {
   const merchantRisk = merchant.riskLevel === "high" ? 45 : merchant.riskLevel === "medium" ? 25 : 10;
-  const amountRisk = Math.min(35, Math.round(amount * 1.5));
+  const amountRisk = Number.isFinite(amount) ? Math.min(35, Math.round(Math.max(0, amount) * 1.5)) : 35;
   const failedRisk = checks.filter((check) => check.result === "fail").length * 15;
   const warningRisk = checks.filter((check) => check.result === "warning").length * 8;
   return Math.min(100, merchantRisk + amountRisk + failedRisk + warningRisk);
@@ -32,6 +32,7 @@ export function evaluateSpendRequest({
 }: EvaluateSpendRequestArgs): PolicyEvaluation {
   const checks: PolicyCheck[] = [];
   const purpose = normalizePurpose(input.purpose);
+  const amountValid = Number.isFinite(input.amountUSDC) && input.amountUSDC > 0;
   const merchantAllowed = policy.allowedMerchantIds.includes(input.merchantId);
   const purposeAllowed = policy.allowedPurposes.includes(purpose);
   const purposeBlocked = policy.blockedPurposes.includes(purpose);
@@ -49,19 +50,31 @@ export function evaluateSpendRequest({
   });
 
   checks.push({
+    rule: "Amount validity",
+    result: amountValid ? "pass" : "fail",
+    message: amountValid
+      ? `${input.amountUSDC.toFixed(2)} USDC is a valid positive amount.`
+      : "Amount must be a positive USDC value."
+  });
+
+  checks.push({
     rule: "Per-transaction limit",
-    result: input.amountUSDC <= policy.maxPerTransactionUSDC ? "pass" : "fail",
+    result: amountValid && input.amountUSDC <= policy.maxPerTransactionUSDC ? "pass" : "fail",
     message:
-      input.amountUSDC <= policy.maxPerTransactionUSDC
+      !amountValid
+        ? "Invalid amounts cannot pass the transaction cap."
+        : input.amountUSDC <= policy.maxPerTransactionUSDC
         ? `${input.amountUSDC.toFixed(2)} USDC is within the ${policy.maxPerTransactionUSDC.toFixed(2)} USDC transaction cap.`
         : `${input.amountUSDC.toFixed(2)} USDC exceeds the ${policy.maxPerTransactionUSDC.toFixed(2)} USDC transaction cap.`
   });
 
   checks.push({
     rule: "Daily budget",
-    result: input.amountUSDC <= remainingDaily ? "pass" : "fail",
+    result: amountValid && input.amountUSDC <= remainingDaily ? "pass" : "fail",
     message:
-      input.amountUSDC <= remainingDaily
+      !amountValid
+        ? "Invalid amounts cannot be applied to the daily budget."
+        : input.amountUSDC <= remainingDaily
         ? `${remainingDaily.toFixed(2)} USDC remains in today's policy budget.`
         : `Only ${remainingDaily.toFixed(2)} USDC remains in today's policy budget.`
   });
@@ -94,7 +107,7 @@ export function evaluateSpendRequest({
   });
 
   const hasHardFail = checks.some((check) => check.result === "fail");
-  const thresholdTriggered = input.amountUSDC > policy.approvalRequiredAboveUSDC;
+  const thresholdTriggered = amountValid && input.amountUSDC > policy.approvalRequiredAboveUSDC;
 
   if (thresholdTriggered && !hasHardFail) {
     checks.push({
@@ -105,8 +118,10 @@ export function evaluateSpendRequest({
   } else {
     checks.push({
       rule: "Human approval threshold",
-      result: "pass",
-      message: `${input.amountUSDC.toFixed(2)} USDC does not require human approval.`
+      result: amountValid ? "pass" : "fail",
+      message: amountValid
+        ? `${input.amountUSDC.toFixed(2)} USDC does not require human approval.`
+        : "Invalid amounts cannot be routed for approval."
     });
   }
 

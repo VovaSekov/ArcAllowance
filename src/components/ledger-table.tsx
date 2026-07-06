@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { FileSearch } from "lucide-react";
 import type { Merchant, Agent, Receipt, SpendRequest, SpendStatus } from "@/lib/types";
 import { formatDate, formatUSDC, shortAddress } from "@/lib/utils";
@@ -25,6 +25,17 @@ export function LedgerTable({
   const [selectedReceiptId, setSelectedReceiptId] = useState<string | undefined>(receipts[0]?.id);
   const visible = useMemo(() => (filter === "all" ? requests : requests.filter((request) => request.status === filter)), [filter, requests]);
   const selectedReceipt = receipts.find((receipt) => receipt.id === selectedReceiptId);
+
+  useEffect(() => {
+    if (receipts.length === 0) {
+      setSelectedReceiptId(undefined);
+      return;
+    }
+
+    if (!selectedReceiptId || !receipts.some((receipt) => receipt.id === selectedReceiptId)) {
+      setSelectedReceiptId(receipts[0].id);
+    }
+  }, [receipts, selectedReceiptId]);
 
   return (
     <div className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_380px]">

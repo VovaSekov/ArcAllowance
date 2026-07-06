@@ -5,6 +5,10 @@ export function cn(...inputs: ClassValue[]): string {
 }
 
 export function formatUSDC(amount: number): string {
+  if (!Number.isFinite(amount)) {
+    return "Invalid amount";
+  }
+
   return `${amount.toLocaleString("en-US", {
     minimumFractionDigits: amount < 1 ? 2 : 0,
     maximumFractionDigits: 2
