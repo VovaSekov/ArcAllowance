@@ -2,9 +2,10 @@ export type RiskTier = "low" | "medium" | "high";
 export type AgentStatus = "active" | "paused";
 export type MerchantCategory = "api" | "data" | "compute" | "research" | "tooling";
 export type PaymentType = "x402" | "usdc_transfer" | "batch";
-export type SpendStatus = "approved" | "rejected" | "needs_approval" | "settled";
+export type SpendStatus = "approved" | "rejected" | "needs_approval" | "settled" | "settlement_pending" | "settlement_failed";
 export type PolicyCheckResult = "pass" | "fail" | "warning";
-export type SettlementMode = "mock" | "arc_testnet";
+export type SettlementMode = "mock" | "arc_testnet" | "real_settlement";
+export type SettlementProvider = "custom" | "circle" | "gateway_x402";
 export type EntityType = "agent" | "policy" | "spend_request" | "receipt";
 
 export type Agent = {
@@ -63,6 +64,11 @@ export type SpendRequest = {
   gatewayAuthorizationHash?: string;
   txHash?: string;
   settlementMode?: SettlementMode;
+  settlementProvider?: SettlementProvider;
+  providerPaymentId?: string;
+  providerStatus?: string;
+  providerReference?: string;
+  settlementError?: string;
   onchainRequestId?: string;
   onchainRecordTxHash?: string;
   onchainDecisionTxHash?: string;
@@ -79,6 +85,11 @@ export type Receipt = {
   txHash?: string;
   gatewayBatchId?: string;
   settlementMode: SettlementMode;
+  settlementProvider?: SettlementProvider;
+  providerPaymentId?: string;
+  providerStatus?: string;
+  providerReference?: string;
+  merchantWalletAddress?: string;
   onchainRequestId?: string;
   recordTxHash?: string;
   decisionTxHash?: string;
@@ -110,7 +121,7 @@ export type SpendInput = {
 };
 
 export type PolicyEvaluation = {
-  status: Exclude<SpendStatus, "settled">;
+  status: "approved" | "rejected" | "needs_approval";
   policyChecks: PolicyCheck[];
   riskScore: number;
 };

@@ -14,7 +14,7 @@ import {
 import { ArchitectureDiagram } from "@/components/architecture-diagram";
 import { arcAllowanceRegistry, arcTestnet, getRegistryExplorerUrl, isRegistryConfigured } from "@/lib/contract/config";
 import { externalLinks } from "@/lib/links";
-import { isArcTestnetMode } from "@/lib/settlement-mode";
+import { isArcTestnetMode, isRealSettlementMode } from "@/lib/settlement-mode";
 import { shortAddress } from "@/lib/utils";
 
 const controls = [
@@ -33,7 +33,7 @@ const controls = [
   {
     eyebrow: "Audit proof",
     title: "Every outcome leaves a trail",
-    body: isArcTestnetMode ? "Automatic approvals, exception reviews, rejections, memos, Arc Testnet transaction hashes, and registry events make the flow reviewable." : "Automatic approvals, exception reviews, rejections, memos, Gateway-style authorization hashes, mock Arc tx hashes, and registry events make the flow reviewable.",
+    body: isRealSettlementMode ? "Automatic approvals, exception reviews, rejections, memos, provider payment IDs, webhooks, and receipt records make the payment flow reviewable." : isArcTestnetMode ? "Automatic approvals, exception reviews, rejections, memos, Arc Testnet transaction hashes, and registry events make the flow reviewable." : "Automatic approvals, exception reviews, rejections, memos, Gateway-style authorization hashes, mock Arc tx hashes, and registry events make the flow reviewable.",
     icon: Landmark
   }
 ];
@@ -42,7 +42,7 @@ const demoScenarios = [
   {
     agent: "ResearchAgent",
     request: "MarketData API, 0.03 USDC",
-    result: isArcTestnetMode ? "Approved with Arc Testnet receipt" : "Approved with mock receipt",
+    result: isRealSettlementMode ? "Approved and sent to wallet adapter" : isArcTestnetMode ? "Approved with Arc Testnet receipt" : "Approved with mock receipt",
     tone: "text-cyan-100"
   },
   {
@@ -60,7 +60,7 @@ const demoScenarios = [
   {
     agent: "Batch settlement",
     request: "Tiny API calls, 0.42 USDC total",
-    result: isArcTestnetMode ? "Arc Testnet batch audit" : "Mock Gateway batch",
+    result: isRealSettlementMode ? "Provider batch reference" : isArcTestnetMode ? "Arc Testnet batch audit" : "Mock Gateway batch",
     tone: "text-sky-200"
   }
 ];
@@ -140,8 +140,8 @@ export default function LandingPage() {
                 <p className="mt-1 text-slate-400">core demo flows</p>
               </div>
               <div className="rounded-lg border border-white/10 bg-white/[0.04] p-4">
-                <p className="text-2xl font-semibold text-white">0</p>
-                <p className="mt-1 text-slate-400">real funds moved</p>
+                <p className="text-2xl font-semibold text-white">{isRealSettlementMode ? "Live" : "0"}</p>
+                <p className="mt-1 text-slate-400">{isRealSettlementMode ? "adapter-gated transfers" : "real funds moved"}</p>
               </div>
               <div className="rounded-lg border border-white/10 bg-white/[0.04] p-4">
                 <p className="text-2xl font-semibold text-white">Arc</p>
@@ -185,7 +185,7 @@ export default function LandingPage() {
                   </div>
                   <div className="rounded-lg border border-white/10 bg-ink-950/55 p-4">
                     <p className="text-xs text-slate-500">Payment type</p>
-                    <p className="mt-2 text-sm font-semibold text-white">{isArcTestnetMode ? "Testnet audit" : "Mock batch"}</p>
+                    <p className="mt-2 text-sm font-semibold text-white">{isRealSettlementMode ? "Wallet adapter" : isArcTestnetMode ? "Testnet audit" : "Mock batch"}</p>
                   </div>
                 </div>
 
@@ -257,12 +257,12 @@ export default function LandingPage() {
         <section className="mx-auto max-w-7xl px-4 pb-16 sm:px-6 lg:px-8">
           <div className="grid gap-8 rounded-lg border border-white/10 bg-white/[0.035] p-5 sm:p-6 lg:grid-cols-[minmax(280px,0.72fr)_minmax(0,1.28fr)] lg:items-center">
             <div className="min-w-0">
-              <p className="text-sm font-semibold uppercase text-violet-200">{isArcTestnetMode ? "Arc Testnet audit layer" : "Mock mode today, Arc-native tomorrow"}</p>
+              <p className="text-sm font-semibold uppercase text-violet-200">{isRealSettlementMode ? "Real settlement adapter" : isArcTestnetMode ? "Arc Testnet audit layer" : "Mock mode today, Arc-native tomorrow"}</p>
               <h2 className="mt-3 text-3xl font-semibold leading-tight text-white">
                 Designed for Gateway-style nanopayments, Arc memos, and controlled agent wallets.
               </h2>
               <p className="mt-4 text-base leading-7 text-slate-400">
-                {isArcTestnetMode ? "The product anchors spend requests and decisions on Arc Testnet while keeping custody and real payment execution separate." : "The MVP stays local and safe while making the path to Circle Wallets, Gateway/x402, Arc batching, and ERC-8004 agent identity explicit."}
+                {isRealSettlementMode ? "The product keeps policy control in ArcAllowance while a server-side wallet/Gateway adapter owns funded wallet credentials, provider calls, webhooks, and reconciliation." : isArcTestnetMode ? "The product anchors spend requests and decisions on Arc Testnet while keeping custody and real payment execution separate." : "The MVP stays local and safe while making the path to Circle Wallets, Gateway/x402, Arc batching, and ERC-8004 agent identity explicit."}
               </p>
             </div>
             <ArchitectureDiagram />

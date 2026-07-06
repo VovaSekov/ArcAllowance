@@ -2,7 +2,7 @@
 
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { agents, initialAuditEvents, initialReceipts, initialSpendRequests, merchants, policies } from "@/lib/seed-data";
-import { isArcTestnetMode } from "@/lib/settlement-mode";
+import { isArcTestnetMode, isRealSettlementMode } from "@/lib/settlement-mode";
 import type { Agent, AppState, Merchant, PolicyEvaluation, Receipt, SpendInput, SpendRequest } from "@/lib/types";
 import { createId } from "@/lib/utils";
 
@@ -31,9 +31,9 @@ type StoreContextValue = AppState & {
 };
 
 const defaultState: AppState = {
-  spendRequests: isArcTestnetMode ? [] : initialSpendRequests,
-  receipts: isArcTestnetMode ? [] : initialReceipts,
-  auditEvents: isArcTestnetMode ? [] : initialAuditEvents,
+  spendRequests: isArcTestnetMode || isRealSettlementMode ? [] : initialSpendRequests,
+  receipts: isArcTestnetMode || isRealSettlementMode ? [] : initialReceipts,
+  auditEvents: isArcTestnetMode || isRealSettlementMode ? [] : initialAuditEvents,
   idempotencyKeys: {}
 };
 

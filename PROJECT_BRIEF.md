@@ -32,12 +32,15 @@ ArcAllowance is a USDC spend-control layer for autonomous AI agents on Arc. It p
 - Make every autonomous payment explainable.
 - Let AI propose spend intent, but keep policy enforcement deterministic.
 - Clearly separate mock settlement from real money movement.
+- In real settlement mode, call a server-side wallet/Gateway adapter only after policy approval and record provider receipts in the ledger.
 - Use serious fintech language and interface patterns.
 - Optimize for demo clarity without making false production claims.
 
 ## What Is Mock Mode
 
 Mock mode is a local-only simulation. It produces memo IDs, mock Gateway authorization hashes, mock Arc transaction hashes, and receipt records without touching private keys, custody infrastructure, mainnet, or testnet funds.
+
+Real settlement mode is adapter-driven. ArcAllowance does not custody funds and does not expose private keys to the frontend. Approved spend calls a server-side adapter that owns Circle/Gateway/x402 credentials, funded wallets, provider webhooks, balance checks, and transfer retries. ArcAllowance stores provider payment IDs, pending/settled/failed states, and audit receipts.
 
 The optional OpenAI layer does not approve or settle payments. It only drafts request fields from natural language; the policy engine remains the source of truth.
 

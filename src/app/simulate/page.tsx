@@ -11,7 +11,7 @@ import { PolicyCheckList } from "@/components/policy-check-list";
 import { ReceiptCard } from "@/components/receipt-card";
 import { SpendTimeline } from "@/components/spend-timeline";
 import { StatusBadge } from "@/components/status-badge";
-import { isArcTestnetMode, settlementModeLabel } from "@/lib/settlement-mode";
+import { isArcTestnetMode, isRealSettlementMode, settlementModeLabel } from "@/lib/settlement-mode";
 import { demoScenarios } from "@/lib/seed-data";
 import type { PaymentType, PolicyEvaluation, Receipt, SpendRequest } from "@/lib/types";
 import { formatUSDC } from "@/lib/utils";
@@ -172,7 +172,13 @@ export default function SimulatePage() {
   }
 
   const ResultIcon =
-    latestRequest?.status === "rejected" ? XCircle : latestRequest?.status === "needs_approval" ? Clock3 : latestRequest ? CircleDot : PlayCircle;
+    latestRequest?.status === "rejected" || latestRequest?.status === "settlement_failed"
+      ? XCircle
+      : latestRequest?.status === "needs_approval" || latestRequest?.status === "settlement_pending"
+        ? Clock3
+        : latestRequest
+          ? CircleDot
+          : PlayCircle;
 
   return (
     <>
@@ -180,7 +186,9 @@ export default function SimulatePage() {
         eyebrow="Spend simulator"
         title="Simulate agent spend"
         description={
-          isArcTestnetMode
+          isRealSettlementMode
+            ? "Select an agent, merchant, amount, purpose, and payment type. In-policy requests trigger the server-side settlement adapter; asynchronous transfers move through pending, settled, or failed states."
+            : isArcTestnetMode
             ? "Select an agent, merchant, amount, purpose, and payment type. In-policy requests clear automatically; exceptions are routed to review and decisions are anchored on Arc Testnet."
             : "Select an agent, merchant, amount, purpose, and payment type. In-policy requests clear automatically; exceptions are routed to review and mock receipts are generated only when allowed."
         }
@@ -275,7 +283,7 @@ export default function SimulatePage() {
               </select>
             </label>
             <button type="button" onClick={() => void runPolicyCheck()} disabled={settlementLoading} className="inline-flex items-center justify-center gap-2 rounded-md bg-sky-300 px-4 py-3 text-sm font-semibold text-ink-950 hover:bg-sky-200 disabled:cursor-not-allowed disabled:opacity-60">
-              {settlementLoading ? (isArcTestnetMode ? "Writing to Arc Testnet" : "Creating receipt") : "Run policy check"}
+              {settlementLoading ? (isRealSettlementMode ? "Calling settlement adapter" : isArcTestnetMode ? "Writing to Arc Testnet" : "Creating receipt") : "Run policy check"}
               {settlementLoading ? <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" /> : <PlayCircle className="h-4 w-4" aria-hidden="true" />}
             </button>
             {formError ? (
@@ -333,6 +341,20 @@ export default function SimulatePage() {
                 Open review queue
                 <ArrowRight className="h-4 w-4" />
               </Link>
+            </div>
+          ) : latestRequest?.status === "settlement_pending" ? (
+            <div className="rounded-lg border border-amber-400/20 bg-amber-400/10 p-5">
+              <h3 className="font-semibold text-amber-100">Settlement pending</h3>
+              <p className="mt-2 text-sm leading-6 text-amber-100/80">
+                The policy decision was approved and the server-side payment adapter accepted the transfer. The ledger will move to settled when the provider webhook confirms the USDC payment.
+              </p>
+            </div>
+          ) : latestRequest?.status === "settlement_failed" ? (
+            <div className="rounded-lg border border-rose-400/20 bg-rose-400/10 p-5">
+              <h3 className="font-semibold text-rose-100">Settlement failed</h3>
+              <p className="mt-2 text-sm leading-6 text-rose-100/80">
+                The policy passed, but the payment provider failed the transfer. {latestRequest.settlementError ?? "Check the settlement adapter logs before retrying."}
+              </p>
             </div>
           ) : null}
         </section>

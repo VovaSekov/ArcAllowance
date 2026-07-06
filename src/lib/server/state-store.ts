@@ -2,7 +2,7 @@ import "server-only";
 
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { dirname, join } from "node:path";
-import { isArcTestnetMode, settlementMode } from "@/lib/settlement-mode";
+import { isArcTestnetMode, isRealSettlementMode, settlementMode } from "@/lib/settlement-mode";
 import { initialAuditEvents, initialReceipts, initialSpendRequests } from "@/lib/seed-data";
 import type { AppState } from "@/lib/types";
 
@@ -12,10 +12,11 @@ const statePath = join(dataDir, `app-state-${settlementMode}.json`);
 let stateQueue = Promise.resolve();
 
 function defaultState(): AppState {
+  const seededDemoState = !isArcTestnetMode && !isRealSettlementMode;
   return {
-    spendRequests: isArcTestnetMode ? [] : initialSpendRequests,
-    receipts: isArcTestnetMode ? [] : initialReceipts,
-    auditEvents: isArcTestnetMode ? [] : initialAuditEvents,
+    spendRequests: seededDemoState ? initialSpendRequests : [],
+    receipts: seededDemoState ? initialReceipts : [],
+    auditEvents: seededDemoState ? initialAuditEvents : [],
     idempotencyKeys: {}
   };
 }

@@ -1,13 +1,13 @@
 import { Bot, FileText, Landmark, ReceiptText, Shield, WalletCards } from "lucide-react";
-import { isArcTestnetMode } from "@/lib/settlement-mode";
+import { isArcTestnetMode, isRealSettlementMode } from "@/lib/settlement-mode";
 
 export function ArchitectureDiagram() {
   const nodes = [
     { label: "Agent", detail: "Autonomous request", icon: Bot },
     { label: "Policy Engine", detail: "Budget and controls", icon: Shield },
-    { label: isArcTestnetMode ? "Arc Registry Write" : "x402/Gateway Authorization", detail: isArcTestnetMode ? "Testnet audit tx" : "Mock approval artifact", icon: WalletCards },
+    { label: isRealSettlementMode ? "Settlement Adapter" : isArcTestnetMode ? "Arc Registry Write" : "x402/Gateway Authorization", detail: isRealSettlementMode ? "Wallet/Gateway API call" : isArcTestnetMode ? "Testnet audit tx" : "Mock approval artifact", icon: WalletCards },
     { label: "Arc Memo", detail: "Reconciliation ID", icon: FileText },
-    { label: isArcTestnetMode ? "Spend Decision" : "USDC Settlement", detail: isArcTestnetMode ? "Onchain status" : "Mock mode today", icon: Landmark },
+    { label: isRealSettlementMode ? "USDC Transfer" : isArcTestnetMode ? "Spend Decision" : "USDC Settlement", detail: isRealSettlementMode ? "Provider status/webhook" : isArcTestnetMode ? "Onchain status" : "Mock mode today", icon: Landmark },
     { label: "Receipt Ledger", detail: "Audit trail", icon: ReceiptText }
   ];
 

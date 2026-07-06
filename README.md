@@ -23,6 +23,7 @@ ArcAllowance is designed around stablecoin-native agent spending. Arc transactio
 - Policy-check trace with pass, warning, and fail results.
 - Exception review queue for threshold-triggered payments.
 - Arc Testnet registry transaction hash, memoId, and receipt ledger in `arc_testnet` mode.
+- Real settlement adapter mode for server-side wallet/Gateway transfers with pending, settled, and failed provider states.
 - Architecture page showing the testnet audit layer and Arc-native payment roadmap.
 
 ## Demo Flow
@@ -41,6 +42,56 @@ For a live walkthrough flow, see `DEMO_SCRIPT.md`.
 ## Arc Testnet Mode
 
 Production is intended to run with `NEXT_PUBLIC_SETTLEMENT_MODE=arc_testnet`. In that mode, the simulator and review flow write real Arc Testnet transactions to `ArcAllowanceRegistry` for spend requests and spend decisions. The registry is an audit layer only: no mainnet funds move, the contract does not custody balances, the contract does not transfer USDC, and the frontend never receives private keys. Mock mode remains available for local development with `NEXT_PUBLIC_SETTLEMENT_MODE=mock`.
+
+## Real Settlement Mode
+
+`NEXT_PUBLIC_SETTLEMENT_MODE=real_settlement` turns approved spend into a server-side payment-adapter call. ArcAllowance still owns the control plane: agent request, policy checks, exception review, idempotency, audit events, and ledger receipts. The settlement adapter owns funded wallets, Circle/Gateway/x402 credentials, provider retries, balances, and actual USDC movement.
+
+Flow:
+
+1. Agent submits merchant, amount, purpose, and payment type.
+2. Policy engine approves, rejects, or routes to exception review.
+3. Approved spend calls `REAL_SETTLEMENT_ADAPTER_URL` from the server with an idempotency key.
+4. The adapter executes or queues the provider transfer and returns `settled` or `pending`.
+5. Pending transfers are finalized through `POST /api/settlement/webhook`.
+6. The ledger stores provider payment ID, provider status, memo ID, tx/reference hash, merchant wallet, and optional Arc audit metadata.
+
+Real settlement is fail-closed. If `REAL_SETTLEMENT_ENABLED=true`, `REAL_SETTLEMENT_ADAPTER_URL`, or provider auth is missing, approved payments return an error and no fake receipt is created.
+
+Adapter response shape:
+
+```json
+{
+  "status": "settled",
+  "provider": "circle",
+  "providerPaymentId": "provider-transfer-id",
+  "providerStatus": "complete",
+  "providerReference": "optional-reference",
+  "txHash": "optional-chain-or-provider-tx",
+  "gatewayAuthorizationHash": "optional-x402-auth",
+  "gatewayBatchId": "optional-batch-id",
+  "memoId": "optional-provider-memo"
+}
+```
+
+Webhook shape:
+
+```json
+{
+  "spendRequestId": "spend_...",
+  "status": "settled",
+  "provider": "circle",
+  "providerPaymentId": "provider-transfer-id",
+  "providerStatus": "complete",
+  "txHash": "optional-chain-or-provider-tx"
+}
+```
+
+Webhook calls must include:
+
+```text
+Authorization: Bearer REAL_SETTLEMENT_WEBHOOK_SECRET
+```
 
 ## Optional AI Layer
 
@@ -103,8 +154,8 @@ What is real onchain:
 
 What remains mocked:
 
-- Gateway/x402 settlement.
-- USDC payment receipts.
+- Gateway/x402 settlement unless `real_settlement` is configured with a live adapter.
+- USDC payment receipts unless provider webhooks return real payment IDs.
 - Arc transaction hashes shown in the local demo ledger unless produced by a real registry transaction.
 - Frontend wallet connection and contract writes.
 
@@ -164,6 +215,14 @@ ARC_DATA_DIR=.data
 ARC_TESTNET_RPC_URL=https://rpc.testnet.arc.network
 ARC_TESTNET_PRIVATE_KEY=
 DEPLOYER_PRIVATE_KEY=
+
+REAL_SETTLEMENT_ENABLED=false
+REAL_SETTLEMENT_PROVIDER=custom
+REAL_SETTLEMENT_ADAPTER_URL=
+REAL_SETTLEMENT_ADAPTER_TOKEN=
+REAL_SETTLEMENT_WEBHOOK_SECRET=
+REAL_SETTLEMENT_TIMEOUT_MS=15000
+REAL_SETTLEMENT_ANCHOR_ARC_TESTNET=false
 ```
 
 `ARC_ADMIN_TOKEN` is optional. When set, write APIs require an `x-arc-admin-token` header; without it the app remains publicly writable but rate-limited for demo mode. `ARC_DATA_DIR` stores the server ledger JSON and should not be committed.

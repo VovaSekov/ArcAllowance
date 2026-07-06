@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { ArrowRight, ClipboardList, FileText, Landmark, Shield, Sparkles, WalletCards } from "lucide-react";
-import { isArcTestnetMode } from "@/lib/settlement-mode";
+import { isArcTestnetMode, isRealSettlementMode } from "@/lib/settlement-mode";
 
 const flowSteps = [
   {
@@ -15,7 +15,7 @@ const flowSteps = [
   },
   {
     title: "Decision is anchored",
-    body: "Approved, rejected, and review-required outcomes are written to the Arc Testnet audit registry.",
+    body: "Approved, rejected, and review-required outcomes are retained as audit events, with optional Arc Testnet registry proof.",
     icon: Landmark
   },
   {
@@ -25,7 +25,7 @@ const flowSteps = [
   },
   {
     title: "Ledger proves the trail",
-    body: "Receipts show memo IDs, status, registry transaction hashes, and the audit trail for later review.",
+    body: "Receipts show memo IDs, status, registry transaction hashes, provider payment IDs, and the audit trail.",
     icon: FileText
   }
 ];
@@ -47,7 +47,9 @@ export function HowItWorksOnboarding() {
             <h2 className="text-lg font-semibold text-white">How ArcAllowance works</h2>
           </div>
           <p className="mt-2 max-w-3xl text-sm leading-6 text-slate-400">
-            ArcAllowance lets agents spend automatically inside policy, then stops only the exceptions that cross a budget owner&apos;s trust boundary.
+            {isRealSettlementMode
+              ? "ArcAllowance lets agents spend automatically inside policy, then sends approved requests to the configured server-side wallet/Gateway adapter."
+              : "ArcAllowance lets agents spend automatically inside policy, then stops only the exceptions that cross a budget owner's trust boundary."}
           </p>
         </div>
         <Link href="/simulate" className="inline-flex w-fit items-center justify-center gap-2 rounded-md bg-sky-300 px-4 py-2 text-sm font-semibold text-ink-950 hover:bg-sky-200">
@@ -80,9 +82,11 @@ export function RealPaymentsRoadmap() {
         <WalletCards className="mt-1 h-5 w-5 shrink-0 text-amber-100/85" aria-hidden="true" />
         <div className="min-w-0">
           <p className="text-sm font-semibold uppercase tracking-[0.16em] text-amber-100/80">Real payments roadmap</p>
-          <h2 className="mt-2 text-lg font-semibold text-white">Current product is Arc Testnet audit proof, not custody or real settlement</h2>
+          <h2 className="mt-2 text-lg font-semibold text-white">{isRealSettlementMode ? "Real settlement is adapter-driven and isolated from the frontend" : "Current product is Arc Testnet audit proof, not custody or real settlement"}</h2>
           <p className="mt-2 max-w-3xl text-sm leading-6 text-amber-50/75">
-            Today the product proves the control layer: policy decisions, exception review, memos, receipts, and Arc Testnet registry transactions. To move real USDC, ArcAllowance needs a settlement adapter with keys, webhooks, balances, payment failures, and stronger authorization.
+            {isRealSettlementMode
+              ? "In real settlement mode, ArcAllowance still owns the control layer: policy decisions, exception review, memos, receipts, and audit events. A separate server-side adapter owns wallet credentials, provider API calls, webhooks, balances, payment failures, and reconciliation."
+              : "Today the product proves the control layer: policy decisions, exception review, memos, receipts, and Arc Testnet registry transactions. To move real USDC, ArcAllowance needs a settlement adapter with keys, webhooks, balances, payment failures, and stronger authorization."}
           </p>
         </div>
       </div>
@@ -94,7 +98,7 @@ export function RealPaymentsRoadmap() {
         ))}
       </div>
       <p className="mt-4 text-xs leading-5 text-amber-50/60">
-        {isArcTestnetMode ? "Production is currently configured for Arc Testnet audit writes only." : "Local mode uses mock artifacts only."}
+        {isRealSettlementMode ? "Production is configured to call a real settlement adapter after policy approval." : isArcTestnetMode ? "Production is currently configured for Arc Testnet audit writes only." : "Local mode uses mock artifacts only."}
       </p>
     </section>
   );

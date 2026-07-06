@@ -8,13 +8,15 @@ import { EmptyState } from "@/components/empty-state";
 import { ReceiptCard } from "@/components/receipt-card";
 import { StatusBadge } from "@/components/status-badge";
 
-const filters: Array<SpendStatus | "all"> = ["all", "approved", "rejected", "needs_approval", "settled"];
+const filters: Array<SpendStatus | "all"> = ["all", "approved", "needs_approval", "settlement_pending", "settled", "settlement_failed", "rejected"];
 const filterLabels: Record<SpendStatus | "all", string> = {
   all: "all",
   approved: "approved",
   rejected: "rejected",
   needs_approval: "needs review",
-  settled: "settled"
+  settled: "settled",
+  settlement_pending: "pending",
+  settlement_failed: "failed"
 };
 
 export function LedgerTable({
@@ -65,7 +67,7 @@ export function LedgerTable({
           </div>
         ) : (
           <div className="overflow-x-auto">
-            <table className="w-full min-w-[900px] text-left text-sm">
+            <table className="w-full min-w-[980px] text-left text-sm">
               <thead className="text-xs uppercase tracking-[0.14em] text-slate-500">
                 <tr className="border-b border-white/10">
                   <th className="px-4 py-3 font-medium">Agent</th>
@@ -75,6 +77,7 @@ export function LedgerTable({
                   <th className="px-4 py-3 font-medium">Status</th>
                   <th className="px-4 py-3 font-medium">Memo</th>
                   <th className="px-4 py-3 font-medium">Tx</th>
+                  <th className="px-4 py-3 font-medium">Provider</th>
                   <th className="px-4 py-3 font-medium">Created</th>
                 </tr>
               </thead>
@@ -92,6 +95,7 @@ export function LedgerTable({
                       <td className="px-4 py-4"><StatusBadge status={request.status} /></td>
                       <td className="max-w-[170px] break-all px-4 py-4 font-mono text-xs">{request.memoId ?? "none"}</td>
                       <td className="px-4 py-4 font-mono text-xs">{shortAddress(request.txHash)}</td>
+                      <td className="px-4 py-4 font-mono text-xs">{request.providerPaymentId ? shortAddress(request.providerPaymentId) : request.settlementProvider ?? "none"}</td>
                       <td className="px-4 py-4">
                         <button
                           type="button"

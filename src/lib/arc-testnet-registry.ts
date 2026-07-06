@@ -108,7 +108,7 @@ function createReceipt({
 }
 
 export async function anchorSpendRequest(request: SpendRequest): Promise<ArcAnchorResult> {
-  const status = request.status === "settled" ? "approved" : request.status;
+  const status = request.status === "settled" || request.status === "settlement_pending" ? "approved" : request.status;
   if (status !== "approved" && status !== "rejected" && status !== "needs_approval") {
     throw new Error(`Cannot anchor unsupported status: ${request.status}`);
   }

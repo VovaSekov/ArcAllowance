@@ -32,7 +32,13 @@ export function ReceiptCard({ receipt }: { receipt: Receipt }) {
           <dd className="mt-1 break-all font-mono text-xs text-sky-100">{receipt.memoId}</dd>
         </div>
         <div>
-          <dt className="text-slate-500">{receipt.settlementMode === "arc_testnet" ? "Arc Testnet tx" : "Mock Arc tx hash"}</dt>
+          <dt className="text-slate-500">
+            {receipt.settlementMode === "arc_testnet"
+              ? "Arc Testnet tx"
+              : receipt.settlementMode === "real_settlement"
+                ? "Settlement tx"
+                : "Mock Arc tx hash"}
+          </dt>
           <dd className="mt-1 break-all font-mono text-xs text-sky-100">
             {receipt.settlementMode === "arc_testnet" && receipt.txHash ? (
               <a href={buildExplorerTxUrl(arcTestnet.explorerUrl, receipt.txHash)} target="_blank" rel="noreferrer" className="hover:text-sky-50">
@@ -43,9 +49,31 @@ export function ReceiptCard({ receipt }: { receipt: Receipt }) {
             )}
           </dd>
         </div>
+        {receipt.settlementProvider || receipt.providerPaymentId ? (
+          <div>
+            <dt className="text-slate-500">Payment provider</dt>
+            <dd className="mt-1 break-all font-mono text-xs text-emerald-100">
+              {receipt.settlementProvider ?? "provider"}{receipt.providerPaymentId ? ` / ${receipt.providerPaymentId}` : ""}
+            </dd>
+          </div>
+        ) : null}
+        {receipt.providerStatus || receipt.providerReference ? (
+          <div>
+            <dt className="text-slate-500">Provider status</dt>
+            <dd className="mt-1 break-all font-mono text-xs text-slate-200">
+              {receipt.providerStatus ?? "settled"}{receipt.providerReference ? ` / ${receipt.providerReference}` : ""}
+            </dd>
+          </div>
+        ) : null}
+        {receipt.merchantWalletAddress ? (
+          <div className="md:col-span-2">
+            <dt className="text-slate-500">Merchant wallet</dt>
+            <dd className="mt-1 break-all font-mono text-xs text-slate-200">{receipt.merchantWalletAddress}</dd>
+          </div>
+        ) : null}
         {receipt.gatewayBatchId ? (
           <div className="md:col-span-2">
-            <dt className="text-slate-500">Mock Gateway batch</dt>
+            <dt className="text-slate-500">{receipt.settlementMode === "real_settlement" ? "Gateway batch" : "Mock Gateway batch"}</dt>
             <dd className="mt-1 break-all font-mono text-xs text-violet-100">{receipt.gatewayBatchId}</dd>
           </div>
         ) : null}

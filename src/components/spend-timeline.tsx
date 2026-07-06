@@ -1,28 +1,31 @@
 import { CircleDashed, CircleDot, FileText, Shield } from "lucide-react";
-import { isArcTestnetMode } from "@/lib/settlement-mode";
+import { isArcTestnetMode, isRealSettlementMode } from "@/lib/settlement-mode";
 import type { SpendRequest } from "@/lib/types";
 
 export function SpendTimeline({ request }: { request?: SpendRequest }) {
-  const isRejected = request?.status === "rejected";
+  const isRejected = request?.status === "rejected" || request?.status === "settlement_failed";
   const needsApproval = request?.status === "needs_approval";
+  const pendingSettlement = request?.status === "settlement_pending";
   const items = [
     { label: "Agent request", detail: "Agent proposes a USDC payment.", active: Boolean(request), icon: CircleDashed },
     { label: "Policy engine", detail: "Merchant, amount, purpose, and threshold rules are evaluated.", active: Boolean(request), icon: Shield },
     {
-      label: needsApproval ? "Exception review" : isRejected ? "Settlement stopped" : isArcTestnetMode ? "Arc Testnet registry" : "Mock Gateway authorization",
+      label: needsApproval ? "Exception review" : isRejected ? "Settlement stopped" : isRealSettlementMode ? "Settlement adapter" : isArcTestnetMode ? "Arc Testnet registry" : "Mock Gateway authorization",
       detail: needsApproval
         ? "Request waits for the budget owner because it crossed the autonomy threshold."
         : isRejected
-          ? "No settlement artifact is generated."
-          : isArcTestnetMode
-            ? "Request and decision are written to Arc Testnet."
-            : "Mock Gateway/x402 authorization is generated.",
+          ? request?.status === "settlement_failed" ? "The provider rejected or failed the payment." : "No settlement artifact is generated."
+          : isRealSettlementMode
+            ? pendingSettlement ? "The payment provider accepted the transfer and is waiting for final confirmation." : "The approved request is sent to the server-side payment provider."
+            : isArcTestnetMode
+              ? "Request and decision are written to Arc Testnet."
+              : "Mock Gateway/x402 authorization is generated.",
       active: Boolean(request),
       icon: CircleDot
     },
     {
       label: "Receipt ledger",
-      detail: request?.status === "approved" || request?.status === "settled" ? (isArcTestnetMode ? "Memo and Arc Testnet tx hash are recorded." : "Memo and mock Arc tx hash are recorded.") : "Audit event is retained.",
+      detail: request?.status === "approved" || request?.status === "settled" ? (isRealSettlementMode ? "Provider payment ID, memo, and tx reference are recorded." : isArcTestnetMode ? "Memo and Arc Testnet tx hash are recorded." : "Memo and mock Arc tx hash are recorded.") : "Audit event is retained.",
       active: Boolean(request),
       icon: FileText
     }

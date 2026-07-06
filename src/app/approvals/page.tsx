@@ -7,6 +7,7 @@ import { PageHeader } from "@/components/page-header";
 import { PolicyCheckList } from "@/components/policy-check-list";
 import { StatusBadge } from "@/components/status-badge";
 import { useAppStore } from "@/components/app-store";
+import { isRealSettlementMode } from "@/lib/settlement-mode";
 import { formatDate, formatUSDC } from "@/lib/utils";
 
 export default function ApprovalsPage() {
@@ -44,7 +45,7 @@ export default function ApprovalsPage() {
       <PageHeader
         eyebrow="Exception review"
         title="Review queue"
-        description="Routine in-policy spend clears automatically. This queue is only for requests above the autonomy threshold, where the budget owner must authorize or reject the exception."
+        description={isRealSettlementMode ? "Routine in-policy spend clears automatically. Authorizing an exception sends the approved request to the server-side settlement adapter; rejecting it stops the transfer." : "Routine in-policy spend clears automatically. This queue is only for requests above the autonomy threshold, where the budget owner must authorize or reject the exception."}
       />
       {error ? (
         <p className="mb-4 rounded-md border border-rose-400/20 bg-rose-400/10 px-3 py-2 text-sm leading-6 text-rose-100">{error}</p>
@@ -72,7 +73,7 @@ export default function ApprovalsPage() {
                   <div className="flex shrink-0 flex-wrap gap-2">
                     <button type="button" onClick={() => void handleApprove(request.id)} disabled={busyRequestId === request.id} className="inline-flex items-center gap-2 rounded-md bg-cyan-100 px-4 py-2 text-sm font-semibold text-ink-950 hover:bg-cyan-50 disabled:cursor-not-allowed disabled:opacity-60">
                       <Shield className="h-4 w-4" aria-hidden="true" />
-                      {busyRequestId === request.id ? "Authorizing" : "Authorize exception"}
+                      {busyRequestId === request.id ? "Authorizing" : isRealSettlementMode ? "Authorize and settle" : "Authorize exception"}
                     </button>
                     <button type="button" onClick={() => void handleReject(request.id)} disabled={busyRequestId === request.id} className="inline-flex items-center gap-2 rounded-md border border-rose-400/30 px-4 py-2 text-sm font-semibold text-rose-100 hover:bg-rose-400/10 disabled:cursor-not-allowed disabled:opacity-60">
                       <X className="h-4 w-4" aria-hidden="true" />

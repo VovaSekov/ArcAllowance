@@ -3,7 +3,7 @@ import { ContractStatusCard } from "@/components/contract-status-card";
 import { DemoModeBanner } from "@/components/demo-mode-banner";
 import { HowItWorksOnboarding, RealPaymentsRoadmap } from "@/components/how-it-works-onboarding";
 import { PageHeader } from "@/components/page-header";
-import { isArcTestnetMode } from "@/lib/settlement-mode";
+import { isArcTestnetMode, isRealSettlementMode } from "@/lib/settlement-mode";
 
 const roadmap = [
   "Circle developer-controlled wallets for agent wallets.",
@@ -16,7 +16,15 @@ const roadmap = [
 ];
 
 export default function ArchitecturePage() {
-  const currentArchitecture = isArcTestnetMode
+  const currentArchitecture = isRealSettlementMode
+    ? [
+        "Local policy engine evaluates merchant allowlists, limits, purposes, risk, and autonomy thresholds before any transfer.",
+        "Approved spend calls a server-side settlement adapter that owns the Circle/Gateway wallet credentials.",
+        "Transfers can return pending and are finalized by /api/settlement/webhook.",
+        "Ledger receipts store provider payment IDs, memo IDs, transfer references, and optional Arc audit tx hashes.",
+        "The frontend never receives private keys, wallet API keys, or custody credentials."
+      ]
+    : isArcTestnetMode
     ? [
         "Local policy engine evaluates seeded policies and browser-created requests.",
         "ArcAllowanceRegistry records agent registrations, policy hashes, spend requests, and spend decisions on Arc Testnet.",
@@ -37,7 +45,7 @@ export default function ArchitecturePage() {
       <PageHeader
         eyebrow="Architecture"
         title="From local policy checks to Arc-native settlement"
-        description={isArcTestnetMode ? "The product runs policy checks locally and anchors spend decisions to Arc Testnet through a server-side registry adapter." : "The MVP is intentionally mock-first. It shows the control plane and audit trail before any real private keys, custody, or settlement integrations are introduced."}
+        description={isRealSettlementMode ? "The product runs policy checks first, then calls a server-side wallet/Gateway settlement adapter and records provider receipts in the ledger." : isArcTestnetMode ? "The product runs policy checks locally and anchors spend decisions to Arc Testnet through a server-side registry adapter." : "The MVP is intentionally mock-first. It shows the control plane and audit trail before any real private keys, custody, or settlement integrations are introduced."}
       />
       <DemoModeBanner />
       <div className="mt-6">
@@ -54,7 +62,7 @@ export default function ArchitecturePage() {
       </div>
       <div className="mt-6 grid gap-6 lg:grid-cols-2">
         <section className="rounded-lg border border-white/10 bg-white/[0.035] p-5">
-          <h2 className="text-lg font-semibold text-white">{isArcTestnetMode ? "Current testnet product" : "Current MVP"}</h2>
+          <h2 className="text-lg font-semibold text-white">{isRealSettlementMode ? "Current real settlement product" : isArcTestnetMode ? "Current testnet product" : "Current MVP"}</h2>
           <div className="mt-4 space-y-3">
             {currentArchitecture.map((item) => (
               <div key={item} className="rounded-md border border-white/10 bg-ink-950/50 p-4 text-sm leading-6 text-slate-300">{item}</div>

@@ -144,6 +144,111 @@ Security rules:
 - Gateway/x402 and USDC transfer execution remain separate from the ArcAllowanceRegistry audit layer.
 - `OPENAI_API_KEY` is optional. If set, it powers AI intent generation only; it must not approve or settle payments.
 
+## Real Settlement Mode
+
+Real settlement is separate from Arc Testnet audit mode. Use it only after a funded wallet provider or Gateway/x402 adapter is deployed server-side. The browser must never receive wallet API keys, private keys, entity secrets, or custody credentials.
+
+Required environment:
+
+```bash
+NEXT_PUBLIC_SETTLEMENT_MODE=real_settlement
+REAL_SETTLEMENT_ENABLED=true
+REAL_SETTLEMENT_PROVIDER=custom
+REAL_SETTLEMENT_ADAPTER_URL=https://your-settlement-adapter.example.com/settle
+REAL_SETTLEMENT_ADAPTER_TOKEN=replace_with_adapter_bearer_token
+REAL_SETTLEMENT_WEBHOOK_SECRET=replace_with_long_random_webhook_secret
+REAL_SETTLEMENT_TIMEOUT_MS=15000
+REAL_SETTLEMENT_ANCHOR_ARC_TESTNET=false
+```
+
+Set `REAL_SETTLEMENT_PROVIDER` to `circle`, `gateway_x402`, or `custom`. ArcAllowance calls the adapter after policy approval or after a budget owner authorizes an exception.
+
+Adapter request:
+
+```json
+{
+  "idempotencyKey": "settle:spend_id:memo_id",
+  "spendRequestId": "spend_id",
+  "agent": {
+    "id": "agent_research",
+    "name": "ResearchAgent",
+    "walletAddress": "0x..."
+  },
+  "merchant": {
+    "id": "merchant_market_data",
+    "name": "MarketData API",
+    "walletAddress": "0x...",
+    "x402Endpoint": "/api/mock/market-data"
+  },
+  "transfer": {
+    "amountUSDC": 0.03,
+    "currency": "USDC",
+    "paymentType": "x402",
+    "purpose": "cpi_dataset_query",
+    "memoId": "ARC-..."
+  },
+  "policy": {
+    "riskScore": 10,
+    "checks": []
+  },
+  "arcAudit": {
+    "onchainRequestId": "optional",
+    "recordTxHash": "optional",
+    "decisionTxHash": "optional"
+  },
+  "callbackUrl": "https://arcallowance.xyz/api/settlement/webhook"
+}
+```
+
+Adapter response:
+
+```json
+{
+  "status": "settled",
+  "provider": "circle",
+  "providerPaymentId": "provider-transfer-id",
+  "providerStatus": "complete",
+  "providerReference": "optional-reference",
+  "txHash": "optional-chain-or-provider-tx",
+  "gatewayAuthorizationHash": "optional-x402-auth",
+  "gatewayBatchId": "optional-batch-id"
+}
+```
+
+If the provider is asynchronous, return:
+
+```json
+{
+  "status": "pending",
+  "provider": "circle",
+  "providerPaymentId": "provider-transfer-id",
+  "providerStatus": "pending"
+}
+```
+
+Then finalize through:
+
+```bash
+curl -X POST https://arcallowance.xyz/api/settlement/webhook \
+  -H "Authorization: Bearer $REAL_SETTLEMENT_WEBHOOK_SECRET" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "spendRequestId": "spend_...",
+    "status": "settled",
+    "provider": "circle",
+    "providerPaymentId": "provider-transfer-id",
+    "providerStatus": "complete",
+    "txHash": "provider-or-chain-reference"
+  }'
+```
+
+Fail-closed behavior:
+
+- If real settlement is enabled without an adapter URL, approved spend returns an error.
+- If the adapter returns `failed`, no receipt is created.
+- If the adapter returns `pending`, the request stays `settlement_pending` until webhook finalization.
+- If webhook authorization is wrong, ArcAllowance rejects the update.
+
 ## PM2 Setup
 
 ArcAllowance currently runs on port `3030` behind Nginx.

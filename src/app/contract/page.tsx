@@ -7,7 +7,7 @@ import { StatusBadge } from "@/components/status-badge";
 import { useAppStore } from "@/components/app-store";
 import { buildExplorerTxUrl, formatUSDC as formatContractUSDC, parseUSDC } from "@/lib/contract/client";
 import { arcAllowanceRegistry, arcTestnet, getRegistryExplorerUrl, isRegistryConfigured } from "@/lib/contract/config";
-import { isArcTestnetMode } from "@/lib/settlement-mode";
+import { isArcTestnetMode, isRealSettlementMode } from "@/lib/settlement-mode";
 import { formatDate, formatUSDC, shortAddress } from "@/lib/utils";
 
 const realOnchain = [
@@ -33,7 +33,7 @@ export default function ContractPage() {
       <PageHeader
         eyebrow="Onchain audit layer"
         title="ArcAllowanceRegistry"
-        description={isArcTestnetMode ? "Policy decisions are anchored on Arc Testnet through a server-side registry adapter. The frontend never handles private keys." : "Policy decisions can be anchored on Arc Testnet without custody, private-key handling in the frontend, or real USDC movement."}
+        description={isRealSettlementMode ? "Policy decisions and real settlement references stay separate: ArcAllowanceRegistry is audit proof, while configured wallet/Gateway adapters execute transfers server-side." : isArcTestnetMode ? "Policy decisions are anchored on Arc Testnet through a server-side registry adapter. The frontend never handles private keys." : "Policy decisions can be anchored on Arc Testnet without custody, private-key handling in the frontend, or real USDC movement."}
       />
 
       <ContractStatusCard />
@@ -124,13 +124,13 @@ export default function ContractPage() {
 
         <section className="min-w-0 rounded-lg border border-white/10 bg-white/[0.035] p-5">
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-            <h2 className="break-words text-lg font-semibold text-white">{isArcTestnetMode ? "Latest Arc Testnet registry tx" : "Latest demo tx hashes"}</h2>
+            <h2 className="break-words text-lg font-semibold text-white">{isRealSettlementMode ? "Latest settlement references" : isArcTestnetMode ? "Latest Arc Testnet registry tx" : "Latest demo tx hashes"}</h2>
             <div className="shrink-0">
-              <StatusBadge status={isArcTestnetMode ? "arc_testnet" : "mock"} />
+              <StatusBadge status={isRealSettlementMode ? "real_settlement" : isArcTestnetMode ? "arc_testnet" : "mock"} />
             </div>
           </div>
           <p className="mt-3 text-sm leading-6 text-slate-400">
-            {isArcTestnetMode ? "Receipts created in the simulator and review flow link to Arcscan transaction pages." : "These are mock Arc tx hashes from the existing demo ledger. After deployment, real registry transactions should be linked from Arcscan separately."}
+            {isRealSettlementMode ? "Receipts show provider payment IDs, transfer references, and any Arc audit transaction hashes returned by the configured adapter." : isArcTestnetMode ? "Receipts created in the simulator and review flow link to Arcscan transaction pages." : "These are mock Arc tx hashes from the existing demo ledger. After deployment, real registry transactions should be linked from Arcscan separately."}
           </p>
           <div className="mt-4 space-y-3">
             {latestTxHashes.map((receipt) => (
@@ -145,6 +145,8 @@ export default function ContractPage() {
                   <a href={buildExplorerTxUrl(arcTestnet.explorerUrl, receipt.txHash)} target="_blank" rel="noreferrer" className="mt-3 inline-flex text-xs text-sky-200 hover:text-sky-100">
                     View transaction on Arcscan
                   </a>
+                ) : isRealSettlementMode ? (
+                  <p className="mt-3 text-xs text-slate-500">Provider payment ID: {receipt.providerPaymentId ?? "not supplied"}</p>
                 ) : (
                   <p className="mt-3 text-xs text-slate-500">Registry explorer link appears after deployment. Hash shown as mock receipt evidence.</p>
                 )}
