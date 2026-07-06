@@ -5,5 +5,19 @@
   "address": "0x3c82F7aD5b78e09c6Aa7020402f85662e7248A8f",
   "deployer": "0x5e65ECBD72Dc0E0A419A70a9C98A0dC3AA44313f",
   "deployedAt": "2026-07-02T17:20:00.505Z",
-  "explorerUrl": "https://testnet.arcscan.app/address/0x3c82F7aD5b78e09c6Aa7020402f85662e7248A8f"
+  "explorerUrl": "https://testnet.arcscan.app/address/0x3c82F7aD5b78e09c6Aa7020402f85662e7248A8f",
+  "seededRegistry": {
+    "agent_research": {
+      "agentId": "1",
+      "policyId": "1"
+    },
+    "agent_ops": {
+      "agentId": "2",
+      "policyId": "2"
+    },
+    "agent_trading": {
+      "agentId": "3",
+      "policyId": "3"
+    }
+  }
 }
