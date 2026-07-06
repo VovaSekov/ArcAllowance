@@ -17,6 +17,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
+    site: "@arcallowans",
     title: "ArcAllowance",
     description: "Budgets before autonomy for AI agents spending USDC on Arc.",
     images: ["/brand/arcallowance-wordmark.png"]

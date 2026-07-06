@@ -5,6 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { BarChart3, Bot, ClipboardList, FileKey2, FileText, Landmark, PlayCircle, Shield } from "lucide-react";
 import { AppStoreProvider } from "@/components/app-store";
+import { externalLinks } from "@/lib/links";
 import { cn } from "@/lib/utils";
 
 const navItems = [
@@ -57,6 +58,15 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             <div className="absolute bottom-5 left-5 right-5 rounded-lg border border-cyan-300/15 bg-cyan-300/[0.045] p-4">
               <p className="text-sm font-medium text-slate-100">Mock settlement</p>
               <p className="mt-1 text-xs leading-5 text-slate-400">Built for Gateway/x402-style nanopayments, Arc transaction memos, and Circle Wallets.</p>
+              <div className="mt-4 flex items-center gap-3 text-xs font-medium">
+                <a href={externalLinks.x} target="_blank" rel="noreferrer" className="text-slate-400 transition hover:text-slate-100">
+                  X
+                </a>
+                <span className="h-1 w-1 rounded-full bg-slate-700" aria-hidden="true" />
+                <a href={externalLinks.github} target="_blank" rel="noreferrer" className="text-slate-400 transition hover:text-slate-100">
+                  GitHub
+                </a>
+              </div>
             </div>
           </div>
           <div className="border-b border-white/10 bg-ink-900/95 p-3 lg:hidden">
@@ -70,6 +80,12 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                   {item.label}
                 </Link>
               ))}
+              <a href={externalLinks.x} target="_blank" rel="noreferrer" className="shrink-0 rounded-full border border-white/10 px-3 py-1.5 text-xs text-slate-300">
+                X
+              </a>
+              <a href={externalLinks.github} target="_blank" rel="noreferrer" className="shrink-0 rounded-full border border-white/10 px-3 py-1.5 text-xs text-slate-300">
+                GitHub
+              </a>
             </div>
           </div>
           <main className="lg:pl-72">

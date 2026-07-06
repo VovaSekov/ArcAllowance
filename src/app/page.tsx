@@ -13,6 +13,7 @@ import {
 } from "lucide-react";
 import { ArchitectureDiagram } from "@/components/architecture-diagram";
 import { arcAllowanceRegistry, arcTestnet, getRegistryExplorerUrl, isRegistryConfigured } from "@/lib/contract/config";
+import { externalLinks } from "@/lib/links";
 import { shortAddress } from "@/lib/utils";
 
 const controls = [
@@ -94,9 +95,17 @@ export default function LandingPage() {
             <p className="hidden text-xs text-slate-500 sm:block">Agent spend control on Arc</p>
           </div>
         </Link>
-        <Link href="/dashboard" className="rounded-md border border-white/10 px-4 py-2 text-sm font-medium text-slate-200 transition hover:bg-white/[0.06]">
-          Open app
-        </Link>
+        <div className="flex shrink-0 items-center gap-2">
+          <a href={externalLinks.x} target="_blank" rel="noreferrer" className="hidden rounded-md px-3 py-2 text-sm font-medium text-slate-400 transition hover:bg-white/[0.06] hover:text-slate-100 sm:inline-flex">
+            X
+          </a>
+          <a href={externalLinks.github} target="_blank" rel="noreferrer" className="hidden rounded-md px-3 py-2 text-sm font-medium text-slate-400 transition hover:bg-white/[0.06] hover:text-slate-100 sm:inline-flex">
+            GitHub
+          </a>
+          <Link href="/dashboard" className="rounded-md border border-white/10 px-4 py-2 text-sm font-medium text-slate-200 transition hover:bg-white/[0.06]">
+            Open app
+          </Link>
+        </div>
       </header>
 
       <main className="relative">
