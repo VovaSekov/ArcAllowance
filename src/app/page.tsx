@@ -1,32 +1,74 @@
+import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight, Bot, CheckCircle2, CircleDollarSign, ExternalLink, FileText, Landmark, ScrollText, ShieldCheck, WalletCards } from "lucide-react";
+import {
+  ArrowRight,
+  Bot,
+  CheckCircle2,
+  CircleDollarSign,
+  ExternalLink,
+  FileText,
+  Landmark,
+  ShieldCheck,
+  Sparkles,
+  WalletCards
+} from "lucide-react";
 import { ArchitectureDiagram } from "@/components/architecture-diagram";
 import { arcAllowanceRegistry, arcTestnet, getRegistryExplorerUrl, isRegistryConfigured } from "@/lib/contract/config";
 import { shortAddress } from "@/lib/utils";
 
-const sections = [
+const controls = [
   {
-    title: "Problem",
-    body: "Agents should not get unlimited wallets. Budgets, merchant allowlists, approval thresholds, policy checks, and audit receipts are the minimum operating layer for autonomous USDC spend.",
+    eyebrow: "AI intent",
+    title: "Natural language becomes a spend request",
+    body: "GPT-5.5 can draft merchant, amount, purpose, and payment type from an agent goal. The model proposes the request; policy still owns the decision.",
+    icon: Sparkles
+  },
+  {
+    eyebrow: "Policy gate",
+    title: "Budgets are enforced before settlement",
+    body: "Allowlists, amount caps, daily limits, blocked purposes, merchant risk, and approval thresholds run before a receipt can be created.",
     icon: ShieldCheck
   },
   {
-    title: "How it works",
-    body: "An agent requests a payment, ArcAllowance evaluates its policy, and the flow either approves, rejects, or routes the request to a human approver before mock settlement.",
-    icon: Bot
-  },
-  {
-    title: "Why Arc / USDC / Circle",
-    body: "USDC keeps budgets readable, Circle Wallets point toward controlled agent custody, Gateway/x402 supports small payments, and Arc memos make reconciliation native.",
+    eyebrow: "Audit proof",
+    title: "Every outcome leaves a trail",
+    body: "Approvals, rejections, memos, Gateway-style authorization hashes, mock Arc tx hashes, and registry events make the flow reviewable.",
     icon: Landmark
   }
 ];
 
-const scenarios = [
-  "ResearchAgent buys a CPI dataset query for 0.03 USDC.",
-  "TradingAgent is blocked from paying an unknown alpha seller.",
-  "OpsAgent requests 45 USDC of compute and waits for approval.",
-  "Tiny API calls are batched into one mock Gateway settlement."
+const demoScenarios = [
+  {
+    agent: "ResearchAgent",
+    request: "MarketData API, 0.03 USDC",
+    result: "Approved with mock receipt",
+    tone: "text-emerald-200"
+  },
+  {
+    agent: "TradingAgent",
+    request: "Unknown Alpha Group, 250 USDC",
+    result: "Rejected by policy",
+    tone: "text-rose-200"
+  },
+  {
+    agent: "OpsAgent",
+    request: "LLM Inference Hub, 45 USDC",
+    result: "Needs human approval",
+    tone: "text-amber-200"
+  },
+  {
+    agent: "Batch settlement",
+    request: "Tiny API calls, 0.42 USDC total",
+    result: "Mock Gateway batch",
+    tone: "text-sky-200"
+  }
+];
+
+const policyRows = [
+  { label: "Merchant allowlist", value: "Pass", tone: "text-emerald-200" },
+  { label: "Purpose check", value: "Pass", tone: "text-emerald-200" },
+  { label: "Daily budget", value: "Warning", tone: "text-amber-200" },
+  { label: "Approval threshold", value: "Route", tone: "text-sky-200" }
 ];
 
 export default function LandingPage() {
@@ -34,96 +76,182 @@ export default function LandingPage() {
   const explorerUrl = getRegistryExplorerUrl();
 
   return (
-    <div className="relative overflow-hidden">
-      <div className="absolute inset-0 surface-grid opacity-40" aria-hidden="true" />
-      <div className="absolute inset-x-0 top-0 h-[520px] bg-[radial-gradient(circle_at_50%_0%,rgba(71,213,255,0.18),transparent_58%)]" aria-hidden="true" />
-      <header className="relative mx-auto flex max-w-7xl items-center justify-between px-4 py-6 sm:px-6 lg:px-8">
-        <Link href="/" className="flex items-center gap-3">
-          <div className="rounded-lg border border-sky-400/30 bg-sky-400/10 p-2 text-sky-200">
-            <WalletCards className="h-5 w-5" aria-hidden="true" />
+    <div className="relative overflow-hidden bg-ink-950">
+      <div className="absolute inset-0 surface-grid opacity-30" aria-hidden="true" />
+      <div className="absolute inset-x-0 top-0 h-[620px] bg-[linear-gradient(90deg,rgba(10,22,34,0.96),rgba(8,12,20,0.88)_48%,rgba(5,7,12,0.98))]" aria-hidden="true" />
+
+      <header className="relative mx-auto flex max-w-7xl items-center justify-between px-4 py-5 sm:px-6 lg:px-8">
+        <Link href="/" className="flex min-w-0 items-center gap-3">
+          <Image
+            src="/brand/arcallowance-mark.png"
+            alt=""
+            width={40}
+            height={40}
+            className="h-10 w-10 shrink-0 rounded-lg border border-sky-300/20 bg-ink-900 object-cover"
+            priority
+          />
+          <div className="min-w-0">
+            <p className="text-sm font-semibold text-white sm:text-base">ArcAllowance</p>
+            <p className="hidden text-xs text-slate-500 sm:block">Agent spend control on Arc</p>
           </div>
-          <span className="font-semibold tracking-tight">ArcAllowance</span>
         </Link>
-        <Link href="/dashboard" className="rounded-md border border-white/10 px-4 py-2 text-sm font-medium text-slate-200 hover:bg-white/[0.06]">
+        <Link href="/dashboard" className="rounded-md border border-white/10 px-4 py-2 text-sm font-medium text-slate-200 transition hover:bg-white/[0.06]">
           Open app
         </Link>
       </header>
 
       <main className="relative">
-        <section className="mx-auto max-w-7xl px-4 pb-14 pt-16 sm:px-6 lg:px-8 lg:pb-20 lg:pt-24">
-          <div className="max-w-5xl">
-            <p className="text-sm font-medium uppercase tracking-[0.22em] text-sky-300">Arc-native agent spend control</p>
-            <h1 className="mt-5 max-w-3xl text-5xl font-semibold tracking-tight text-white md:text-7xl">Budgets before autonomy</h1>
+        <section className="mx-auto grid max-w-7xl gap-10 px-4 pb-14 pt-12 sm:px-6 lg:grid-cols-[minmax(0,0.92fr)_minmax(420px,1.08fr)] lg:px-8 lg:pb-20 lg:pt-20">
+          <div className="flex min-w-0 flex-col justify-center">
+            <div className="inline-flex w-fit items-center gap-2 rounded-md border border-sky-300/20 bg-sky-300/10 px-3 py-1.5 text-xs font-semibold uppercase text-sky-200">
+              <span className="h-1.5 w-1.5 rounded-full bg-emerald-300" aria-hidden="true" />
+              Arc-native agent spend control
+            </div>
+            <h1 className="mt-6 max-w-4xl text-5xl font-semibold leading-[1.02] text-white sm:text-6xl lg:text-7xl">
+              AI agents can request spend. Policies decide what clears.
+            </h1>
             <p className="mt-6 max-w-2xl text-lg leading-8 text-slate-300">
-              Policy controls for AI agents spending USDC on Arc. Approve, reject, or audit every autonomous payment before an agent can touch a budget.
+              ArcAllowance turns every autonomous USDC request into a controlled decision: approve, reject, or route to a human before settlement artifacts are created.
             </p>
-            <div className="mt-9 flex flex-col gap-3 sm:flex-row">
-              <Link href="/dashboard" className="inline-flex items-center justify-center gap-2 rounded-md bg-sky-300 px-5 py-3 text-sm font-semibold text-ink-950 hover:bg-sky-200">
+            <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+              <Link href="/dashboard" className="inline-flex items-center justify-center gap-2 rounded-md bg-sky-300 px-5 py-3 text-sm font-semibold text-ink-950 transition hover:bg-sky-200">
                 Open Demo Dashboard
                 <ArrowRight className="h-4 w-4" aria-hidden="true" />
               </Link>
-              <Link href="/simulate" className="inline-flex items-center justify-center gap-2 rounded-md border border-white/10 px-5 py-3 text-sm font-semibold text-white hover:bg-white/[0.06]">
-                Simulate Agent Spend
+              <Link href="/simulate" className="inline-flex items-center justify-center gap-2 rounded-md border border-white/10 px-5 py-3 text-sm font-semibold text-white transition hover:bg-white/[0.06]">
+                Build AI Spend Intent
                 <CircleDollarSign className="h-4 w-4" aria-hidden="true" />
               </Link>
             </div>
+            <div className="mt-8 grid max-w-xl grid-cols-3 gap-3 text-sm">
+              <div className="rounded-lg border border-white/10 bg-white/[0.04] p-4">
+                <p className="text-2xl font-semibold text-white">3</p>
+                <p className="mt-1 text-slate-400">core demo flows</p>
+              </div>
+              <div className="rounded-lg border border-white/10 bg-white/[0.04] p-4">
+                <p className="text-2xl font-semibold text-white">0</p>
+                <p className="mt-1 text-slate-400">real funds moved</p>
+              </div>
+              <div className="rounded-lg border border-white/10 bg-white/[0.04] p-4">
+                <p className="text-2xl font-semibold text-white">Arc</p>
+                <p className="mt-1 text-slate-400">testnet proof</p>
+              </div>
+            </div>
+          </div>
 
-            <div className="mt-10 grid max-w-5xl gap-4 rounded-lg border border-violet-400/20 bg-violet-400/10 p-4 shadow-glow lg:grid-cols-[minmax(0,1fr)_minmax(260px,360px)]">
-              <div className="flex min-w-0 gap-3">
-                <div className="shrink-0 rounded-md border border-violet-300/30 bg-violet-300/10 p-2 text-violet-100">
-                  <ScrollText className="h-5 w-5" aria-hidden="true" />
+          <div className="min-w-0">
+            <div className="rounded-lg border border-white/10 bg-ink-900/80 p-4 shadow-glow backdrop-blur">
+              <div className="rounded-lg border border-sky-300/20 bg-[linear-gradient(135deg,rgba(14,165,233,0.14),rgba(15,23,42,0.92)_42%,rgba(2,6,23,0.96))] p-5">
+                <div className="flex items-center justify-between gap-4">
+                  <div className="flex min-w-0 items-center gap-3">
+                    <Image
+                      src="/brand/arcallowance-mark.png"
+                      alt=""
+                      width={58}
+                      height={58}
+                      className="h-14 w-14 shrink-0 rounded-xl border border-sky-300/20 bg-ink-950 object-cover"
+                      priority
+                    />
+                    <div className="min-w-0">
+                      <p className="text-sm font-semibold text-white">Spend request</p>
+                      <p className="mt-1 text-xs text-slate-400">OpsAgent → LLM Inference Hub</p>
+                    </div>
+                  </div>
+                  <div className="rounded-md border border-amber-300/20 bg-amber-300/10 px-3 py-1.5 text-xs font-semibold text-amber-100">
+                    Needs approval
+                  </div>
                 </div>
-                <div className="min-w-0">
-                  <p className="text-sm font-semibold text-white">Live on Arc Testnet</p>
-                  <p className="mt-1 text-sm leading-6 text-violet-100/80">
-                    ArcAllowanceRegistry anchors agent registrations, policy hashes, spend requests, and spend decisions as audit proof. No custody.
-                  </p>
+
+                <div className="mt-6 grid gap-3 sm:grid-cols-[0.95fr_1.35fr_1fr]">
+                  <div className="rounded-lg border border-white/10 bg-ink-950/55 p-4">
+                    <p className="text-xs text-slate-500">Amount</p>
+                    <p className="mt-2 text-2xl font-semibold text-white">45.00</p>
+                    <p className="mt-1 text-xs text-slate-400">USDC</p>
+                  </div>
+                  <div className="rounded-lg border border-white/10 bg-ink-950/55 p-4">
+                    <p className="text-xs text-slate-500">Purpose</p>
+                    <p className="mt-2 break-words text-sm font-semibold leading-5 text-white">weekly_compute_budget</p>
+                  </div>
+                  <div className="rounded-lg border border-white/10 bg-ink-950/55 p-4">
+                    <p className="text-xs text-slate-500">Payment type</p>
+                    <p className="mt-2 text-sm font-semibold text-white">Mock batch</p>
+                  </div>
+                </div>
+
+                <div className="mt-5 rounded-lg border border-white/10 bg-ink-950/55 p-4">
+                  <div className="flex items-center justify-between gap-3">
+                    <p className="text-sm font-semibold text-white">Policy result</p>
+                    <p className="text-sm font-semibold text-amber-200">Human review required</p>
+                  </div>
+                  <div className="mt-4 space-y-3">
+                    {policyRows.map((row) => (
+                      <div key={row.label} className="flex items-center justify-between gap-3 rounded-md border border-white/10 bg-white/[0.03] px-3 py-2">
+                        <span className="min-w-0 text-sm text-slate-300">{row.label}</span>
+                        <span className={`shrink-0 text-xs font-semibold ${row.tone}`}>{row.value}</span>
+                      </div>
+                    ))}
+                  </div>
                 </div>
               </div>
-              <div className="grid min-w-0 gap-3 text-sm sm:grid-cols-3 lg:grid-cols-1">
-                <div>
-                  <p className="text-violet-100/60">Network</p>
-                  <p className="mt-1 text-white">{arcTestnet.network}</p>
+
+              <div className="mt-4 grid gap-4 rounded-lg border border-violet-300/20 bg-violet-300/10 p-4 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-center">
+                <div className="min-w-0">
+                  <div className="flex items-center gap-2">
+                    <ShieldCheck className="h-4 w-4 text-violet-100" aria-hidden="true" />
+                    <p className="text-sm font-semibold text-white">Live Arc Testnet audit proof</p>
+                  </div>
+                  <p className="mt-2 text-sm leading-6 text-violet-100/75">
+                    Registry events anchor agent registration, policy hashes, spend requests, and decisions. No custody and no real payments in demo mode.
+                  </p>
                 </div>
-                <div>
-                  <p className="text-violet-100/60">Registry</p>
-                  <p className="mt-1 break-all font-mono text-xs text-white">{registryConfigured ? shortAddress(arcAllowanceRegistry.address) : "Pending deploy"}</p>
+                <div className="grid gap-2 text-sm sm:w-44">
+                  <div>
+                    <p className="text-violet-100/60">Network</p>
+                    <p className="text-white">{arcTestnet.network}</p>
+                  </div>
+                  <div>
+                    <p className="text-violet-100/60">Registry</p>
+                    <p className="font-mono text-xs text-white">{registryConfigured ? shortAddress(arcAllowanceRegistry.address) : "Pending deploy"}</p>
+                  </div>
+                  {registryConfigured ? (
+                    <a href={explorerUrl} target="_blank" rel="noreferrer" className="inline-flex w-fit items-center justify-center gap-2 rounded-md border border-violet-300/30 px-3 py-2 text-xs font-semibold text-violet-50 transition hover:bg-violet-300/10">
+                      View Arcscan
+                      <ExternalLink className="h-3.5 w-3.5" aria-hidden="true" />
+                    </a>
+                  ) : (
+                    <Link href="/contract" className="inline-flex w-fit items-center justify-center gap-2 rounded-md border border-violet-300/30 px-3 py-2 text-xs font-semibold text-violet-50 transition hover:bg-violet-300/10">
+                      Contract status
+                      <ArrowRight className="h-3.5 w-3.5" aria-hidden="true" />
+                    </Link>
+                  )}
                 </div>
-                {registryConfigured ? (
-                  <a href={explorerUrl} target="_blank" rel="noreferrer" className="inline-flex w-fit items-center justify-center gap-2 rounded-md border border-violet-300/30 px-3 py-2 text-xs font-semibold text-violet-50 hover:bg-violet-300/10">
-                    View Arcscan
-                    <ExternalLink className="h-3.5 w-3.5" aria-hidden="true" />
-                  </a>
-                ) : (
-                  <Link href="/contract" className="inline-flex w-fit items-center justify-center gap-2 rounded-md border border-violet-300/30 px-3 py-2 text-xs font-semibold text-violet-50 hover:bg-violet-300/10">
-                    Contract status
-                    <ArrowRight className="h-3.5 w-3.5" aria-hidden="true" />
-                  </Link>
-                )}
               </div>
             </div>
           </div>
         </section>
 
         <section className="mx-auto max-w-7xl px-4 pb-16 sm:px-6 lg:px-8">
-          <div className="grid gap-4 md:grid-cols-3">
-            {sections.map((section) => (
-              <div key={section.title} className="min-w-0 rounded-lg border border-white/10 bg-white/[0.045] p-6">
-                <section.icon className="h-6 w-6 text-sky-300" aria-hidden="true" />
-                <h2 className="mt-5 break-words text-xl font-semibold text-white">{section.title}</h2>
-                <p className="mt-3 text-sm leading-6 text-slate-400">{section.body}</p>
+          <div className="grid items-stretch gap-4 md:grid-cols-3">
+            {controls.map((control) => (
+              <div key={control.title} className="min-w-0 rounded-lg border border-white/10 bg-white/[0.045] p-6">
+                <control.icon className="h-6 w-6 text-sky-300" aria-hidden="true" />
+                <p className="mt-5 text-xs font-semibold uppercase text-slate-500">{control.eyebrow}</p>
+                <h2 className="mt-2 text-xl font-semibold leading-7 text-white">{control.title}</h2>
+                <p className="mt-3 text-sm leading-6 text-slate-400">{control.body}</p>
               </div>
             ))}
           </div>
         </section>
 
         <section className="mx-auto max-w-7xl px-4 pb-16 sm:px-6 lg:px-8">
-          <div className="grid gap-8 lg:grid-cols-[minmax(0,0.78fr)_minmax(0,1.22fr)] lg:items-center">
+          <div className="grid gap-8 rounded-lg border border-white/10 bg-white/[0.035] p-5 sm:p-6 lg:grid-cols-[minmax(280px,0.72fr)_minmax(0,1.28fr)] lg:items-center">
             <div className="min-w-0">
-              <p className="text-sm font-medium uppercase tracking-[0.18em] text-violet-300">Mock mode today, Arc-native tomorrow</p>
-              <h2 className="mt-3 text-3xl font-semibold tracking-tight text-white">Built for Gateway/x402-style nanopayments, Arc transaction memos, and Circle Wallets.</h2>
+              <p className="text-sm font-semibold uppercase text-violet-200">Mock mode today, Arc-native tomorrow</p>
+              <h2 className="mt-3 text-3xl font-semibold leading-tight text-white">
+                Designed for Gateway-style nanopayments, Arc memos, and controlled agent wallets.
+              </h2>
               <p className="mt-4 text-base leading-7 text-slate-400">
-                The MVP is local and safe. It simulates authorization, settlement, memos, and receipts while making the upgrade path to Circle Wallets, Gateway/x402, Arc batching, and ERC-8004 agent identity explicit.
+                The MVP stays local and safe while making the path to Circle Wallets, Gateway/x402, Arc batching, and ERC-8004 agent identity explicit.
               </p>
             </div>
             <ArchitectureDiagram />
@@ -131,16 +259,31 @@ export default function LandingPage() {
         </section>
 
         <section className="mx-auto max-w-7xl px-4 pb-20 sm:px-6 lg:px-8">
-          <div className="rounded-lg border border-white/10 bg-white/[0.045] p-6">
-            <div className="flex items-center gap-3">
-              <FileText className="h-5 w-5 text-sky-300" aria-hidden="true" />
-              <h2 className="text-xl font-semibold text-white">Demo scenarios</h2>
+          <div className="rounded-lg border border-white/10 bg-white/[0.045] p-5 sm:p-6">
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+              <div>
+                <div className="flex items-center gap-3">
+                  <FileText className="h-5 w-5 text-sky-300" aria-hidden="true" />
+                  <h2 className="text-xl font-semibold text-white">Demo scenarios</h2>
+                </div>
+                <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-400">
+                  The main product flows are ready to test: approved, rejected, approval-required, and batched settlement.
+                </p>
+              </div>
+              <Link href="/simulate" className="inline-flex w-fit items-center justify-center gap-2 rounded-md border border-white/10 px-4 py-2 text-sm font-semibold text-white transition hover:bg-white/[0.06]">
+                Run simulator
+                <ArrowRight className="h-4 w-4" aria-hidden="true" />
+              </Link>
             </div>
-            <div className="mt-5 grid gap-3 md:grid-cols-2">
-              {scenarios.map((scenario) => (
-                <div key={scenario} className="flex min-w-0 gap-3 rounded-md border border-white/10 bg-ink-950/50 p-4">
-                  <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0 text-emerald-300" aria-hidden="true" />
-                  <p className="min-w-0 text-sm leading-6 text-slate-300">{scenario}</p>
+            <div className="mt-6 grid items-stretch gap-3 md:grid-cols-2 xl:grid-cols-4">
+              {demoScenarios.map((scenario) => (
+                <div key={scenario.agent} className="flex min-w-0 flex-col rounded-lg border border-white/10 bg-ink-950/50 p-4">
+                  <div className="flex items-center gap-2">
+                    <CheckCircle2 className="h-5 w-5 shrink-0 text-emerald-300" aria-hidden="true" />
+                    <p className="min-w-0 text-sm font-semibold text-white">{scenario.agent}</p>
+                  </div>
+                  <p className="mt-4 text-sm leading-6 text-slate-400">{scenario.request}</p>
+                  <p className={`mt-auto pt-4 text-sm font-semibold ${scenario.tone}`}>{scenario.result}</p>
                 </div>
               ))}
             </div>

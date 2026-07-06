@@ -1,4 +1,4 @@
-import { ArrowRight, Bot, FileCheck, Landmark, ReceiptText, ShieldCheck, WalletCards } from "lucide-react";
+import { Bot, FileCheck, Landmark, ReceiptText, ShieldCheck, WalletCards } from "lucide-react";
 
 const nodes = [
   { label: "Agent", detail: "Autonomous request", icon: Bot },
@@ -11,18 +11,20 @@ const nodes = [
 
 export function ArchitectureDiagram() {
   return (
-    <div className="rounded-lg border border-white/10 bg-white/[0.035] p-4">
-      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-6">
+    <div className="rounded-lg border border-white/10 bg-ink-950/45 p-4">
+      <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
         {nodes.map((node, index) => (
-          <div key={node.label} className="relative min-w-0 rounded-lg border border-white/10 bg-ink-900/80 p-4">
-            <node.icon className="h-5 w-5 text-sky-300" aria-hidden="true" />
-            <p className="mt-3 break-words text-sm font-semibold leading-5 text-white">{node.label}</p>
-            <p className="mt-1 text-xs leading-5 text-slate-400">{node.detail}</p>
-            {index < nodes.length - 1 ? (
-              <div className="pointer-events-none absolute -right-3 top-1/2 z-10 hidden h-6 w-6 -translate-y-1/2 items-center justify-center rounded-full border border-white/10 bg-ink-950 text-slate-500 2xl:flex">
-                <ArrowRight className="h-3.5 w-3.5" aria-hidden="true" />
+          <div key={node.label} className="min-w-0 rounded-lg border border-white/10 bg-ink-900/80 p-4">
+            <div className="flex items-start gap-3">
+              <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md border border-sky-300/20 bg-sky-300/10">
+                <node.icon className="h-4 w-4 text-sky-300" aria-hidden="true" />
               </div>
-            ) : null}
+              <div className="min-w-0">
+                <p className="text-sm font-semibold leading-5 text-white">{node.label}</p>
+                <p className="mt-1 text-xs leading-5 text-slate-400">{node.detail}</p>
+              </div>
+            </div>
+            <p className="mt-4 text-xs font-semibold text-slate-600">Step {index + 1}</p>
           </div>
         ))}
       </div>

@@ -1,8 +1,9 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { BarChart3, Bot, ClipboardCheck, FileText, Home, Landmark, PlayCircle, ScrollText, Shield } from "lucide-react";
+import { BarChart3, Bot, ClipboardCheck, FileText, Landmark, PlayCircle, ScrollText, Shield } from "lucide-react";
 import { AppStoreProvider } from "@/components/app-store";
 import { cn } from "@/lib/utils";
 
@@ -29,11 +30,9 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         <div className="min-h-screen bg-ink-950 text-white">
           <div className="fixed inset-y-0 left-0 hidden w-72 border-r border-white/10 bg-ink-900/90 p-5 lg:block">
             <Link href="/" className="flex items-center gap-3">
-              <div className="rounded-lg border border-sky-400/30 bg-sky-400/10 p-2 text-sky-200">
-                <Home className="h-5 w-5" aria-hidden="true" />
-              </div>
+              <Image src="/brand/arcallowance-mark.png" alt="" width={40} height={40} className="h-10 w-10 rounded-lg border border-sky-300/20 bg-ink-950 object-cover" />
               <div>
-                <p className="font-semibold tracking-tight">ArcAllowance</p>
+                <p className="font-semibold">ArcAllowance</p>
                 <p className="text-xs text-slate-500">Policy controls for agent USDC</p>
               </div>
             </Link>
