@@ -16,3 +16,4 @@ cache
 typechain-types
 .hardhat-global
 .hardhat-home
+.data

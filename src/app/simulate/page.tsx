@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { ArrowRight, CircleDot, Clock3, Loader2, PlayCircle, Sparkles, XCircle } from "lucide-react";
-import { createSpendRequestFromInput, useAppStore } from "@/components/app-store";
+import { useAppStore } from "@/components/app-store";
 import { ContractStatusCard } from "@/components/contract-status-card";
 import { DemoModeBanner } from "@/components/demo-mode-banner";
 import { PageHeader } from "@/components/page-header";
@@ -11,7 +11,6 @@ import { PolicyCheckList } from "@/components/policy-check-list";
 import { ReceiptCard } from "@/components/receipt-card";
 import { SpendTimeline } from "@/components/spend-timeline";
 import { StatusBadge } from "@/components/status-badge";
-import { evaluateSpendRequest } from "@/lib/policy-engine";
 import { isArcTestnetMode, settlementModeLabel } from "@/lib/settlement-mode";
 import { demoScenarios } from "@/lib/seed-data";
 import type { PaymentType, PolicyEvaluation, Receipt, SpendRequest } from "@/lib/types";
@@ -43,7 +42,7 @@ const aiPromptExamples = [
 ];
 
 export default function SimulatePage() {
-  const { agents, merchants, policies, spendRequests, addSpendRequest, anchorSpendRequest } = useAppStore();
+  const { agents, merchants, policies, submitSpendRequest } = useAppStore();
   const [form, setForm] = useState<SimForm>({
     agentId: agents[0]?.id ?? "",
     merchantId: merchants[0]?.id ?? "",
@@ -151,18 +150,6 @@ export default function SimulatePage() {
 
     setFormError(undefined);
     setSettlementLoading(true);
-    const result = evaluateSpendRequest({
-      input: {
-        agentId: form.agentId,
-        merchantId: form.merchantId,
-        amountUSDC,
-        purpose: form.purpose,
-        paymentType: form.paymentType
-      },
-      policy: selectedPolicy,
-      merchant: selectedMerchant,
-      existingRequests: spendRequests
-    });
     const input = {
       agentId: form.agentId,
       merchantId: form.merchantId,
@@ -170,15 +157,13 @@ export default function SimulatePage() {
       purpose: form.purpose,
       paymentType: form.paymentType
     };
-    const request = addSpendRequest(createSpendRequestFromInput(input, result));
-    setEvaluation(result);
-    setLatestRequest(request);
     setLatestReceipt(undefined);
 
     try {
-      const anchored = await anchorSpendRequest(request);
-      setLatestRequest(anchored.request);
-      setLatestReceipt(anchored.receipt);
+      const result = await submitSpendRequest(input);
+      setEvaluation(result.evaluation);
+      setLatestRequest(result.request);
+      setLatestReceipt(result.receipt);
     } catch (error) {
       setFormError(error instanceof Error ? error.message : `${settlementModeLabel()} anchoring failed.`);
     } finally {
@@ -196,7 +181,7 @@ export default function SimulatePage() {
         title="Simulate agent spend"
         description={
           isArcTestnetMode
-            ? "Select an agent, merchant, amount, purpose, and payment type. ArcAllowance evaluates policy locally, then anchors allowed decisions on Arc Testnet."
+            ? "Select an agent, merchant, amount, purpose, and payment type. ArcAllowance evaluates policy on the server, then anchors decisions on Arc Testnet."
             : "Select an agent, merchant, amount, purpose, and payment type. ArcAllowance evaluates the policy and generates mock settlement artifacts only when allowed."
         }
       />

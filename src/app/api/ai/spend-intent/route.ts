@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { RateLimitError, assertRateLimit, getClientIp } from "@/lib/server/rate-limit";
 import { agents, merchants, policies } from "@/lib/seed-data";
 import type { PaymentType } from "@/lib/types";
 
@@ -239,7 +240,21 @@ async function generateWithOpenAI(prompt: string, fallback: SpendIntent): Promis
   return normalizePolicyCriticalIntent(prompt, sanitized, fallback);
 }
 
+export const runtime = "nodejs";
+
 export async function POST(request: Request) {
+  try {
+    assertRateLimit({ key: `ai-intent:${getClientIp(request)}`, limit: 12, windowMs: 60_000 });
+  } catch (error) {
+    if (error instanceof RateLimitError) {
+      return NextResponse.json(
+        { error: error.message },
+        { status: 429, headers: { "Retry-After": String(error.retryAfterSeconds) } }
+      );
+    }
+    throw error;
+  }
+
   const body = await request.json().catch(() => ({} as RequestBody)) as RequestBody;
   const prompt = normalizePrompt(body.prompt);
 

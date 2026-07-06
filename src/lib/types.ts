@@ -94,6 +94,13 @@ export type AuditEvent = {
   createdAt: string;
 };
 
+export type AppState = {
+  spendRequests: SpendRequest[];
+  receipts: Receipt[];
+  auditEvents: AuditEvent[];
+  idempotencyKeys?: Record<string, string>;
+};
+
 export type SpendInput = {
   agentId: string;
   merchantId: string;

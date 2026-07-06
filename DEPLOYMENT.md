@@ -114,9 +114,13 @@ The bootstrap command updates `deployments/arc-testnet.json` with `seededRegistr
 NEXT_PUBLIC_ARC_ALLOWANCE_REGISTRY_ADDRESS=0x...
 NEXT_PUBLIC_CHAIN_MODE=arc_testnet
 NEXT_PUBLIC_SETTLEMENT_MODE=arc_testnet
+ARC_DATA_DIR=/root/arcallowance/.data
+ARC_ADMIN_TOKEN=
 ARC_TESTNET_RPC_URL=https://rpc.testnet.arc.network
 ARC_TESTNET_PRIVATE_KEY=your_fresh_testnet_operator_private_key
 ```
+
+Leave `ARC_ADMIN_TOKEN` blank for a public testnet demo. Set it only when the frontend is configured to send `x-arc-admin-token`; otherwise simulator and approvals writes will be rejected.
 
 9. Build the app:
 
@@ -224,4 +228,4 @@ Do not expose the key as a `NEXT_PUBLIC_` variable.
 - Site returns 502: confirm PM2 is running with `pm2 status` and the app is listening on port `3030`.
 - Certbot fails: confirm DNS A records point to the VPS and port 80 is reachable.
 - Build fails: run `npm run typecheck` and `npm run lint` locally, fix errors, then redeploy.
-- Environment mismatch: ensure `.env.local` mirrors `.env.example` and keeps settlement mode set to `mock`.
+- Environment mismatch: ensure `.env.local` mirrors `.env.example` and keeps production settlement mode set to `arc_testnet`.

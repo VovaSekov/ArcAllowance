@@ -129,7 +129,7 @@ Gateway/x402 integration later would connect approved policy decisions to real a
 - Hardhat
 - Solidity
 - Local seeded data
-- Browser localStorage state
+- Server-backed JSON state for spend requests, approvals, audit events, and receipts
 - Mock settlement helpers
 
 ## Local Setup
@@ -159,10 +159,14 @@ NEXT_PUBLIC_DOMAIN=arcallowance.xyz
 OPENAI_API_KEY=
 OPENAI_MODEL=gpt-5.5
 
+ARC_ADMIN_TOKEN=
+ARC_DATA_DIR=.data
 ARC_TESTNET_RPC_URL=https://rpc.testnet.arc.network
 ARC_TESTNET_PRIVATE_KEY=
 DEPLOYER_PRIVATE_KEY=
 ```
+
+`ARC_ADMIN_TOKEN` is optional. When set, write APIs require an `x-arc-admin-token` header; without it the app remains publicly writable but rate-limited for demo mode. `ARC_DATA_DIR` stores the server ledger JSON and should not be committed.
 
 ## Data Models
 

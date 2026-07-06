@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
-import { anchorSpendRequest, markAnchoredDecision } from "@/lib/arc-testnet-registry";
+import { assertWriteAccess, responseHeadersForError, responseStatusForError } from "@/lib/server/auth";
+import { decideSpendRequest, parseSpendInput, submitSpendRequest } from "@/lib/server/spend-service";
 import type { SpendRequest } from "@/lib/types";
 
 type AnchorPayload =
@@ -27,8 +28,7 @@ function isSpendRequest(value: unknown): value is SpendRequest {
     Number.isFinite(value.amountUSDC) &&
     value.amountUSDC > 0 &&
     typeof value.purpose === "string" &&
-    typeof value.paymentType === "string" &&
-    typeof value.status === "string"
+    typeof value.paymentType === "string"
   );
 }
 
@@ -54,23 +54,32 @@ function parsePayload(value: unknown): AnchorPayload {
   throw new Error("Unsupported Arc anchor action.");
 }
 
+export const runtime = "nodejs";
+
 export async function POST(request: Request) {
   try {
+    assertWriteAccess(request, { action: "legacy-arc-anchor", limit: 10, windowMs: 60_000 });
     const payload = parsePayload(await request.json());
-    const result = payload.action === "anchor"
-      ? await anchorSpendRequest(payload.request)
-      : await markAnchoredDecision(payload.request, payload.status);
 
+    if (payload.action === "anchor") {
+      const result = await submitSpendRequest(parseSpendInput(payload.request), `legacy:${payload.request.id}`);
+      return NextResponse.json({
+        mode: "arc_testnet",
+        requestPatch: result.request,
+        receipt: result.receipt
+      });
+    }
+
+    const result = await decideSpendRequest(payload.request.id, payload.status);
     return NextResponse.json({
       mode: "arc_testnet",
-      ...result
+      requestPatch: result.request,
+      receipt: result.receipt
     });
   } catch (error) {
     return NextResponse.json(
-      {
-        error: error instanceof Error ? error.message : "Arc Testnet anchoring failed."
-      },
-      { status: 400 }
+      { error: error instanceof Error ? error.message : "Arc Testnet anchoring failed." },
+      { status: responseStatusForError(error), headers: responseHeadersForError(error) }
     );
   }
 }
