@@ -2,14 +2,7 @@ import { ArchitectureDiagram } from "@/components/architecture-diagram";
 import { ContractStatusCard } from "@/components/contract-status-card";
 import { DemoModeBanner } from "@/components/demo-mode-banner";
 import { PageHeader } from "@/components/page-header";
-
-const mvp = [
-  "Local policy engine evaluates seeded policies and browser-created requests.",
-  "Seeded agents, merchants, policies, receipts, and audit events power the demo.",
-  "Mock x402/Gateway authorization creates readable payment artifacts.",
-  "Mock Arc memo and tx hash show how receipts can reconcile future settlements.",
-  "ArcAllowanceRegistry is deployed on Arc Testnet as an onchain audit layer. It records agent registrations, policy hashes, spend requests, and spend decisions. It does not custody funds and does not execute production payments. The MVP uses a frontend policy engine and mock Gateway/x402 settlement, while Arc Testnet provides real onchain proof that agent spending decisions can be anchored and audited."
-];
+import { isArcTestnetMode } from "@/lib/settlement-mode";
 
 const roadmap = [
   "Circle developer-controlled wallets for agent wallets.",
@@ -22,12 +15,28 @@ const roadmap = [
 ];
 
 export default function ArchitecturePage() {
+  const currentArchitecture = isArcTestnetMode
+    ? [
+        "Local policy engine evaluates seeded policies and browser-created requests.",
+        "ArcAllowanceRegistry records agent registrations, policy hashes, spend requests, and spend decisions on Arc Testnet.",
+        "The frontend never receives private keys; registry writes are handled by a server-side testnet signer.",
+        "Receipts link to real Arc Testnet registry transaction hashes.",
+        "The registry does not custody funds or execute production USDC transfers."
+      ]
+    : [
+        "Local policy engine evaluates seeded policies and browser-created requests.",
+        "Seeded agents, merchants, policies, receipts, and audit events power the demo.",
+        "Mock x402/Gateway authorization creates readable payment artifacts.",
+        "Mock Arc memo and tx hash show how receipts can reconcile future settlements.",
+        "ArcAllowanceRegistry is deployed on Arc Testnet as an onchain audit layer."
+      ];
+
   return (
     <>
       <PageHeader
         eyebrow="Architecture"
         title="From local policy checks to Arc-native settlement"
-        description="The MVP is intentionally mock-first. It shows the control plane and audit trail before any real private keys, custody, or settlement integrations are introduced."
+        description={isArcTestnetMode ? "The product runs policy checks locally and anchors spend decisions to Arc Testnet through a server-side registry adapter." : "The MVP is intentionally mock-first. It shows the control plane and audit trail before any real private keys, custody, or settlement integrations are introduced."}
       />
       <DemoModeBanner />
       <div className="mt-6">
@@ -38,9 +47,9 @@ export default function ArchitecturePage() {
       </div>
       <div className="mt-6 grid gap-6 lg:grid-cols-2">
         <section className="rounded-lg border border-white/10 bg-white/[0.035] p-5">
-          <h2 className="text-lg font-semibold text-white">Current MVP</h2>
+          <h2 className="text-lg font-semibold text-white">{isArcTestnetMode ? "Current testnet product" : "Current MVP"}</h2>
           <div className="mt-4 space-y-3">
-            {mvp.map((item) => (
+            {currentArchitecture.map((item) => (
               <div key={item} className="rounded-md border border-white/10 bg-ink-950/50 p-4 text-sm leading-6 text-slate-300">{item}</div>
             ))}
           </div>

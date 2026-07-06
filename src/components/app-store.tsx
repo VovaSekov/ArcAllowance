@@ -2,6 +2,7 @@
 
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { createMockReceipt, generateMemoId, generateMockArcTxHash, generateMockGatewayAuthorizationHash } from "@/lib/mock-settlement";
+import { isArcTestnetMode, settlementMode } from "@/lib/settlement-mode";
 import { agents, initialAuditEvents, initialReceipts, initialSpendRequests, merchants, policies } from "@/lib/seed-data";
 import type { Agent, AuditEvent, Merchant, PaymentType, Receipt, SpendInput, SpendRequest } from "@/lib/types";
 import { createId } from "@/lib/utils";
@@ -17,18 +18,19 @@ type StoreContextValue = AppState & {
   merchants: Merchant[];
   policies: typeof policies;
   addSpendRequest: (input: Omit<SpendRequest, "id" | "createdAt">) => SpendRequest;
-  settleApprovedRequest: (request: SpendRequest) => Receipt | undefined;
-  approveRequest: (requestId: string) => Receipt | undefined;
-  rejectRequest: (requestId: string) => void;
+  anchorSpendRequest: (request: SpendRequest) => Promise<{ request: SpendRequest; receipt?: Receipt }>;
+  settleApprovedRequest: (request: SpendRequest) => Promise<Receipt | undefined>;
+  approveRequest: (requestId: string) => Promise<Receipt | undefined>;
+  rejectRequest: (requestId: string) => Promise<void>;
   resetDemoState: () => void;
 };
 
-const storageKey = "arcallowance_state_v1";
+const storageKey = `arcallowance_state_${settlementMode}_v2`;
 
 const defaultState: AppState = {
-  spendRequests: initialSpendRequests,
-  receipts: initialReceipts,
-  auditEvents: initialAuditEvents
+  spendRequests: isArcTestnetMode ? [] : initialSpendRequests,
+  receipts: isArcTestnetMode ? [] : initialReceipts,
+  auditEvents: isArcTestnetMode ? [] : initialAuditEvents
 };
 
 const StoreContext = createContext<StoreContextValue | null>(null);
@@ -57,6 +59,24 @@ function settlementFields(paymentType: PaymentType) {
     memoId: generateMemoId(),
     gatewayAuthorizationHash: paymentType === "usdc_transfer" ? undefined : generateMockGatewayAuthorizationHash(),
     txHash: generateMockArcTxHash()
+  };
+}
+
+async function postArcAnchor(payload: Record<string, unknown>): Promise<{ requestPatch: Partial<SpendRequest>; receipt?: Receipt; error?: string }> {
+  const response = await fetch("/api/arc/anchor", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload)
+  });
+  const data = await response.json() as { requestPatch?: Partial<SpendRequest>; receipt?: Receipt; error?: string };
+
+  if (!response.ok || data.error || !data.requestPatch) {
+    throw new Error(data.error ?? "Arc Testnet anchoring failed.");
+  }
+
+  return {
+    requestPatch: data.requestPatch,
+    receipt: data.receipt
   };
 }
 
@@ -104,7 +124,7 @@ export function AppStoreProvider({ children }: { children: React.ReactNode }) {
     return request;
   }, []);
 
-  const settleApprovedRequest = useCallback((request: SpendRequest) => {
+  const settleMockApprovedRequest = useCallback((request: SpendRequest) => {
     const agent = findAgent(request.agentId);
     const merchant = findMerchant(request.merchantId);
     if (!agent || !merchant || request.status === "rejected" || request.status === "needs_approval") {
@@ -115,6 +135,7 @@ export function AppStoreProvider({ children }: { children: React.ReactNode }) {
     const withSettlement: SpendRequest = {
       ...request,
       status: "settled",
+      settlementMode: "mock",
       memoId: request.memoId ?? fields.memoId,
       gatewayAuthorizationHash: request.gatewayAuthorizationHash ?? fields.gatewayAuthorizationHash,
       txHash: request.txHash ?? fields.txHash
@@ -131,7 +152,80 @@ export function AppStoreProvider({ children }: { children: React.ReactNode }) {
     return receipt;
   }, []);
 
-  const approveRequest = useCallback((requestId: string) => {
+  const anchorSpendRequest = useCallback(async (request: SpendRequest) => {
+    if (!isArcTestnetMode) {
+      const receipt = request.status === "approved" ? settleMockApprovedRequest(request) : undefined;
+      const nextRequest = receipt
+        ? {
+            ...request,
+            status: "settled" as const,
+            settlementMode: "mock" as const,
+            memoId: receipt.memoId,
+            txHash: receipt.txHash
+          }
+        : request;
+      return { request: nextRequest, receipt };
+    }
+
+    const result = await postArcAnchor({ action: "anchor", request });
+    const nextRequest: SpendRequest = {
+      ...request,
+      ...result.requestPatch
+    };
+
+    setState((current) => ({
+      ...current,
+      spendRequests: current.spendRequests.map((item) => (item.id === request.id ? nextRequest : item)),
+      receipts: result.receipt ? [result.receipt, ...current.receipts] : current.receipts,
+      auditEvents: [
+        auditEvent(request.id, nextRequest.status === "settled" ? "arc_testnet_settled" : "arc_testnet_anchored", {
+          onchainRequestId: nextRequest.onchainRequestId ?? null,
+          txHash: nextRequest.txHash ?? null,
+          receiptId: result.receipt?.id ?? null
+        }),
+        ...current.auditEvents
+      ]
+    }));
+
+    return { request: nextRequest, receipt: result.receipt };
+  }, [settleMockApprovedRequest]);
+
+  const settleApprovedRequest = useCallback(async (request: SpendRequest) => {
+    const result = await anchorSpendRequest(request);
+    return result.receipt;
+  }, [anchorSpendRequest]);
+
+  const approveRequest = useCallback(async (requestId: string) => {
+    const currentRequest = state.spendRequests.find((item) => item.id === requestId);
+    if (!currentRequest) {
+      return undefined;
+    }
+
+    if (isArcTestnetMode) {
+      const result = await postArcAnchor({ action: "decision", request: currentRequest, status: "approved" });
+      const settledRequest: SpendRequest = {
+        ...currentRequest,
+        ...result.requestPatch
+      };
+
+      setState((current) => ({
+        ...current,
+        spendRequests: current.spendRequests.map((item) => (item.id === requestId ? settledRequest : item)),
+        receipts: result.receipt ? [result.receipt, ...current.receipts] : current.receipts,
+        auditEvents: [
+          auditEvent(requestId, "human_approved", { receiptId: result.receipt?.id ?? null }),
+          auditEvent(requestId, "arc_testnet_settled", {
+            onchainRequestId: settledRequest.onchainRequestId ?? null,
+            txHash: settledRequest.txHash ?? null,
+            receiptId: result.receipt?.id ?? null
+          }),
+          ...current.auditEvents
+        ]
+      }));
+
+      return result.receipt;
+    }
+
     let createdReceipt: Receipt | undefined;
 
     setState((current) => {
@@ -149,6 +243,7 @@ export function AppStoreProvider({ children }: { children: React.ReactNode }) {
       const settledRequest: SpendRequest = {
         ...request,
         status: "settled",
+        settlementMode: "mock",
         memoId: request.memoId ?? fields.memoId,
         gatewayAuthorizationHash: request.gatewayAuthorizationHash ?? fields.gatewayAuthorizationHash,
         txHash: request.txHash ?? fields.txHash
@@ -168,9 +263,32 @@ export function AppStoreProvider({ children }: { children: React.ReactNode }) {
     });
 
     return createdReceipt;
-  }, []);
+  }, [state.spendRequests]);
 
-  const rejectRequest = useCallback((requestId: string) => {
+  const rejectRequest = useCallback(async (requestId: string) => {
+    const currentRequest = state.spendRequests.find((item) => item.id === requestId);
+    if (isArcTestnetMode && currentRequest) {
+      const result = await postArcAnchor({ action: "decision", request: currentRequest, status: "rejected" });
+      const rejectedRequest: SpendRequest = {
+        ...currentRequest,
+        ...result.requestPatch
+      };
+
+      setState((current) => ({
+        ...current,
+        spendRequests: current.spendRequests.map((request) => (request.id === requestId ? rejectedRequest : request)),
+        auditEvents: [
+          auditEvent(requestId, "human_rejected"),
+          auditEvent(requestId, "arc_testnet_rejected", {
+            onchainRequestId: rejectedRequest.onchainRequestId ?? null,
+            txHash: rejectedRequest.txHash ?? null
+          }),
+          ...current.auditEvents
+        ]
+      }));
+      return;
+    }
+
     setState((current) => ({
       ...current,
       spendRequests: current.spendRequests.map((request) =>
@@ -178,7 +296,7 @@ export function AppStoreProvider({ children }: { children: React.ReactNode }) {
       ),
       auditEvents: [auditEvent(requestId, "human_rejected"), ...current.auditEvents]
     }));
-  }, []);
+  }, [state.spendRequests]);
 
   const resetDemoState = useCallback(() => {
     setState(defaultState);
@@ -194,12 +312,13 @@ export function AppStoreProvider({ children }: { children: React.ReactNode }) {
       receipts: state.receipts,
       auditEvents: state.auditEvents,
       addSpendRequest,
+      anchorSpendRequest,
       settleApprovedRequest,
       approveRequest,
       rejectRequest,
       resetDemoState
     }),
-    [addSpendRequest, approveRequest, rejectRequest, resetDemoState, settleApprovedRequest, state]
+    [addSpendRequest, anchorSpendRequest, approveRequest, rejectRequest, resetDemoState, settleApprovedRequest, state]
   );
 
   return <StoreContext.Provider value={value}>{children}</StoreContext.Provider>;
@@ -214,11 +333,12 @@ export function useAppStore() {
 }
 
 export function createSpendRequestFromInput(input: SpendInput, evaluation: Pick<SpendRequest, "status" | "policyChecks" | "riskScore">): Omit<SpendRequest, "id" | "createdAt"> {
-  const settlement = evaluation.status === "approved" ? settlementFields(input.paymentType) : {};
+  const settlement = !isArcTestnetMode && evaluation.status === "approved" ? settlementFields(input.paymentType) : {};
 
   return {
     ...input,
     ...evaluation,
-    ...settlement
+    ...settlement,
+    settlementMode
   };
 }

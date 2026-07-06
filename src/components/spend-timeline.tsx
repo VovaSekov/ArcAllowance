@@ -1,4 +1,5 @@
 import { CircleDashed, CircleDot, FileText, Shield } from "lucide-react";
+import { isArcTestnetMode } from "@/lib/settlement-mode";
 import type { SpendRequest } from "@/lib/types";
 
 export function SpendTimeline({ request }: { request?: SpendRequest }) {
@@ -8,18 +9,20 @@ export function SpendTimeline({ request }: { request?: SpendRequest }) {
     { label: "Agent request", detail: "Agent proposes a USDC payment.", active: Boolean(request), icon: CircleDashed },
     { label: "Policy engine", detail: "Merchant, amount, purpose, and threshold rules are evaluated.", active: Boolean(request), icon: Shield },
     {
-      label: needsApproval ? "Human approval" : isRejected ? "Settlement stopped" : "Mock Gateway authorization",
+      label: needsApproval ? "Human approval" : isRejected ? "Settlement stopped" : isArcTestnetMode ? "Arc Testnet registry" : "Mock Gateway authorization",
       detail: needsApproval
         ? "Request waits in the approval queue."
         : isRejected
           ? "No settlement artifact is generated."
-          : "Mock Gateway/x402 authorization is generated.",
+          : isArcTestnetMode
+            ? "Request and decision are written to Arc Testnet."
+            : "Mock Gateway/x402 authorization is generated.",
       active: Boolean(request),
       icon: CircleDot
     },
     {
       label: "Receipt ledger",
-      detail: request?.status === "approved" || request?.status === "settled" ? "Memo and mock Arc tx hash are recorded." : "Audit event is retained.",
+      detail: request?.status === "approved" || request?.status === "settled" ? (isArcTestnetMode ? "Memo and Arc Testnet tx hash are recorded." : "Memo and mock Arc tx hash are recorded.") : "Audit event is retained.",
       active: Boolean(request),
       icon: FileText
     }

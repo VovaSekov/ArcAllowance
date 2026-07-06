@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { Inbox, Shield, X } from "lucide-react";
 import { EmptyState } from "@/components/empty-state";
 import { PageHeader } from "@/components/page-header";
@@ -10,15 +11,44 @@ import { formatDate, formatUSDC } from "@/lib/utils";
 
 export default function ApprovalsPage() {
   const { agents, merchants, spendRequests, approveRequest, rejectRequest } = useAppStore();
+  const [busyRequestId, setBusyRequestId] = useState<string | undefined>();
+  const [error, setError] = useState<string | undefined>();
   const pending = spendRequests.filter((request) => request.status === "needs_approval");
+
+  async function handleApprove(requestId: string) {
+    setBusyRequestId(requestId);
+    setError(undefined);
+    try {
+      await approveRequest(requestId);
+    } catch (caught) {
+      setError(caught instanceof Error ? caught.message : "Approval failed.");
+    } finally {
+      setBusyRequestId(undefined);
+    }
+  }
+
+  async function handleReject(requestId: string) {
+    setBusyRequestId(requestId);
+    setError(undefined);
+    try {
+      await rejectRequest(requestId);
+    } catch (caught) {
+      setError(caught instanceof Error ? caught.message : "Rejection failed.");
+    } finally {
+      setBusyRequestId(undefined);
+    }
+  }
 
   return (
     <>
       <PageHeader
         eyebrow="Human approval"
         title="Approval queue"
-        description="Requests here passed hard policy controls but crossed an approval threshold. Approving creates a mock receipt; rejecting creates an audit event."
+        description="Requests here passed hard policy controls but crossed an approval threshold. Approving records an Arc Testnet audit decision and creates a receipt."
       />
+      {error ? (
+        <p className="mb-4 rounded-md border border-rose-400/20 bg-rose-400/10 px-3 py-2 text-sm leading-6 text-rose-100">{error}</p>
+      ) : null}
       {pending.length === 0 ? (
         <EmptyState icon={Inbox} title="No pending approvals" body="Run the OpsAgent weekly compute scenario from the simulator to create a threshold-triggered request." />
       ) : (
@@ -40,13 +70,13 @@ export default function ApprovalsPage() {
                     <p className="mt-2 text-sm text-slate-500">Payment type: {request.paymentType}</p>
                   </div>
                   <div className="flex shrink-0 flex-wrap gap-2">
-                    <button type="button" onClick={() => approveRequest(request.id)} className="inline-flex items-center gap-2 rounded-md bg-cyan-100 px-4 py-2 text-sm font-semibold text-ink-950 hover:bg-cyan-50">
+                    <button type="button" onClick={() => void handleApprove(request.id)} disabled={busyRequestId === request.id} className="inline-flex items-center gap-2 rounded-md bg-cyan-100 px-4 py-2 text-sm font-semibold text-ink-950 hover:bg-cyan-50 disabled:cursor-not-allowed disabled:opacity-60">
                       <Shield className="h-4 w-4" aria-hidden="true" />
-                      Approve
+                      {busyRequestId === request.id ? "Approving" : "Approve"}
                     </button>
-                    <button type="button" onClick={() => rejectRequest(request.id)} className="inline-flex items-center gap-2 rounded-md border border-rose-400/30 px-4 py-2 text-sm font-semibold text-rose-100 hover:bg-rose-400/10">
+                    <button type="button" onClick={() => void handleReject(request.id)} disabled={busyRequestId === request.id} className="inline-flex items-center gap-2 rounded-md border border-rose-400/30 px-4 py-2 text-sm font-semibold text-rose-100 hover:bg-rose-400/10 disabled:cursor-not-allowed disabled:opacity-60">
                       <X className="h-4 w-4" aria-hidden="true" />
-                      Reject
+                      {busyRequestId === request.id ? "Rejecting" : "Reject"}
                     </button>
                   </div>
                 </div>

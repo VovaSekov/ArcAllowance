@@ -12,6 +12,7 @@ import { ReceiptCard } from "@/components/receipt-card";
 import { SpendTimeline } from "@/components/spend-timeline";
 import { StatusBadge } from "@/components/status-badge";
 import { evaluateSpendRequest } from "@/lib/policy-engine";
+import { isArcTestnetMode, settlementModeLabel } from "@/lib/settlement-mode";
 import { demoScenarios } from "@/lib/seed-data";
 import type { PaymentType, PolicyEvaluation, Receipt, SpendRequest } from "@/lib/types";
 import { formatUSDC } from "@/lib/utils";
@@ -42,7 +43,7 @@ const aiPromptExamples = [
 ];
 
 export default function SimulatePage() {
-  const { agents, merchants, policies, spendRequests, addSpendRequest, settleApprovedRequest } = useAppStore();
+  const { agents, merchants, policies, spendRequests, addSpendRequest, anchorSpendRequest } = useAppStore();
   const [form, setForm] = useState<SimForm>({
     agentId: agents[0]?.id ?? "",
     merchantId: merchants[0]?.id ?? "",
@@ -57,6 +58,7 @@ export default function SimulatePage() {
   const [aiResult, setAiResult] = useState<AiIntentResponse | undefined>();
   const [aiError, setAiError] = useState<string | undefined>();
   const [aiLoading, setAiLoading] = useState(false);
+  const [settlementLoading, setSettlementLoading] = useState(false);
   const [formError, setFormError] = useState<string | undefined>();
 
   useEffect(() => {
@@ -133,7 +135,7 @@ export default function SimulatePage() {
     }
   }
 
-  function runPolicyCheck() {
+  async function runPolicyCheck() {
     if (!selectedPolicy || !selectedMerchant) {
       return;
     }
@@ -148,6 +150,7 @@ export default function SimulatePage() {
     }
 
     setFormError(undefined);
+    setSettlementLoading(true);
     const result = evaluateSpendRequest({
       input: {
         agentId: form.agentId,
@@ -160,22 +163,27 @@ export default function SimulatePage() {
       merchant: selectedMerchant,
       existingRequests: spendRequests
     });
-    const request = addSpendRequest(
-      createSpendRequestFromInput(
-        {
-          agentId: form.agentId,
-          merchantId: form.merchantId,
-          amountUSDC,
-          purpose: form.purpose,
-          paymentType: form.paymentType
-        },
-        result
-      )
-    );
-    const receipt = result.status === "approved" ? settleApprovedRequest(request) : undefined;
+    const input = {
+      agentId: form.agentId,
+      merchantId: form.merchantId,
+      amountUSDC,
+      purpose: form.purpose,
+      paymentType: form.paymentType
+    };
+    const request = addSpendRequest(createSpendRequestFromInput(input, result));
     setEvaluation(result);
     setLatestRequest(request);
-    setLatestReceipt(receipt);
+    setLatestReceipt(undefined);
+
+    try {
+      const anchored = await anchorSpendRequest(request);
+      setLatestRequest(anchored.request);
+      setLatestReceipt(anchored.receipt);
+    } catch (error) {
+      setFormError(error instanceof Error ? error.message : `${settlementModeLabel()} anchoring failed.`);
+    } finally {
+      setSettlementLoading(false);
+    }
   }
 
   const ResultIcon =
@@ -186,7 +194,11 @@ export default function SimulatePage() {
       <PageHeader
         eyebrow="Spend simulator"
         title="Simulate agent spend"
-        description="Select an agent, merchant, amount, purpose, and payment type. ArcAllowance evaluates the policy and generates mock settlement artifacts only when allowed."
+        description={
+          isArcTestnetMode
+            ? "Select an agent, merchant, amount, purpose, and payment type. ArcAllowance evaluates policy locally, then anchors allowed decisions on Arc Testnet."
+            : "Select an agent, merchant, amount, purpose, and payment type. ArcAllowance evaluates the policy and generates mock settlement artifacts only when allowed."
+        }
       />
       <DemoModeBanner />
       <div className="mt-6">
@@ -277,9 +289,9 @@ export default function SimulatePage() {
                 <option value="batch">batch</option>
               </select>
             </label>
-            <button type="button" onClick={runPolicyCheck} className="inline-flex items-center justify-center gap-2 rounded-md bg-sky-300 px-4 py-3 text-sm font-semibold text-ink-950 hover:bg-sky-200">
-              Run policy check
-              <PlayCircle className="h-4 w-4" aria-hidden="true" />
+            <button type="button" onClick={() => void runPolicyCheck()} disabled={settlementLoading} className="inline-flex items-center justify-center gap-2 rounded-md bg-sky-300 px-4 py-3 text-sm font-semibold text-ink-950 hover:bg-sky-200 disabled:cursor-not-allowed disabled:opacity-60">
+              {settlementLoading ? (isArcTestnetMode ? "Writing to Arc Testnet" : "Creating receipt") : "Run policy check"}
+              {settlementLoading ? <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" /> : <PlayCircle className="h-4 w-4" aria-hidden="true" />}
             </button>
             {formError ? (
               <p className="rounded-md border border-rose-400/20 bg-rose-400/10 px-3 py-2 text-sm leading-6 text-rose-100">{formError}</p>
@@ -324,7 +336,9 @@ export default function SimulatePage() {
           ) : latestRequest?.status === "rejected" ? (
             <div className="rounded-lg border border-rose-400/20 bg-rose-400/10 p-5">
               <h3 className="font-semibold text-rose-100">Settlement stopped</h3>
-              <p className="mt-2 text-sm leading-6 text-rose-100/80">Hard policy failures were found. No mock Gateway authorization, memo, or Arc tx hash was generated for this rejected request.</p>
+              <p className="mt-2 text-sm leading-6 text-rose-100/80">
+                Hard policy failures were found. {isArcTestnetMode ? "The rejection is anchored as an Arc Testnet audit decision when the registry write succeeds." : "No mock Gateway authorization, memo, or Arc tx hash was generated for this rejected request."}
+              </p>
             </div>
           ) : latestRequest?.status === "needs_approval" ? (
             <div className="rounded-lg border border-amber-400/20 bg-amber-400/10 p-5">

@@ -8,7 +8,7 @@ Agents should not get unlimited wallets. Before autonomous systems can safely pa
 
 ## Solution
 
-ArcAllowance is a mock-first spend-control layer for AI agents. It lets a user create and inspect agents, assign policy-driven USDC budgets, simulate Gateway/x402-style payments, and see whether each request is approved, rejected, or requires human approval.
+ArcAllowance is a testnet spend-control layer for AI agents. It lets a user create and inspect agents, assign policy-driven USDC budgets, evaluate spend requests, route approvals, and anchor spend decisions to `ArcAllowanceRegistry` on Arc Testnet.
 
 ## Why Arc / USDC / Circle
 
@@ -22,8 +22,8 @@ ArcAllowance is designed around stablecoin-native agent spending. Arc transactio
 - Spend simulator for x402, USDC transfer, and batch-style payments.
 - Policy-check trace with pass, warning, and fail results.
 - Human approval queue for threshold-triggered payments.
-- Mock Gateway authorization hash, mock Arc transaction hash, memoId, and receipt ledger.
-- Architecture page showing the local MVP and Arc-native roadmap.
+- Arc Testnet registry transaction hash, memoId, and receipt ledger in `arc_testnet` mode.
+- Architecture page showing the testnet audit layer and Arc-native payment roadmap.
 
 ## Demo Flow
 
@@ -38,15 +38,15 @@ ArcAllowance is designed around stablecoin-native agent spending. Arc transactio
 
 For a live walkthrough flow, see `DEMO_SCRIPT.md`.
 
-## Mock Mode
+## Arc Testnet Mode
 
-ArcAllowance does not move real funds. Mock mode generates deterministic-looking receipts, Gateway authorization hashes, Arc transaction hashes, and batch identifiers for product demonstration only. No private keys, custody, compliance claim, mainnet transaction, or real settlement is included.
+Production is intended to run with `NEXT_PUBLIC_SETTLEMENT_MODE=arc_testnet`. In that mode, the simulator and approval flow write real Arc Testnet transactions to `ArcAllowanceRegistry` for spend requests and spend decisions. The registry is an audit layer only: no mainnet funds move, the contract does not custody balances, the contract does not transfer USDC, and the frontend never receives private keys. Mock mode remains available for local development with `NEXT_PUBLIC_SETTLEMENT_MODE=mock`.
 
 ## Optional AI Layer
 
 The spend simulator includes an AI intent builder. With `OPENAI_API_KEY` configured, it uses OpenAI to convert a plain-English autonomous agent goal into a structured spend request. Without a key, it falls back to a deterministic local parser so the demo still works.
 
-The AI layer proposes request fields only. The local policy engine still decides whether the request is approved, rejected, or routed to human approval, and settlement remains mocked.
+The AI layer proposes request fields only. The local policy engine still decides whether the request is approved, rejected, or routed to human approval. In `arc_testnet` mode, those decisions are anchored through the server-side Arc Testnet registry adapter.
 
 ## Arc Testnet Contract
 
@@ -148,18 +148,19 @@ Copy `.env.example` to `.env.local` when needed.
 ```bash
 NEXT_PUBLIC_APP_NAME=ArcAllowance
 NEXT_PUBLIC_APP_URL=http://localhost:3000
-NEXT_PUBLIC_CHAIN_MODE=mock
+NEXT_PUBLIC_CHAIN_MODE=arc_testnet
 NEXT_PUBLIC_ARC_CHAIN_ID=5042002
 NEXT_PUBLIC_ARC_RPC_URL=https://rpc.testnet.arc.network
 NEXT_PUBLIC_ARC_EXPLORER_URL=https://testnet.arcscan.app
 NEXT_PUBLIC_ARC_ALLOWANCE_REGISTRY_ADDRESS=0x3c82F7aD5b78e09c6Aa7020402f85662e7248A8f
-NEXT_PUBLIC_SETTLEMENT_MODE=mock
+NEXT_PUBLIC_SETTLEMENT_MODE=arc_testnet
 NEXT_PUBLIC_DOMAIN=arcallowance.xyz
 
 OPENAI_API_KEY=
 OPENAI_MODEL=gpt-5.5
 
 ARC_TESTNET_RPC_URL=https://rpc.testnet.arc.network
+ARC_TESTNET_PRIVATE_KEY=
 DEPLOYER_PRIVATE_KEY=
 ```
 

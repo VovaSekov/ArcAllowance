@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { ArrowRight, Ban, ClipboardList, FileKey2, FileText, PlayCircle } from "lucide-react";
+import { isArcTestnetMode } from "@/lib/settlement-mode";
 
 const demoSteps = [
   {
@@ -22,7 +23,7 @@ const demoSteps = [
   },
   {
     title: "Audit receipts",
-    detail: "Ledger rows show memo IDs, mock tx hashes, and settlement mode.",
+    detail: isArcTestnetMode ? "Ledger rows show memo IDs, Arc Testnet tx hashes, and settlement mode." : "Ledger rows show memo IDs, mock tx hashes, and settlement mode.",
     href: "/ledger",
     icon: FileText
   },

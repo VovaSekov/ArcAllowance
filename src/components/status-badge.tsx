@@ -14,9 +14,13 @@ const riskClasses: Record<RiskTier, string> = {
   high: "border-rose-400/30 bg-rose-400/10 text-rose-200"
 };
 
-export function StatusBadge({ status, className }: { status: SpendStatus | "mock"; className?: string }) {
+export function StatusBadge({ status, className }: { status: SpendStatus | "mock" | "arc_testnet"; className?: string }) {
   const classes =
-    status === "mock" ? "border-violet-400/30 bg-violet-400/10 text-violet-100" : statusClasses[status];
+    status === "mock"
+      ? "border-violet-400/30 bg-violet-400/10 text-violet-100"
+      : status === "arc_testnet"
+        ? "border-cyan-300/25 bg-cyan-300/10 text-cyan-100"
+        : statusClasses[status];
 
   return (
     <span className={cn("inline-flex items-center whitespace-nowrap rounded-full border px-2.5 py-1 text-xs font-medium", classes, className)}>

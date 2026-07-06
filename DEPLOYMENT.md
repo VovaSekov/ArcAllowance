@@ -82,6 +82,7 @@ https://faucet.circle.com
 
 ```bash
 export ARC_TESTNET_RPC_URL=https://rpc.testnet.arc.network
+export ARC_TESTNET_PRIVATE_KEY=your_testnet_private_key
 export DEPLOYER_PRIVATE_KEY=your_testnet_private_key
 ```
 
@@ -99,19 +100,31 @@ npx hardhat run scripts/deploy-arcallowance.ts --network arcTestnet
 
 The script writes deployment metadata to `deployments/arc-testnet.json`.
 
-7. Copy the contract address into `.env.local` or your VPS environment:
+7. Bootstrap the seeded ArcAllowance agents and policies into the deployed registry:
+
+```bash
+npm run contracts:bootstrap:arc
+```
+
+The bootstrap command updates `deployments/arc-testnet.json` with `seededRegistry` IDs used by the runtime API.
+
+8. Copy the contract address and testnet mode into `.env.local` or your VPS environment:
 
 ```bash
 NEXT_PUBLIC_ARC_ALLOWANCE_REGISTRY_ADDRESS=0x...
+NEXT_PUBLIC_CHAIN_MODE=arc_testnet
+NEXT_PUBLIC_SETTLEMENT_MODE=arc_testnet
+ARC_TESTNET_RPC_URL=https://rpc.testnet.arc.network
+ARC_TESTNET_PRIVATE_KEY=your_fresh_testnet_operator_private_key
 ```
 
-8. Build the app:
+9. Build the app:
 
 ```bash
 npm run build
 ```
 
-9. Restart the app:
+10. Restart the app:
 
 ```bash
 pm2 restart arcallowance
@@ -122,9 +135,9 @@ Security rules:
 - Never commit `.env`.
 - Never commit private keys.
 - Never use a mainnet wallet.
-- Never claim real funds moved.
+- Never claim mainnet funds moved.
 - Use only a fresh testnet wallet.
-- Keep Gateway/x402 settlement mocked unless a real integration is intentionally added later.
+- Gateway/x402 and USDC transfer execution remain separate from the ArcAllowanceRegistry audit layer.
 - `OPENAI_API_KEY` is optional. If set, it powers AI intent generation only; it must not approve or settle payments.
 
 ## PM2 Setup

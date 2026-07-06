@@ -10,6 +10,7 @@ import { PageHeader } from "@/components/page-header";
 import { PolicyCheckList } from "@/components/policy-check-list";
 import { StatusBadge } from "@/components/status-badge";
 import { useAppStore } from "@/components/app-store";
+import { isArcTestnetMode } from "@/lib/settlement-mode";
 import { formatDate, formatUSDC } from "@/lib/utils";
 
 export default function DashboardPage() {
@@ -26,7 +27,7 @@ export default function DashboardPage() {
       <PageHeader
         eyebrow="Control room"
         title="Agent spend dashboard"
-        description="Approve, reject, or audit every autonomous payment. This dashboard summarizes seeded budgets, spend requests, and policy health in mock mode."
+        description={isArcTestnetMode ? "Approve, reject, or audit every autonomous payment. This dashboard summarizes Arc Testnet anchored spend decisions and policy health." : "Approve, reject, or audit every autonomous payment. This dashboard summarizes seeded budgets, spend requests, and policy health in mock mode."}
         action={<Link href="/simulate" className="rounded-md bg-sky-300 px-4 py-2 text-sm font-semibold text-ink-950 hover:bg-sky-200">Simulate spend</Link>}
       />
       <DemoModeBanner />
@@ -35,7 +36,7 @@ export default function DashboardPage() {
       </div>
       <div className="mt-6 grid gap-4 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-5">
         <MetricCard label="Total agent budget" value={formatUSDC(totalBudget)} detail="Daily policy capacity across all seeded agents." icon={WalletCards} />
-        <MetricCard label="Spent today" value={formatUSDC(spentToday)} detail="Mock-settled receipts currently in the ledger." icon={DollarSign} tone="good" />
+        <MetricCard label="Spent today" value={formatUSDC(spentToday)} detail={isArcTestnetMode ? "Arc Testnet anchored receipts currently in the ledger." : "Mock-settled receipts currently in the ledger."} icon={DollarSign} tone="good" />
         <MetricCard label="Pending approvals" value={String(pending)} detail="Human review queue for threshold-triggered requests." icon={Clock3} tone="warn" />
         <MetricCard label="Blocked attempts" value={String(blocked)} detail="Rejected spend requests with hard policy failures." icon={AlertTriangle} tone="danger" />
         <MetricCard label="Active agents" value={String(activeAgents)} detail="Agents currently allowed to request payments." icon={Bot} />

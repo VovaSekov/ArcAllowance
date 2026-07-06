@@ -4,6 +4,7 @@ import { PageHeader } from "@/components/page-header";
 import { ContractStatusCard } from "@/components/contract-status-card";
 import { LedgerTable } from "@/components/ledger-table";
 import { useAppStore } from "@/components/app-store";
+import { isArcTestnetMode } from "@/lib/settlement-mode";
 
 export default function LedgerPage() {
   const { agents, merchants, spendRequests, receipts } = useAppStore();
@@ -13,7 +14,7 @@ export default function LedgerPage() {
       <PageHeader
         eyebrow="Audit ledger"
         title="Receipts and spend requests"
-        description="Filter all requests by status and inspect mock settlement receipts with memo IDs, mock Arc transaction hashes, and Gateway batch IDs."
+        description={isArcTestnetMode ? "Filter all requests by status and inspect Arc Testnet audit receipts with memo IDs and registry transaction hashes." : "Filter all requests by status and inspect mock settlement receipts with memo IDs, mock Arc transaction hashes, and Gateway batch IDs."}
       />
       <div className="mb-6">
         <ContractStatusCard compact />

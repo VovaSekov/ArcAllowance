@@ -7,6 +7,7 @@ import { StatusBadge } from "@/components/status-badge";
 import { useAppStore } from "@/components/app-store";
 import { buildExplorerTxUrl, formatUSDC as formatContractUSDC, parseUSDC } from "@/lib/contract/client";
 import { arcAllowanceRegistry, arcTestnet, getRegistryExplorerUrl, isRegistryConfigured } from "@/lib/contract/config";
+import { isArcTestnetMode } from "@/lib/settlement-mode";
 import { formatDate, formatUSDC, shortAddress } from "@/lib/utils";
 
 const realOnchain = [
@@ -15,10 +16,10 @@ const realOnchain = [
   "The deployed address is loaded from NEXT_PUBLIC_ARC_ALLOWANCE_REGISTRY_ADDRESS or deployments/arc-testnet.json."
 ];
 
-const mocked = [
-  "Gateway/x402 settlement is mocked in this MVP.",
-  "USDC transfers are not executed by the app or registry.",
-  "Frontend policy evaluation remains the active product flow until real Gateway/x402 adapters are added."
+const boundaries = [
+  "USDC transfers are not executed by the registry.",
+  "The frontend never handles private keys.",
+  "Gateway/x402 payment execution remains a separate adapter from the audit registry."
 ];
 
 export default function ContractPage() {
@@ -32,7 +33,7 @@ export default function ContractPage() {
       <PageHeader
         eyebrow="Onchain audit layer"
         title="ArcAllowanceRegistry"
-        description="Policy decisions can be anchored on Arc Testnet without custody, private-key handling in the frontend, or real USDC movement."
+        description={isArcTestnetMode ? "Policy decisions are anchored on Arc Testnet through a server-side registry adapter. The frontend never handles private keys." : "Policy decisions can be anchored on Arc Testnet without custody, private-key handling in the frontend, or real USDC movement."}
       />
 
       <ContractStatusCard />
@@ -92,10 +93,10 @@ export default function ContractPage() {
           <div className="min-w-0 rounded-lg border border-white/10 bg-white/[0.035] p-5">
             <div className="flex items-center gap-3">
               <WalletCards className="h-5 w-5 text-amber-300" aria-hidden="true" />
-              <h2 className="text-lg font-semibold text-white">What remains mocked</h2>
+              <h2 className="text-lg font-semibold text-white">Security boundaries</h2>
             </div>
             <div className="mt-4 space-y-3">
-              {mocked.map((item) => (
+              {boundaries.map((item) => (
                 <div key={item} className="min-w-0 break-words rounded-md border border-amber-400/20 bg-amber-400/10 p-4 text-sm leading-6 text-amber-50/85">{item}</div>
               ))}
             </div>
@@ -123,13 +124,13 @@ export default function ContractPage() {
 
         <section className="min-w-0 rounded-lg border border-white/10 bg-white/[0.035] p-5">
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-            <h2 className="break-words text-lg font-semibold text-white">Latest demo tx hashes</h2>
+            <h2 className="break-words text-lg font-semibold text-white">{isArcTestnetMode ? "Latest Arc Testnet registry tx" : "Latest demo tx hashes"}</h2>
             <div className="shrink-0">
-              <StatusBadge status="mock" />
+              <StatusBadge status={isArcTestnetMode ? "arc_testnet" : "mock"} />
             </div>
           </div>
           <p className="mt-3 text-sm leading-6 text-slate-400">
-            These are mock Arc tx hashes from the existing demo ledger. After deployment, real registry transactions should be linked from Arcscan separately.
+            {isArcTestnetMode ? "Receipts created in the simulator and approval flow link to Arcscan transaction pages." : "These are mock Arc tx hashes from the existing demo ledger. After deployment, real registry transactions should be linked from Arcscan separately."}
           </p>
           <div className="mt-4 space-y-3">
             {latestTxHashes.map((receipt) => (
@@ -140,9 +141,9 @@ export default function ContractPage() {
                 </div>
                 <p className="mt-2 break-all text-sm leading-6 text-slate-400">{formatUSDC(receipt.amountUSDC)} · {receipt.memoId}</p>
                 <p className="mt-2 break-all font-mono text-xs text-sky-100">{receipt.txHash}</p>
-                {configured ? (
+                {configured && isArcTestnetMode ? (
                   <a href={buildExplorerTxUrl(arcTestnet.explorerUrl, receipt.txHash)} target="_blank" rel="noreferrer" className="mt-3 inline-flex text-xs text-sky-200 hover:text-sky-100">
-                    Mock hash format only; not guaranteed to exist on explorer
+                    View transaction on Arcscan
                   </a>
                 ) : (
                   <p className="mt-3 text-xs text-slate-500">Registry explorer link appears after deployment. Hash shown as mock receipt evidence.</p>

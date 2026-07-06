@@ -1,4 +1,5 @@
 import { Shield } from "lucide-react";
+import { isArcTestnetMode, settlementModeLabel } from "@/lib/settlement-mode";
 
 export function DemoModeBanner() {
   return (
@@ -6,14 +7,18 @@ export function DemoModeBanner() {
       <div className="flex gap-3">
         <Shield className="mt-0.5 h-5 w-5 shrink-0 text-cyan-100/80" aria-hidden="true" />
         <div>
-          <p className="font-semibold text-slate-100">Mock mode today. Arc-native settlement tomorrow.</p>
+          <p className="font-semibold text-slate-100">
+            {isArcTestnetMode ? "Arc Testnet mode. Decisions are anchored onchain." : "Mock mode today. Arc-native settlement tomorrow."}
+          </p>
           <p className="mt-1 text-slate-400">
-            This demo generates mock Gateway authorization, mock Arc tx hash, and audit receipts. No real funds move.
+            {isArcTestnetMode
+              ? "Approved, rejected, and approval-required spend decisions create Arc Testnet registry transactions. No mainnet funds move."
+              : "This demo generates mock Gateway authorization, mock Arc tx hash, and audit receipts. No real funds move."}
           </p>
         </div>
       </div>
       <span className="w-fit rounded-full border border-slate-500/30 bg-white/[0.035] px-3 py-1 text-xs font-medium text-slate-300">
-        NEXT_PUBLIC_SETTLEMENT_MODE=mock
+        NEXT_PUBLIC_SETTLEMENT_MODE={settlementModeLabel()}
       </span>
     </div>
   );

@@ -9,10 +9,12 @@
     "lint": "next lint",
     "typecheck": "tsc --noEmit",
     "contracts:compile": "HOME=$PWD/.hardhat-home hardhat compile",
-    "contracts:deploy:arc": "HOME=$PWD/.hardhat-home hardhat run scripts/deploy-arcallowance.ts --network arcTestnet"
+    "contracts:deploy:arc": "HOME=$PWD/.hardhat-home hardhat run scripts/deploy-arcallowance.ts --network arcTestnet",
+    "contracts:bootstrap:arc": "HOME=$PWD/.hardhat-home hardhat run scripts/bootstrap-arc-testnet.ts --network arcTestnet"
   },
   "dependencies": {
     "clsx": "^2.1.1",
+    "ethers": "^6.17.0",
     "lucide-react": "^0.468.0",
     "next": "^15.5.20",
     "react": "18.3.1",

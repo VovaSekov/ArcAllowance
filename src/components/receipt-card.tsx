@@ -1,4 +1,6 @@
 import { ReceiptText } from "lucide-react";
+import { buildExplorerTxUrl } from "@/lib/contract/client";
+import { arcTestnet } from "@/lib/contract/config";
 import type { Receipt } from "@/lib/types";
 import { formatDate, formatUSDC, shortAddress } from "@/lib/utils";
 import { StatusBadge } from "@/components/status-badge";
@@ -14,7 +16,7 @@ export function ReceiptCard({ receipt }: { receipt: Receipt }) {
             <h3 className="mt-1 text-lg font-semibold text-white">{receipt.agentName} paid {receipt.merchantName}</h3>
           </div>
         </div>
-        <StatusBadge status="mock" />
+        <StatusBadge status={receipt.settlementMode} />
       </div>
       <dl className="mt-5 grid gap-3 text-sm md:grid-cols-2">
         <div>
@@ -30,8 +32,16 @@ export function ReceiptCard({ receipt }: { receipt: Receipt }) {
           <dd className="mt-1 break-all font-mono text-xs text-sky-100">{receipt.memoId}</dd>
         </div>
         <div>
-          <dt className="text-slate-500">Mock Arc tx hash</dt>
-          <dd className="mt-1 break-all font-mono text-xs text-sky-100">{shortAddress(receipt.txHash)}</dd>
+          <dt className="text-slate-500">{receipt.settlementMode === "arc_testnet" ? "Arc Testnet tx" : "Mock Arc tx hash"}</dt>
+          <dd className="mt-1 break-all font-mono text-xs text-sky-100">
+            {receipt.settlementMode === "arc_testnet" && receipt.txHash ? (
+              <a href={buildExplorerTxUrl(arcTestnet.explorerUrl, receipt.txHash)} target="_blank" rel="noreferrer" className="hover:text-sky-50">
+                {shortAddress(receipt.txHash)}
+              </a>
+            ) : (
+              shortAddress(receipt.txHash)
+            )}
+          </dd>
         </div>
         {receipt.gatewayBatchId ? (
           <div className="md:col-span-2">

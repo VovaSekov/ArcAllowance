@@ -14,6 +14,7 @@ import {
 import { ArchitectureDiagram } from "@/components/architecture-diagram";
 import { arcAllowanceRegistry, arcTestnet, getRegistryExplorerUrl, isRegistryConfigured } from "@/lib/contract/config";
 import { externalLinks } from "@/lib/links";
+import { isArcTestnetMode } from "@/lib/settlement-mode";
 import { shortAddress } from "@/lib/utils";
 
 const controls = [
@@ -32,7 +33,7 @@ const controls = [
   {
     eyebrow: "Audit proof",
     title: "Every outcome leaves a trail",
-    body: "Approvals, rejections, memos, Gateway-style authorization hashes, mock Arc tx hashes, and registry events make the flow reviewable.",
+    body: isArcTestnetMode ? "Approvals, rejections, memos, Arc Testnet transaction hashes, and registry events make the flow reviewable." : "Approvals, rejections, memos, Gateway-style authorization hashes, mock Arc tx hashes, and registry events make the flow reviewable.",
     icon: Landmark
   }
 ];
@@ -41,7 +42,7 @@ const demoScenarios = [
   {
     agent: "ResearchAgent",
     request: "MarketData API, 0.03 USDC",
-    result: "Approved with mock receipt",
+    result: isArcTestnetMode ? "Approved with Arc Testnet receipt" : "Approved with mock receipt",
     tone: "text-cyan-100"
   },
   {
@@ -59,7 +60,7 @@ const demoScenarios = [
   {
     agent: "Batch settlement",
     request: "Tiny API calls, 0.42 USDC total",
-    result: "Mock Gateway batch",
+    result: isArcTestnetMode ? "Arc Testnet batch audit" : "Mock Gateway batch",
     tone: "text-sky-200"
   }
 ];
@@ -182,7 +183,7 @@ export default function LandingPage() {
                   </div>
                   <div className="rounded-lg border border-white/10 bg-ink-950/55 p-4">
                     <p className="text-xs text-slate-500">Payment type</p>
-                    <p className="mt-2 text-sm font-semibold text-white">Mock batch</p>
+                    <p className="mt-2 text-sm font-semibold text-white">{isArcTestnetMode ? "Testnet audit" : "Mock batch"}</p>
                   </div>
                 </div>
 
@@ -209,7 +210,7 @@ export default function LandingPage() {
                     <p className="text-sm font-semibold text-slate-100">Live Arc Testnet audit proof</p>
                   </div>
                   <p className="mt-2 text-sm leading-6 text-slate-400">
-                    Registry events anchor agent registration, policy hashes, spend requests, and decisions. No custody and no real payments in demo mode.
+                    Registry events anchor agent registration, policy hashes, spend requests, and decisions. No custody and no mainnet payments.
                   </p>
                 </div>
                 <div className="grid gap-2 text-sm sm:w-44">
@@ -254,12 +255,12 @@ export default function LandingPage() {
         <section className="mx-auto max-w-7xl px-4 pb-16 sm:px-6 lg:px-8">
           <div className="grid gap-8 rounded-lg border border-white/10 bg-white/[0.035] p-5 sm:p-6 lg:grid-cols-[minmax(280px,0.72fr)_minmax(0,1.28fr)] lg:items-center">
             <div className="min-w-0">
-              <p className="text-sm font-semibold uppercase text-violet-200">Mock mode today, Arc-native tomorrow</p>
+              <p className="text-sm font-semibold uppercase text-violet-200">{isArcTestnetMode ? "Arc Testnet audit layer" : "Mock mode today, Arc-native tomorrow"}</p>
               <h2 className="mt-3 text-3xl font-semibold leading-tight text-white">
                 Designed for Gateway-style nanopayments, Arc memos, and controlled agent wallets.
               </h2>
               <p className="mt-4 text-base leading-7 text-slate-400">
-                The MVP stays local and safe while making the path to Circle Wallets, Gateway/x402, Arc batching, and ERC-8004 agent identity explicit.
+                {isArcTestnetMode ? "The product anchors spend requests and decisions on Arc Testnet while keeping custody and payment execution separate." : "The MVP stays local and safe while making the path to Circle Wallets, Gateway/x402, Arc batching, and ERC-8004 agent identity explicit."}
               </p>
             </div>
             <ArchitectureDiagram />

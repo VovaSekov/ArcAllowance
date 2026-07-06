@@ -5,7 +5,7 @@ export const agents: Agent[] = [
     id: "agent_research",
     name: "ResearchAgent",
     description: "Buys market data, wallet reports, and research datasets.",
-    walletAddress: "0xA110w000000000000000000000000000000001",
+    walletAddress: "0xA110000000000000000000000000000000000001",
     erc8004AgentId: "erc8004:arc:research-agent",
     capabilities: ["market_research", "wallet_risk_report", "data_purchase"],
     riskTier: "low",
@@ -16,7 +16,7 @@ export const agents: Agent[] = [
     id: "agent_ops",
     name: "OpsAgent",
     description: "Pays for compute, deployment tooling, and model inference.",
-    walletAddress: "0xA110w000000000000000000000000000000002",
+    walletAddress: "0xA110000000000000000000000000000000000002",
     erc8004AgentId: "erc8004:arc:ops-agent",
     capabilities: ["compute_purchase", "deployment_tooling", "model_inference"],
     riskTier: "medium",
@@ -27,7 +27,7 @@ export const agents: Agent[] = [
     id: "agent_trading",
     name: "TradingAgent",
     description: "High-risk agent with strict spending limits for market tools.",
-    walletAddress: "0xA110w000000000000000000000000000000003",
+    walletAddress: "0xA110000000000000000000000000000000000003",
     erc8004AgentId: "erc8004:arc:trading-agent",
     capabilities: ["signal_check", "wallet_risk_report"],
     riskTier: "high",
@@ -41,7 +41,7 @@ export const merchants: Merchant[] = [
     id: "merchant_market_data",
     name: "MarketData API",
     category: "data",
-    walletAddress: "0xC1rc1e00000000000000000000000000000001",
+    walletAddress: "0xC1C1000000000000000000000000000000000001",
     x402Endpoint: "/api/mock/market-data",
     riskLevel: "low"
   },
@@ -49,7 +49,7 @@ export const merchants: Merchant[] = [
     id: "merchant_llm_inference",
     name: "LLM Inference Hub",
     category: "compute",
-    walletAddress: "0xC1rc1e00000000000000000000000000000002",
+    walletAddress: "0xC1C1000000000000000000000000000000000002",
     x402Endpoint: "/api/mock/inference",
     riskLevel: "low"
   },
@@ -57,7 +57,7 @@ export const merchants: Merchant[] = [
     id: "merchant_wallet_risk",
     name: "Wallet Risk Oracle",
     category: "research",
-    walletAddress: "0xC1rc1e00000000000000000000000000000003",
+    walletAddress: "0xC1C1000000000000000000000000000000000003",
     x402Endpoint: "/api/mock/wallet-risk",
     riskLevel: "medium"
   },
@@ -65,7 +65,7 @@ export const merchants: Merchant[] = [
     id: "merchant_unknown_alpha",
     name: "Unknown Alpha Group",
     category: "research",
-    walletAddress: "0xC1rc1e00000000000000000000000000000004",
+    walletAddress: "0xC1C1000000000000000000000000000000000004",
     riskLevel: "high"
   }
 ];

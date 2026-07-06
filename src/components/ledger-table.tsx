@@ -107,7 +107,7 @@ export function LedgerTable({
         {selectedReceipt ? (
           <ReceiptCard receipt={selectedReceipt} />
         ) : (
-          <EmptyState icon={FileSearch} title="No receipt selected" body="Select a settled ledger row to inspect its mock receipt." />
+          <EmptyState icon={FileSearch} title="No receipt selected" body="Select a settled ledger row to inspect its receipt." />
         )}
       </aside>
     </div>

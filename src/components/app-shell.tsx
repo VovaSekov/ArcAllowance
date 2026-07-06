@@ -6,6 +6,7 @@ import { usePathname } from "next/navigation";
 import { BarChart3, Bot, ClipboardList, FileKey2, FileText, Landmark, PlayCircle, Shield } from "lucide-react";
 import { AppStoreProvider } from "@/components/app-store";
 import { externalLinks } from "@/lib/links";
+import { isArcTestnetMode } from "@/lib/settlement-mode";
 import { cn } from "@/lib/utils";
 
 const navItems = [
@@ -56,8 +57,8 @@ export function AppShell({ children }: { children: React.ReactNode }) {
               })}
             </nav>
             <div className="absolute bottom-5 left-5 right-5 rounded-lg border border-cyan-300/15 bg-cyan-300/[0.045] p-4">
-              <p className="text-sm font-medium text-slate-100">Mock settlement</p>
-              <p className="mt-1 text-xs leading-5 text-slate-400">Built for Gateway/x402-style nanopayments, Arc transaction memos, and Circle Wallets.</p>
+              <p className="text-sm font-medium text-slate-100">{isArcTestnetMode ? "Arc Testnet registry" : "Mock settlement"}</p>
+              <p className="mt-1 text-xs leading-5 text-slate-400">{isArcTestnetMode ? "Spend decisions are anchored as Arc Testnet audit transactions." : "Built for Gateway/x402-style nanopayments, Arc transaction memos, and Circle Wallets."}</p>
               <div className="mt-4 flex items-center gap-3 text-xs font-medium">
                 <a href={externalLinks.x} target="_blank" rel="noreferrer" className="text-slate-400 transition hover:text-slate-100">
                   X

@@ -1,15 +1,16 @@
 import { Bot, FileText, Landmark, ReceiptText, Shield, WalletCards } from "lucide-react";
-
-const nodes = [
-  { label: "Agent", detail: "Autonomous request", icon: Bot },
-  { label: "Policy Engine", detail: "Budget and controls", icon: Shield },
-  { label: "x402/Gateway Authorization", detail: "Mock approval artifact", icon: WalletCards },
-  { label: "Arc Memo", detail: "Reconciliation ID", icon: FileText },
-  { label: "USDC Settlement", detail: "Mock mode today", icon: Landmark },
-  { label: "Receipt Ledger", detail: "Audit trail", icon: ReceiptText }
-];
+import { isArcTestnetMode } from "@/lib/settlement-mode";
 
 export function ArchitectureDiagram() {
+  const nodes = [
+    { label: "Agent", detail: "Autonomous request", icon: Bot },
+    { label: "Policy Engine", detail: "Budget and controls", icon: Shield },
+    { label: isArcTestnetMode ? "Arc Registry Write" : "x402/Gateway Authorization", detail: isArcTestnetMode ? "Testnet audit tx" : "Mock approval artifact", icon: WalletCards },
+    { label: "Arc Memo", detail: "Reconciliation ID", icon: FileText },
+    { label: isArcTestnetMode ? "Spend Decision" : "USDC Settlement", detail: isArcTestnetMode ? "Onchain status" : "Mock mode today", icon: Landmark },
+    { label: "Receipt Ledger", detail: "Audit trail", icon: ReceiptText }
+  ];
+
   return (
     <div className="rounded-lg border border-white/10 bg-ink-950/45 p-4">
       <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">

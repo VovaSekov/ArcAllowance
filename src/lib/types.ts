@@ -62,6 +62,10 @@ export type SpendRequest = {
   memoId?: string;
   gatewayAuthorizationHash?: string;
   txHash?: string;
+  settlementMode?: SettlementMode;
+  onchainRequestId?: string;
+  onchainRecordTxHash?: string;
+  onchainDecisionTxHash?: string;
   createdAt: string;
 };
 
@@ -75,6 +79,9 @@ export type Receipt = {
   txHash?: string;
   gatewayBatchId?: string;
   settlementMode: SettlementMode;
+  onchainRequestId?: string;
+  recordTxHash?: string;
+  decisionTxHash?: string;
   createdAt: string;
 };
 
