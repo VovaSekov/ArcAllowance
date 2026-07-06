@@ -1,5 +1,5 @@
-import { HardhatUserConfig } from "hardhat/config";
-import "@nomicfoundation/hardhat-toolbox";
+import hardhatEthers from "@nomicfoundation/hardhat-ethers";
+import { defineConfig } from "hardhat/config";
 import fs from "node:fs";
 import path from "node:path";
 
@@ -27,23 +27,29 @@ function loadLocalEnv() {
 
 loadLocalEnv();
 
-const config: HardhatUserConfig = {
+const arcPrivateKey = process.env.ARC_TESTNET_PRIVATE_KEY || process.env.DEPLOYER_PRIVATE_KEY;
+
+export default defineConfig({
+  plugins: [hardhatEthers],
   solidity: {
-    version: "0.8.24",
-    settings: {
-      optimizer: {
-        enabled: true,
-        runs: 200
+    profiles: {
+      default: {
+        version: "0.8.24",
+        settings: {
+          optimizer: {
+            enabled: true,
+            runs: 200
+          }
+        }
       }
     }
   },
   networks: {
     arcTestnet: {
+      type: "http",
+      chainType: "l1",
       url: process.env.ARC_TESTNET_RPC_URL || "https://rpc.testnet.arc.network",
-      chainId: 5042002,
-      accounts: process.env.ARC_TESTNET_PRIVATE_KEY || process.env.DEPLOYER_PRIVATE_KEY ? [process.env.ARC_TESTNET_PRIVATE_KEY || process.env.DEPLOYER_PRIVATE_KEY || ""] : []
+      accounts: arcPrivateKey ? [arcPrivateKey] : []
     }
   }
-};
-
-export default config;
+});

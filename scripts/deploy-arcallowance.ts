@@ -1,18 +1,19 @@
 import fs from "node:fs";
 import path from "node:path";
-import hre from "hardhat";
+import { network } from "hardhat";
 
 const chainId = 5042002;
 const networkName = "arc-testnet";
 const explorerBaseUrl = "https://testnet.arcscan.app";
 
 async function main() {
-  const [deployer] = await hre.ethers.getSigners();
+  const { ethers } = await network.create();
+  const [deployer] = await ethers.getSigners();
   if (!deployer) {
     throw new Error("No deployer wallet configured. Set DEPLOYER_PRIVATE_KEY for Arc Testnet deployment.");
   }
 
-  const Registry = await hre.ethers.getContractFactory("ArcAllowanceRegistry");
+  const Registry = await ethers.getContractFactory("ArcAllowanceRegistry");
   const registry = await Registry.deploy();
   await registry.waitForDeployment();
 

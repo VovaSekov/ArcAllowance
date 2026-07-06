@@ -1,6 +1,6 @@
 import fs from "node:fs";
 import path from "node:path";
-import hre from "hardhat";
+import { network } from "hardhat";
 import type { EventLog, Log } from "ethers";
 import { agents, policies } from "../src/lib/seed-data";
 import { policyHashPayload } from "../src/lib/contract/hash";
@@ -25,16 +25,14 @@ function riskTierToContract(riskTier: string): 0 | 1 | 2 {
   return 2;
 }
 
-function usdcToUnits(amount: number): bigint {
-  return hre.ethers.parseUnits(String(amount), 6);
-}
-
 async function main() {
+  const { ethers } = await network.create();
+
   if (!fs.existsSync(deploymentPath)) {
     throw new Error("Missing deployments/arc-testnet.json. Deploy the registry first.");
   }
 
-  const [deployer] = await hre.ethers.getSigners();
+  const [deployer] = await ethers.getSigners();
   if (!deployer) {
     throw new Error("No deployer wallet configured. Set DEPLOYER_PRIVATE_KEY or ARC_TESTNET_PRIVATE_KEY.");
   }
@@ -44,7 +42,7 @@ async function main() {
     throw new Error("Deployment address is missing.");
   }
 
-  const registry = await hre.ethers.getContractAt("ArcAllowanceRegistry", deployment.address);
+  const registry = await ethers.getContractAt("ArcAllowanceRegistry", deployment.address);
   const seededRegistry = deployment.seededRegistry ?? {};
 
   for (const agent of agents) {
@@ -76,14 +74,14 @@ async function main() {
       throw new Error(`Could not read AgentRegistered event for ${agent.id}`);
     }
 
-    const policyHash = hre.ethers.id(policyHashPayload(policy));
+    const policyHash = ethers.id(policyHashPayload(policy));
     const createPolicyTx = await registry.createPolicy(
       onchainAgentId,
       policyHash,
-      usdcToUnits(policy.maxPerTransactionUSDC),
-      usdcToUnits(policy.dailyLimitUSDC),
-      usdcToUnits(policy.monthlyLimitUSDC),
-      usdcToUnits(policy.approvalRequiredAboveUSDC)
+      ethers.parseUnits(String(policy.maxPerTransactionUSDC), 6),
+      ethers.parseUnits(String(policy.dailyLimitUSDC), 6),
+      ethers.parseUnits(String(policy.monthlyLimitUSDC), 6),
+      ethers.parseUnits(String(policy.approvalRequiredAboveUSDC), 6)
     );
     const policyReceipt = await createPolicyTx.wait();
     const createdPolicy = (policyReceipt?.logs as readonly ContractLog[] | undefined)
