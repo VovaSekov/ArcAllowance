@@ -62,6 +62,32 @@ export default function SimulatePage() {
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
+    const scenarioKey = params.get("scenario");
+    const scenarioIndex =
+      scenarioKey === "approved"
+        ? 0
+        : scenarioKey === "rejected"
+          ? 1
+          : scenarioKey === "review"
+            ? 2
+            : -1;
+    if (scenarioIndex >= 0) {
+      const scenario = demoScenarios[scenarioIndex];
+      setForm({
+        agentId: scenario.agentId,
+        merchantId: scenario.merchantId,
+        amountUSDC: String(scenario.amountUSDC),
+        purpose: scenario.purpose,
+        paymentType: scenario.paymentType
+      });
+      setAiPrompt(aiPromptExamples[scenarioIndex] ?? aiPromptExamples[0]);
+      setLatestRequest(undefined);
+      setLatestReceipt(undefined);
+      setEvaluation(undefined);
+      setFormError(undefined);
+      return;
+    }
+
     const agentId = params.get("agent");
     if (agentId && agents.some((agent) => agent.id === agentId)) {
       const policy = policies.find((item) => item.agentId === agentId);

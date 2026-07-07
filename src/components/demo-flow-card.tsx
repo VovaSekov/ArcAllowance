@@ -6,19 +6,19 @@ const demoSteps = [
   {
     title: "Auto-clear a safe nanopayment",
     detail: "ResearchAgent buys a CPI dataset query for 0.03 USDC.",
-    href: "/simulate",
+    href: "/simulate?scenario=approved",
     icon: PlayCircle
   },
   {
     title: "Block unsafe spend",
     detail: "TradingAgent is rejected when attempting a private alpha payment.",
-    href: "/simulate",
+    href: "/simulate?scenario=rejected",
     icon: Ban
   },
   {
     title: "Route exception review",
     detail: "OpsAgent compute spend crosses the autonomy threshold.",
-    href: "/approvals",
+    href: "/simulate?scenario=review",
     icon: ClipboardList
   },
   {
@@ -46,8 +46,8 @@ export function DemoFlowCard() {
             Use this path for a live product walkthrough: policy result, exception review, ledger receipt, and real Arc Testnet proof.
           </p>
         </div>
-        <Link href="/simulate" className="inline-flex items-center gap-2 rounded-md bg-sky-300 px-4 py-2 text-sm font-semibold text-ink-950 hover:bg-sky-200">
-          Start demo
+        <Link href="/demo" className="inline-flex items-center gap-2 rounded-md bg-sky-300 px-4 py-2 text-sm font-semibold text-ink-950 hover:bg-sky-200">
+          Open walkthrough
           <ArrowRight className="h-4 w-4" aria-hidden="true" />
         </Link>
       </div>

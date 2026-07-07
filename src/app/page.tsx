@@ -105,8 +105,8 @@ export default function LandingPage() {
           <a href={externalLinks.github} target="_blank" rel="noreferrer" className="hidden rounded-md px-3 py-2 text-sm font-medium text-slate-400 transition hover:bg-white/[0.06] hover:text-slate-100 sm:inline-flex">
             GitHub
           </a>
-          <Link href="/dashboard" className="rounded-md border border-white/10 px-4 py-2 text-sm font-medium text-slate-200 transition hover:bg-white/[0.06]">
-            Open app
+          <Link href="/demo" className="rounded-md border border-white/10 px-4 py-2 text-sm font-medium text-slate-200 transition hover:bg-white/[0.06]">
+            Open demo
           </Link>
         </div>
       </header>
@@ -125,11 +125,11 @@ export default function LandingPage() {
               ArcAllowance lets agents spend automatically inside policy and routes only risky or above-threshold requests to a budget owner before settlement artifacts are created.
             </p>
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-              <Link href="/dashboard" className="inline-flex items-center justify-center gap-2 rounded-md bg-sky-300 px-5 py-3 text-sm font-semibold text-ink-950 transition hover:bg-sky-200">
-                Open Demo Dashboard
+              <Link href="/demo" className="inline-flex items-center justify-center gap-2 rounded-md bg-sky-300 px-5 py-3 text-sm font-semibold text-ink-950 transition hover:bg-sky-200">
+                Open Product Demo
                 <ArrowRight className="h-4 w-4" aria-hidden="true" />
               </Link>
-              <Link href="/simulate" className="inline-flex items-center justify-center gap-2 rounded-md border border-white/10 px-5 py-3 text-sm font-semibold text-white transition hover:bg-white/[0.06]">
+              <Link href="/simulate?scenario=approved" className="inline-flex items-center justify-center gap-2 rounded-md border border-white/10 px-5 py-3 text-sm font-semibold text-white transition hover:bg-white/[0.06]">
                 Build AI Spend Intent
                 <CircleDollarSign className="h-4 w-4" aria-hidden="true" />
               </Link>
@@ -281,8 +281,8 @@ export default function LandingPage() {
                   The main product flows are ready to test: automatic approval, rejection, exception review, and batched settlement.
                 </p>
               </div>
-              <Link href="/simulate" className="inline-flex w-fit items-center justify-center gap-2 rounded-md border border-white/10 px-4 py-2 text-sm font-semibold text-white transition hover:bg-white/[0.06]">
-                Run simulator
+              <Link href="/demo" className="inline-flex w-fit items-center justify-center gap-2 rounded-md border border-white/10 px-4 py-2 text-sm font-semibold text-white transition hover:bg-white/[0.06]">
+                Open walkthrough
                 <ArrowRight className="h-4 w-4" aria-hidden="true" />
               </Link>
             </div>

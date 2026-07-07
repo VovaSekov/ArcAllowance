@@ -28,13 +28,13 @@ ArcAllowance is designed around stablecoin-native agent spending. Arc transactio
 
 ## Demo Flow
 
-1. Open the landing page and use the dashboard CTA.
+1. Open `/demo` for the guided product walkthrough.
 2. Review agents and seeded policies.
-3. Use the AI intent builder on `/simulate` to turn an agent goal into a structured spend request.
-4. Run the approved ResearchAgent nanopayment scenario.
-5. Run the blocked TradingAgent unsafe spend scenario.
-6. Run the OpsAgent threshold scenario, authorize it in the review queue, and inspect the receipt in the ledger.
-7. Show the architecture page to explain how mock mode maps to a future Arc-native implementation.
+3. Run the approved ResearchAgent nanopayment scenario from `/simulate?scenario=approved`.
+4. Run the blocked TradingAgent unsafe spend scenario from `/simulate?scenario=rejected`.
+5. Run the OpsAgent threshold scenario from `/simulate?scenario=review`, authorize it in the review queue, and inspect the receipt in the ledger.
+6. Use the AI intent builder on `/simulate` to turn an agent goal into a structured spend request.
+7. Show the architecture page to explain how Arc Testnet audit and sandbox settlement map to a future real provider implementation.
 8. Show `/contract` and the Arcscan link for real Arc Testnet registry proof.
 
 For a live walkthrough flow, see `DEMO_SCRIPT.md`.

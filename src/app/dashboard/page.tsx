@@ -30,7 +30,7 @@ export default function DashboardPage() {
         eyebrow="Control room"
         title="Agent spend dashboard"
         description={isRealSettlementMode ? "Most in-policy agent spend clears automatically through the configured settlement adapter. This dashboard summarizes wallet transfer status, exception reviews, and policy health." : isArcTestnetMode ? "Most in-policy agent spend clears automatically. This dashboard summarizes Arc Testnet anchored decisions, exception reviews, and policy health." : "Most in-policy agent spend clears automatically. This dashboard summarizes seeded budgets, spend requests, and policy health in mock mode."}
-        action={<Link href="/simulate" className="rounded-md bg-sky-300 px-4 py-2 text-sm font-semibold text-ink-950 hover:bg-sky-200">Simulate spend</Link>}
+        action={<Link href="/demo" className="rounded-md bg-sky-300 px-4 py-2 text-sm font-semibold text-ink-950 hover:bg-sky-200">Open demo</Link>}
       />
 
       <HowItWorksOnboarding />

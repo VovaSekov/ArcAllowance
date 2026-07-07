@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { BarChart3, Bot, ClipboardList, FileKey2, FileText, Github, Landmark, PlayCircle, Shield } from "lucide-react";
+import { BarChart3, Bot, ClipboardList, FileKey2, FileText, Github, Landmark, MonitorPlay, PlayCircle, Shield } from "lucide-react";
 import { AppStoreProvider } from "@/components/app-store";
 import { externalLinks } from "@/lib/links";
 import { isArcTestnetMode } from "@/lib/settlement-mode";
@@ -11,6 +11,7 @@ import { cn } from "@/lib/utils";
 
 const navItems = [
   { href: "/dashboard", label: "Dashboard", icon: BarChart3 },
+  { href: "/demo", label: "Demo", icon: MonitorPlay },
   { href: "/agents", label: "Agents", icon: Bot },
   { href: "/simulate", label: "Simulate", icon: PlayCircle },
   { href: "/approvals", label: "Review Queue", icon: ClipboardList },
