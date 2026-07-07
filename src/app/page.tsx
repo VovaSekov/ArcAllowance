@@ -21,7 +21,7 @@ const controls = [
   {
     eyebrow: "AI intent",
     title: "Natural language becomes a spend request",
-    body: "GPT-5.5 can draft merchant, amount, purpose, and payment type from an agent goal. The model proposes the request; policy still owns the decision.",
+    body: "A configured OpenAI model can draft merchant, amount, purpose, and payment type from an agent goal. The model proposes the request; policy still owns the decision.",
     icon: Sparkles
   },
   {

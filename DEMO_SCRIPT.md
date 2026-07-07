@@ -1,18 +1,19 @@
 # ArcAllowance Live Walkthrough
 
-## 1. Open With The Problem
+## 1. Open With The Product Story
 
-Start on `/`.
+Start on `/` or `/demo`.
 
 Say:
 
-> Agents should not get unlimited wallets. Before autonomous agents can spend USDC on APIs, data, compute, or tools, they need budgets, merchant allowlists, approval thresholds, policy checks, and audit receipts.
+> ArcAllowance is the control layer between autonomous AI agents and USDC spend. Agents can request payments, but budgets, merchant allowlists, purpose rules, risk checks, and approval thresholds decide what clears.
 
 Point to:
 
-- "Budgets before autonomy"
-- "Policy controls for AI agents spending USDC on Arc"
-- "Mock mode today. Arc-native settlement tomorrow."
+- AI spend request
+- Policy engine
+- Arc Testnet audit proof
+- Receipt ledger
 
 ## 2. Show The Dashboard
 
@@ -20,102 +21,98 @@ Open `/dashboard`.
 
 Say:
 
-> This is the control room. We can see total agent budget, spend today, pending approvals, blocked attempts, active agents, recent spend activity, and the real Arc Testnet audit registry status.
+> This is the control room. It shows agent budget, spend activity, requests waiting for exception review, blocked attempts, policy health, and the current settlement/audit mode.
 
 Point to:
 
 - Total agent budget
-- Pending approvals
+- Pending review
 - Blocked attempts
-- Real Arc Testnet contract card
+- How ArcAllowance works
+- Arc Testnet contract status
 
-## 3. Show Agent Policy Context
+## 3. Explain Who Reviews Exceptions
 
-Open `/agents`, then `ResearchAgent`.
+Open `/approvals`.
 
 Say:
 
-> Each agent has a wallet address, risk tier, capabilities, and an active policy. The frontend policy engine decides what the agent can spend before any payment-like action is simulated.
-
-Point to:
-
-- Wallet address
-- ERC-8004 placeholder ID
-- Allowed merchants
-- Allowed purposes
+> Routine in-policy spend does not need manual approval. The review queue exists for the budget owner or operator when a request crosses the autonomy threshold. It is a safety brake for larger or riskier spend, not a required step for every payment.
 
 ## 4. Approved Nanopayment
 
-Open `/simulate`.
+Open `/simulate?scenario=approved`.
 
-Choose preset:
+Click `Run policy check`.
+
+Expected request:
 
 ```text
-Approved nanopayment
 ResearchAgent -> MarketData API
 0.03 USDC
 cpi_dataset_query
 x402
 ```
 
-Click "Run policy check".
-
 Say:
 
-> This passes the merchant allowlist, amount, daily budget, and purpose checks. ArcAllowance generates a mock Gateway authorization, memo ID, mock Arc transaction hash, and receipt.
+> This passes the merchant allowlist, amount cap, daily budget, purpose, blocked-purpose, merchant-risk, and autonomy-threshold checks. In Arc Testnet mode, ArcAllowance records the request and decision in the registry audit layer and creates a receipt for the ledger. No mainnet funds move.
 
 Point to:
 
 - Approved status
-- Policy check trace
-- Mock receipt
+- Rule-by-rule policy result
+- Arc Testnet tx / receipt details
 
 ## 5. Blocked Unsafe Spend
 
-Choose preset:
+Open `/simulate?scenario=rejected`.
+
+Click `Run policy check`.
+
+Expected request:
 
 ```text
-Blocked unsafe spend
 TradingAgent -> Unknown Alpha Group
 250 USDC
 private_alpha_signal
+usdc_transfer
 ```
-
-Click "Run policy check".
 
 Say:
 
-> This request is rejected. The merchant is not allowlisted, the amount exceeds policy limits, the purpose is explicitly blocked, and high-risk merchant controls stop settlement. No receipt is created.
+> This request is rejected before settlement because the merchant is not allowlisted, the amount exceeds limits, the purpose is blocked, and the merchant is high risk. Rejected requests do not create settlement receipts.
 
 Point to:
 
 - Rejected status
-- Failed policy rules
-- "Settlement stopped"
+- Failed hard rules
+- Timeline showing settlement stopped
 
-## 6. Needs Human Approval
+## 6. Threshold Exception Review
 
-Choose preset:
+Open `/simulate?scenario=review`.
+
+Click `Run policy check`.
+
+Expected request:
 
 ```text
-Needs approval
 OpsAgent -> LLM Inference Hub
 45 USDC
 weekly_compute_budget
 batch
 ```
 
-Click "Run policy check".
-
 Say:
 
-> This request passes hard controls but crosses the approval threshold. It is routed to a human approval queue instead of being automatically settled.
+> This passes hard controls but is above the autonomy threshold. ArcAllowance routes it to review so a budget owner can approve or reject the exception.
 
 Open `/approvals`, approve the request.
 
 Say:
 
-> Approval creates a mock receipt and audit event. This keeps the autonomous flow accountable without pretending real funds moved.
+> Approving the exception records the decision, creates the audit trail, and lets the ledger show exactly why this higher spend was allowed.
 
 ## 7. Inspect The Ledger
 
@@ -123,17 +120,17 @@ Open `/ledger`.
 
 Say:
 
-> The ledger shows approved, rejected, needs-approval, and settled requests. Receipts include memo IDs, mock Arc tx hashes, and settlement mode.
+> The ledger is the reconciliation surface. It shows approved, rejected, review-required, pending, settled, and failed requests. Receipt details include memo IDs, settlement mode, registry hashes, provider references when configured, and the audit trail.
 
-Filter statuses and click a settled row.
+Filter statuses and open a receipt detail.
 
-## 8. Show Real Arc Testnet Proof
+## 8. Show Arc Testnet Proof
 
 Open `/contract`.
 
 Say:
 
-> The app remains mock for Gateway/x402 settlement, but the audit layer is real. ArcAllowanceRegistry is deployed on Arc Testnet and can anchor agent registrations, policy hashes, spend requests, and spend decisions.
+> The product currently proves the control and audit layer on Arc Testnet. The registry records agent registrations, policy hashes, spend requests, and spend decisions. It does not custody funds and does not transfer USDC.
 
 Point to:
 
@@ -149,14 +146,14 @@ Open Arcscan:
 https://testnet.arcscan.app/address/0x3c82F7aD5b78e09c6Aa7020402f85662e7248A8f
 ```
 
-## 9. Close With The Architecture
+## 9. Explain Real Settlement
 
 Open `/architecture`.
 
 Say:
 
-> Today, policy evaluation and Gateway/x402 settlement are mocked for safety. The Arc Testnet registry proves that the decision trail can be anchored onchain. Later, Circle Wallets, Gateway/x402, Arc memos, batched settlements, and ERC-8004 agent identity can make this Arc-native end to end.
+> ArcAllowance already separates control from settlement. The current production mode is Arc Testnet audit proof. Real USDC movement requires a server-side settlement adapter such as Circle Wallets or Gateway/x402. That adapter owns funded wallets, provider credentials, balances, payment failures, retries, webhooks, and reconciliation. ArcAllowance owns policy, review, audit, and receipts.
 
 Final line:
 
-> ArcAllowance is budgets before autonomy: a policy layer for safe agentic USDC spending on Arc.
+> ArcAllowance is budgets before autonomy: AI agents can request spend, but policy decides what clears.

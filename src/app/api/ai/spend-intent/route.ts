@@ -182,7 +182,7 @@ async function generateWithOpenAI(prompt: string, fallback: SpendIntent): Promis
       "Content-Type": "application/json"
     },
     body: JSON.stringify({
-      model: process.env.OPENAI_MODEL || "gpt-5.5",
+      model: process.env.OPENAI_MODEL || "gpt-5",
       input: [
         {
           role: "system",

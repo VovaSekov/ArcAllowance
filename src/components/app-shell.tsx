@@ -14,9 +14,9 @@ const navItems = [
   { href: "/demo", label: "Demo", icon: MonitorPlay },
   { href: "/agents", label: "Agents", icon: Bot },
   { href: "/simulate", label: "Simulate", icon: PlayCircle },
-  { href: "/approvals", label: "Review Queue", icon: ClipboardList },
+  { href: "/approvals", label: "Review", icon: ClipboardList },
   { href: "/ledger", label: "Ledger", icon: FileText },
-  { href: "/policies/new", label: "Policy Builder", icon: Shield },
+  { href: "/policies/new", label: "Policies", icon: Shield },
   { href: "/contract", label: "Contract", icon: FileKey2 },
   { href: "/architecture", label: "Architecture", icon: Landmark }
 ];

@@ -1,6 +1,6 @@
 import "server-only";
 
-import type { Agent, Merchant, PaymentType, Receipt, SettlementProvider, SpendRequest } from "@/lib/types";
+import type { Agent, Merchant, Receipt, SettlementProvider, SpendRequest } from "@/lib/types";
 import { createId } from "@/lib/utils";
 
 type AdapterStatus = "settled" | "pending" | "failed";
@@ -248,7 +248,7 @@ function adapterPayload({
     transfer: {
       amountUSDC: request.amountUSDC,
       currency: "USDC",
-      paymentType: request.paymentType satisfies PaymentType,
+      paymentType: request.paymentType,
       purpose: request.purpose,
       memoId
     },
