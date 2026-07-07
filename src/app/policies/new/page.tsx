@@ -4,7 +4,6 @@ import { useMemo, useState } from "react";
 import { Copy, Shield } from "lucide-react";
 import { PageHeader } from "@/components/page-header";
 import { PolicyPill } from "@/components/entity-badges";
-import { StatusBadge } from "@/components/status-badge";
 import { useAppStore } from "@/components/app-store";
 import { policyTemplates } from "@/lib/seed-data";
 import type { PolicyTemplate } from "@/lib/types";
@@ -138,7 +137,7 @@ export default function NewPolicyPage() {
                 <Shield className="h-5 w-5 text-cyan-100/85" aria-hidden="true" />
                 <h2 className="text-lg font-semibold text-white">Live preview</h2>
               </div>
-              <StatusBadge status="mock" />
+              <span className="rounded-full border border-white/10 px-2.5 py-1 text-xs font-medium text-slate-400">Preview only</span>
             </div>
             <div className="mt-5 rounded-lg border border-white/10 bg-ink-950/50 p-4">
               <p className="text-sm text-slate-400">Agent</p>

@@ -2,14 +2,10 @@
 
 import Link from "next/link";
 import { AlertTriangle, Bot, Clock3, DollarSign, Shield, WalletCards } from "lucide-react";
-import { ContractStatusCard } from "@/components/contract-status-card";
 import { DemoModeBanner } from "@/components/demo-mode-banner";
-import { DemoFlowCard } from "@/components/demo-flow-card";
-import { HowItWorksOnboarding } from "@/components/how-it-works-onboarding";
 import { MetricCard } from "@/components/metric-card";
 import { PageHeader } from "@/components/page-header";
 import { PolicyCheckList } from "@/components/policy-check-list";
-import { SettlementReadinessCard } from "@/components/settlement-readiness-card";
 import { StatusBadge } from "@/components/status-badge";
 import { useAppStore } from "@/components/app-store";
 import { isArcTestnetMode, isRealSettlementMode } from "@/lib/settlement-mode";
@@ -33,18 +29,8 @@ export default function DashboardPage() {
         action={<Link href="/demo" className="rounded-md bg-sky-300 px-4 py-2 text-sm font-semibold text-ink-950 hover:bg-sky-200">Open demo</Link>}
       />
 
-      <HowItWorksOnboarding />
-
       <div className="mt-6">
         <DemoModeBanner />
-      </div>
-
-      <div className="mt-6">
-        <ContractStatusCard compact />
-      </div>
-
-      <div className="mt-6">
-        <SettlementReadinessCard />
       </div>
 
       <div className="mt-6 grid gap-4 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-5">
@@ -113,10 +99,6 @@ export default function DashboardPage() {
           <PolicyCheckList checks={latest[0]?.policyChecks ?? []} />
         </div>
       </section>
-
-      <div className="mt-6">
-        <DemoFlowCard />
-      </div>
     </>
   );
 }

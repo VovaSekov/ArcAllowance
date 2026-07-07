@@ -4,7 +4,6 @@ import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { ArrowRight, CircleDot, Clock3, Loader2, PlayCircle, Sparkles, XCircle } from "lucide-react";
 import { useAppStore } from "@/components/app-store";
-import { ContractStatusCard } from "@/components/contract-status-card";
 import { DemoModeBanner } from "@/components/demo-mode-banner";
 import { PageHeader } from "@/components/page-header";
 import { PolicyCheckList } from "@/components/policy-check-list";
@@ -220,9 +219,6 @@ export default function SimulatePage() {
         }
       />
       <DemoModeBanner />
-      <div className="mt-6">
-        <ContractStatusCard compact />
-      </div>
 
       <div className="mt-6 grid gap-6 xl:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)]">
         <section className="min-w-0 rounded-lg border border-white/10 bg-white/[0.035] p-5">
