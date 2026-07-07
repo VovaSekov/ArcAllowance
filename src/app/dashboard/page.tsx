@@ -9,6 +9,7 @@ import { HowItWorksOnboarding } from "@/components/how-it-works-onboarding";
 import { MetricCard } from "@/components/metric-card";
 import { PageHeader } from "@/components/page-header";
 import { PolicyCheckList } from "@/components/policy-check-list";
+import { SettlementReadinessCard } from "@/components/settlement-readiness-card";
 import { StatusBadge } from "@/components/status-badge";
 import { useAppStore } from "@/components/app-store";
 import { isArcTestnetMode, isRealSettlementMode } from "@/lib/settlement-mode";
@@ -40,6 +41,10 @@ export default function DashboardPage() {
 
       <div className="mt-6">
         <ContractStatusCard compact />
+      </div>
+
+      <div className="mt-6">
+        <SettlementReadinessCard />
       </div>
 
       <div className="mt-6 grid gap-4 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-5">

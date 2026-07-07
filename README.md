@@ -58,6 +58,14 @@ Flow:
 
 Real settlement is fail-closed. If `REAL_SETTLEMENT_ENABLED=true`, `REAL_SETTLEMENT_ADAPTER_URL`, or provider auth is missing, approved payments return an error and no fake receipt is created.
 
+Read-only readiness is exposed at:
+
+```text
+GET /api/settlement/readiness
+```
+
+The dashboard and architecture page show the same readiness check without exposing token or webhook secret values.
+
 Adapter response shape:
 
 ```json

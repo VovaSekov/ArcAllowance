@@ -44,6 +44,19 @@ export type SettlementWebhookPayload = {
   error?: string;
 };
 
+export type RealSettlementReadiness = {
+  mode: string;
+  ready: boolean;
+  enabled: boolean;
+  provider: SettlementProvider;
+  adapterUrlConfigured: boolean;
+  adapterTokenConfigured: boolean;
+  webhookSecretConfigured: boolean;
+  anchorArcTestnet: boolean;
+  missing: string[];
+  warnings: string[];
+};
+
 const providers = ["custom", "circle", "gateway_x402"] as const satisfies readonly SettlementProvider[];
 
 function env(name: string): string {
@@ -77,6 +90,49 @@ function validateAdapterUrl(value: string): URL {
 
 export function realSettlementConfigured(): boolean {
   return env("REAL_SETTLEMENT_ENABLED") === "true" && Boolean(env("REAL_SETTLEMENT_ADAPTER_URL"));
+}
+
+export function getRealSettlementReadiness(): RealSettlementReadiness {
+  const enabled = env("REAL_SETTLEMENT_ENABLED") === "true";
+  const adapterUrlConfigured = Boolean(env("REAL_SETTLEMENT_ADAPTER_URL"));
+  const adapterTokenConfigured = Boolean(env("REAL_SETTLEMENT_ADAPTER_TOKEN"));
+  const webhookSecretConfigured = Boolean(env("REAL_SETTLEMENT_WEBHOOK_SECRET"));
+  const anchorArcTestnet = env("REAL_SETTLEMENT_ANCHOR_ARC_TESTNET") === "true";
+  const missing: string[] = [];
+  const warnings: string[] = [];
+
+  if (!enabled) {
+    missing.push("REAL_SETTLEMENT_ENABLED=true");
+  }
+
+  if (!adapterUrlConfigured) {
+    missing.push("REAL_SETTLEMENT_ADAPTER_URL");
+  }
+
+  if (!adapterTokenConfigured) {
+    warnings.push("REAL_SETTLEMENT_ADAPTER_TOKEN is empty; only use this for a private internal adapter.");
+  }
+
+  if (!webhookSecretConfigured) {
+    missing.push("REAL_SETTLEMENT_WEBHOOK_SECRET");
+  }
+
+  if (anchorArcTestnet && !process.env.ARC_TESTNET_PRIVATE_KEY && !process.env.DEPLOYER_PRIVATE_KEY) {
+    missing.push("ARC_TESTNET_PRIVATE_KEY for REAL_SETTLEMENT_ANCHOR_ARC_TESTNET=true");
+  }
+
+  return {
+    mode: process.env.NEXT_PUBLIC_SETTLEMENT_MODE ?? "mock",
+    ready: enabled && adapterUrlConfigured && webhookSecretConfigured && missing.length === 0,
+    enabled,
+    provider: settlementProvider(),
+    adapterUrlConfigured,
+    adapterTokenConfigured,
+    webhookSecretConfigured,
+    anchorArcTestnet,
+    missing,
+    warnings
+  };
 }
 
 function normalizeString(value: unknown): string | undefined {

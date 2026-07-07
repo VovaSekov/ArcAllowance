@@ -3,6 +3,7 @@ import { ContractStatusCard } from "@/components/contract-status-card";
 import { DemoModeBanner } from "@/components/demo-mode-banner";
 import { HowItWorksOnboarding, RealPaymentsRoadmap } from "@/components/how-it-works-onboarding";
 import { PageHeader } from "@/components/page-header";
+import { SettlementReadinessCard } from "@/components/settlement-readiness-card";
 import { isArcTestnetMode, isRealSettlementMode } from "@/lib/settlement-mode";
 
 const roadmap = [
@@ -59,6 +60,9 @@ export default function ArchitecturePage() {
       </div>
       <div className="mt-6">
         <RealPaymentsRoadmap />
+      </div>
+      <div className="mt-6">
+        <SettlementReadinessCard />
       </div>
       <div className="mt-6 grid gap-6 lg:grid-cols-2">
         <section className="rounded-lg border border-white/10 bg-white/[0.035] p-5">

@@ -249,6 +249,14 @@ Fail-closed behavior:
 - If the adapter returns `pending`, the request stays `settlement_pending` until webhook finalization.
 - If webhook authorization is wrong, ArcAllowance rejects the update.
 
+Readiness check:
+
+```bash
+curl -fsS https://arcallowance.xyz/api/settlement/readiness
+```
+
+This endpoint returns booleans for adapter URL, adapter token, webhook secret, provider, Arc audit toggle, and missing setup items. It never returns secret values.
+
 ## PM2 Setup
 
 ArcAllowance currently runs on port `3030` behind Nginx.
