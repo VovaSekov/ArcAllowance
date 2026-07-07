@@ -2,6 +2,28 @@
 
 USDC spend controls for autonomous AI agents on Arc.
 
+## Submission Quick Links
+
+- Live app: https://arcallowance.xyz
+- Guided demo: https://arcallowance.xyz/demo
+- GitHub: https://github.com/VovaSekov/ArcAllowance
+- X / Twitter: https://x.com/arcallowans
+- Arc Testnet contract: `0x3c82F7aD5b78e09c6Aa7020402f85662e7248A8f`
+- Arcscan: https://testnet.arcscan.app/address/0x3c82F7aD5b78e09c6Aa7020402f85662e7248A8f
+
+## One-Liner
+
+ArcAllowance is an Arc Testnet audit and policy-control layer that makes AI agent USDC spending governable before autonomous payments are enabled.
+
+## Judge Demo Path
+
+1. Open https://arcallowance.xyz/demo.
+2. Run the approved ResearchAgent scenario.
+3. Run the rejected TradingAgent scenario.
+4. Run the OpsAgent review scenario, then approve it in `/approvals`.
+5. Inspect `/ledger` for receipts and audit trail.
+6. Inspect `/contract` and the Arcscan link for Arc Testnet proof.
+
 ## Problem
 
 Agents should not get unlimited wallets. Before autonomous systems can safely pay for APIs, data, compute, research, and tools, teams need budgets, merchant allowlists, autonomy thresholds, policy checks, and auditable receipts.
@@ -29,13 +51,12 @@ ArcAllowance is designed around stablecoin-native agent spending. Arc transactio
 ## Demo Flow
 
 1. Open `/demo` for the guided product walkthrough.
-2. Review agents and seeded policies.
-3. Run the approved ResearchAgent nanopayment scenario from `/simulate?scenario=approved`.
-4. Run the blocked TradingAgent unsafe spend scenario from `/simulate?scenario=rejected`.
-5. Run the OpsAgent threshold scenario from `/simulate?scenario=review`, authorize it in the review queue, and inspect the receipt in the ledger.
-6. Use the AI intent builder on `/simulate` to turn an agent goal into a structured spend request.
-7. Show the architecture page to explain how Arc Testnet audit and sandbox settlement map to a future real provider implementation.
-8. Show `/contract` and the Arcscan link for real Arc Testnet registry proof.
+2. Run the approved ResearchAgent nanopayment scenario from `/simulate?scenario=approved`.
+3. Run the blocked TradingAgent unsafe spend scenario from `/simulate?scenario=rejected`.
+4. Run the OpsAgent threshold scenario from `/simulate?scenario=review`, authorize it in the review queue, and inspect the receipt in the ledger.
+5. Use the AI intent builder on `/simulate` to turn an agent goal into a structured spend request.
+6. Show `/contract` and the Arcscan link for real Arc Testnet registry proof.
+7. Show `/architecture` for the upgrade path from audit proof to a real settlement adapter.
 
 For a live walkthrough flow, see `DEMO_SCRIPT.md`.
 
@@ -64,7 +85,7 @@ Read-only readiness is exposed at:
 GET /api/settlement/readiness
 ```
 
-The dashboard and architecture page show the same readiness check without exposing token or webhook secret values.
+The readiness endpoint exposes deployment status without leaking token or webhook secret values.
 
 ### Sandbox Settlement Adapter
 

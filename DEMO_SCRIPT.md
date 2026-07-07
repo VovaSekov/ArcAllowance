@@ -15,31 +15,7 @@ Point to:
 - Arc Testnet audit proof
 - Receipt ledger
 
-## 2. Show The Dashboard
-
-Open `/dashboard`.
-
-Say:
-
-> This is the control room. It shows agent budget, spend activity, requests waiting for exception review, blocked attempts, policy health, and the current settlement/audit mode.
-
-Point to:
-
-- Total agent budget
-- Pending review
-- Blocked attempts
-- How ArcAllowance works
-- Arc Testnet contract status
-
-## 3. Explain Who Reviews Exceptions
-
-Open `/approvals`.
-
-Say:
-
-> Routine in-policy spend does not need manual approval. The review queue exists for the budget owner or operator when a request crosses the autonomy threshold. It is a safety brake for larger or riskier spend, not a required step for every payment.
-
-## 4. Approved Nanopayment
+## 2. Approved Nanopayment
 
 Open `/simulate?scenario=approved`.
 
@@ -64,7 +40,7 @@ Point to:
 - Rule-by-rule policy result
 - Arc Testnet tx / receipt details
 
-## 5. Blocked Unsafe Spend
+## 3. Blocked Unsafe Spend
 
 Open `/simulate?scenario=rejected`.
 
@@ -89,7 +65,7 @@ Point to:
 - Failed hard rules
 - Timeline showing settlement stopped
 
-## 6. Threshold Exception Review
+## 4. Threshold Exception Review
 
 Open `/simulate?scenario=review`.
 
@@ -114,7 +90,7 @@ Say:
 
 > Approving the exception records the decision, creates the audit trail, and lets the ledger show exactly why this higher spend was allowed.
 
-## 7. Inspect The Ledger
+## 5. Inspect The Ledger
 
 Open `/ledger`.
 
@@ -124,7 +100,7 @@ Say:
 
 Filter statuses and open a receipt detail.
 
-## 8. Show Arc Testnet Proof
+## 6. Show Arc Testnet Proof
 
 Open `/contract`.
 
@@ -146,7 +122,7 @@ Open Arcscan:
 https://testnet.arcscan.app/address/0x3c82F7aD5b78e09c6Aa7020402f85662e7248A8f
 ```
 
-## 9. Explain Real Settlement
+## 7. Explain Real Settlement
 
 Open `/architecture`.
 
