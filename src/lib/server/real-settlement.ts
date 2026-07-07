@@ -49,6 +49,7 @@ export type RealSettlementReadiness = {
   ready: boolean;
   enabled: boolean;
   provider: SettlementProvider;
+  sandboxAdapterEnabled: boolean;
   adapterUrlConfigured: boolean;
   adapterTokenConfigured: boolean;
   webhookSecretConfigured: boolean;
@@ -98,6 +99,7 @@ export function getRealSettlementReadiness(): RealSettlementReadiness {
   const adapterTokenConfigured = Boolean(env("REAL_SETTLEMENT_ADAPTER_TOKEN"));
   const webhookSecretConfigured = Boolean(env("REAL_SETTLEMENT_WEBHOOK_SECRET"));
   const anchorArcTestnet = env("REAL_SETTLEMENT_ANCHOR_ARC_TESTNET") === "true";
+  const sandboxAdapterEnabled = env("SANDBOX_SETTLEMENT_ADAPTER_ENABLED") === "true";
   const missing: string[] = [];
   const warnings: string[] = [];
 
@@ -110,7 +112,11 @@ export function getRealSettlementReadiness(): RealSettlementReadiness {
   }
 
   if (!adapterTokenConfigured) {
-    warnings.push("REAL_SETTLEMENT_ADAPTER_TOKEN is empty; only use this for a private internal adapter.");
+    if (sandboxAdapterEnabled) {
+      missing.push("REAL_SETTLEMENT_ADAPTER_TOKEN for sandbox adapter authorization");
+    } else {
+      warnings.push("REAL_SETTLEMENT_ADAPTER_TOKEN is empty; only use this for a private internal adapter.");
+    }
   }
 
   if (!webhookSecretConfigured) {
@@ -126,6 +132,7 @@ export function getRealSettlementReadiness(): RealSettlementReadiness {
     ready: enabled && adapterUrlConfigured && webhookSecretConfigured && missing.length === 0,
     enabled,
     provider: settlementProvider(),
+    sandboxAdapterEnabled,
     adapterUrlConfigured,
     adapterTokenConfigured,
     webhookSecretConfigured,

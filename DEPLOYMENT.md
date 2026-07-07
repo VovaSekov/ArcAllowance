@@ -257,6 +257,41 @@ curl -fsS https://arcallowance.xyz/api/settlement/readiness
 
 This endpoint returns booleans for adapter URL, adapter token, webhook secret, provider, Arc audit toggle, and missing setup items. It never returns secret values.
 
+## Sandbox Settlement Adapter
+
+ArcAllowance ships with an internal sandbox adapter:
+
+```text
+POST /api/settlement/sandbox-adapter
+```
+
+This adapter is for integration testing only. It never moves funds. It validates `REAL_SETTLEMENT_ADAPTER_TOKEN`, returns provider-like IDs, and can call `/api/settlement/webhook` after a short delay.
+
+Local or staging test config:
+
+```bash
+NEXT_PUBLIC_APP_URL=https://arcallowance.xyz
+NEXT_PUBLIC_SETTLEMENT_MODE=real_settlement
+REAL_SETTLEMENT_ENABLED=true
+REAL_SETTLEMENT_PROVIDER=custom
+REAL_SETTLEMENT_ADAPTER_URL=https://arcallowance.xyz/api/settlement/sandbox-adapter
+REAL_SETTLEMENT_ADAPTER_TOKEN=replace_with_long_random_adapter_token
+REAL_SETTLEMENT_WEBHOOK_SECRET=replace_with_long_random_webhook_secret
+SANDBOX_SETTLEMENT_ADAPTER_ENABLED=true
+SANDBOX_SETTLEMENT_ADAPTER_RESULT=pending_then_settled
+SANDBOX_SETTLEMENT_WEBHOOK_DELAY_MS=1500
+```
+
+Expected test result:
+
+1. Submit the ResearchAgent `0.03 USDC` scenario.
+2. The request becomes `settlement_pending`.
+3. The sandbox adapter calls the webhook.
+4. The request becomes `settled`.
+5. The ledger shows a receipt with `sandbox_pay_...` as provider payment ID.
+
+Important: disable `SANDBOX_SETTLEMENT_ADAPTER_ENABLED` before presenting the app as real settlement. Real settlement requires an external funded wallet/Gateway provider.
+
 ## PM2 Setup
 
 ArcAllowance currently runs on port `3030` behind Nginx.

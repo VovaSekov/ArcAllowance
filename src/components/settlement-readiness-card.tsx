@@ -9,6 +9,7 @@ type Readiness = {
   ready: boolean;
   enabled: boolean;
   provider: "custom" | "circle" | "gateway_x402";
+  sandboxAdapterEnabled: boolean;
   adapterUrlConfigured: boolean;
   adapterTokenConfigured: boolean;
   webhookSecretConfigured: boolean;
@@ -69,7 +70,7 @@ export function SettlementReadinessCard() {
             <h2 className="text-lg font-semibold text-white">Settlement readiness</h2>
           </div>
           <p className="mt-2 max-w-3xl text-sm leading-6 text-slate-400">
-            Real wallets and transfers stay disabled until the server has a funded settlement adapter, webhook secret, and provider configuration.
+            Real wallets and transfers stay disabled until the server has a funded settlement adapter, webhook secret, and provider configuration. Sandbox adapter mode can test the same lifecycle without moving funds.
           </p>
         </div>
         <div className="shrink-0">
@@ -88,6 +89,7 @@ export function SettlementReadinessCard() {
             <CheckRow label={`${readiness.provider} adapter URL`} ok={readiness.adapterUrlConfigured} />
             <CheckRow label="Webhook secret" ok={readiness.webhookSecretConfigured} />
             <CheckRow label="Adapter token" ok={readiness.adapterTokenConfigured} />
+            <CheckRow label="Sandbox adapter" ok={readiness.sandboxAdapterEnabled} />
           </div>
 
           <div className="mt-4 grid gap-3 lg:grid-cols-2">

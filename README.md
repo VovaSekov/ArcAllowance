@@ -66,6 +66,26 @@ GET /api/settlement/readiness
 
 The dashboard and architecture page show the same readiness check without exposing token or webhook secret values.
 
+### Sandbox Settlement Adapter
+
+ArcAllowance includes an internal sandbox adapter for end-to-end lifecycle testing. It never moves funds and must not be presented as real settlement. It is useful for verifying that `real_settlement` mode can move a request from policy approval to `settlement_pending`, then to `settled` through the webhook path.
+
+Local test configuration:
+
+```bash
+NEXT_PUBLIC_APP_URL=http://localhost:3000
+NEXT_PUBLIC_SETTLEMENT_MODE=real_settlement
+REAL_SETTLEMENT_ENABLED=true
+REAL_SETTLEMENT_PROVIDER=custom
+REAL_SETTLEMENT_ADAPTER_URL=http://localhost:3000/api/settlement/sandbox-adapter
+REAL_SETTLEMENT_ADAPTER_TOKEN=local-sandbox-token
+REAL_SETTLEMENT_WEBHOOK_SECRET=local-webhook-secret
+SANDBOX_SETTLEMENT_ADAPTER_ENABLED=true
+SANDBOX_SETTLEMENT_ADAPTER_RESULT=pending_then_settled
+```
+
+Run the ResearchAgent scenario. The simulator should first show `settlement pending`; after the sandbox webhook runs, the ledger should show a settled receipt with a sandbox provider payment ID.
+
 Adapter response shape:
 
 ```json
