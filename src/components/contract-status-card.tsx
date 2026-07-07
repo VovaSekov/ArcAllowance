@@ -3,9 +3,15 @@ import { ExternalLink, Landmark } from "lucide-react";
 import { arcAllowanceRegistry, arcTestnet, getRegistryExplorerUrl, isRegistryConfigured } from "@/lib/contract/config";
 import { shortAddress } from "@/lib/utils";
 
-export function ContractStatusCard({ compact = false }: { compact?: boolean }) {
+type ContractStatusCardProps = {
+  compact?: boolean;
+  action?: "contract" | "arcscan";
+};
+
+export function ContractStatusCard({ compact = false, action = "contract" }: ContractStatusCardProps) {
   const configured = isRegistryConfigured();
   const explorerUrl = getRegistryExplorerUrl();
+  const showArcscanAction = action === "arcscan" && configured;
 
   return (
     <section className="min-w-0 rounded-lg border border-cyan-300/15 bg-cyan-300/[0.045] p-5">
@@ -24,10 +30,17 @@ export function ContractStatusCard({ compact = false }: { compact?: boolean }) {
             </p>
           </div>
         </div>
-        <Link href="/contract" className="inline-flex shrink-0 items-center justify-center gap-2 rounded-md border border-cyan-300/20 px-3 py-2 text-sm font-medium text-cyan-50/90 hover:bg-cyan-300/10">
-          Contract page
-          <ExternalLink className="h-4 w-4" aria-hidden="true" />
-        </Link>
+        {showArcscanAction ? (
+          <a href={explorerUrl} target="_blank" rel="noreferrer" className="inline-flex shrink-0 items-center justify-center gap-2 rounded-md border border-cyan-300/20 px-3 py-2 text-sm font-medium text-cyan-50/90 hover:bg-cyan-300/10">
+            View Arcscan
+            <ExternalLink className="h-4 w-4" aria-hidden="true" />
+          </a>
+        ) : (
+          <Link href="/contract" className="inline-flex shrink-0 items-center justify-center gap-2 rounded-md border border-cyan-300/20 px-3 py-2 text-sm font-medium text-cyan-50/90 hover:bg-cyan-300/10">
+            Contract page
+            <ExternalLink className="h-4 w-4" aria-hidden="true" />
+          </Link>
+        )}
       </div>
       <dl className={compact ? "mt-4 grid gap-3 text-sm sm:grid-cols-2 xl:grid-cols-3" : "mt-5 grid gap-3 text-sm sm:grid-cols-2 xl:grid-cols-4"}>
         <div>

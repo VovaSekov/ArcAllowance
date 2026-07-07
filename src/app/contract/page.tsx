@@ -37,7 +37,7 @@ export default function ContractPage() {
         description={isRealSettlementMode ? "The registry is audit proof for policy decisions. Real settlement references come from the configured server-side wallet/Gateway adapter." : isArcTestnetMode ? "The registry anchors spend requests and decisions on Arc Testnet. It is proof, not custody." : "The registry can anchor the same spend-control flow on Arc Testnet without moving real funds."}
       />
 
-      <ContractStatusCard />
+      <ContractStatusCard action="arcscan" />
 
       <div className="mt-6 grid gap-6 xl:grid-cols-2">
         <section className="rounded-lg border border-white/10 bg-white/[0.035] p-5">
